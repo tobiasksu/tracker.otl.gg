@@ -37,7 +37,7 @@ class Api {
             return;
         }
 
-        Servers.update(req.ip, req.body);
+        Servers.update(req.headers["x-forwarded-for"].toString(), req.body);
 
         res.status(204).send();
     }

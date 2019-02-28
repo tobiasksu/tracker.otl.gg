@@ -48,7 +48,9 @@ class Servers {
         }
 
         Object.keys(data).forEach((key) => {
-            servers[ip][key] = data[key];
+            if (data[key]) {
+                servers[ip][key] = data[key];
+            }
         });
 
         servers[ip].lastSeen = new Date();
