@@ -64,7 +64,7 @@ class Home {
                             <div>${s}</div>
                             <div>${servers[s].map}</div>
                             <div>${servers[s].mode}</div>
-                            <div>${servers[s].numPlayers}/${s.maxNumPlayers}</div>
+                            <div>${servers[s].numPlayers}/${servers[s].maxNumPlayers}</div>
                             <div>${servers[s].lastSeen}</div>
                             <div>${servers[s].gameStarted}</div>
                             <div>${servers[s].notes}</div>

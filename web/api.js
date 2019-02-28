@@ -32,8 +32,6 @@ class Api {
      * @returns {void} A promise that resolves when the request is complete.
      */
     static post(req, res) {
-        console.log(req.ip, req.body);
-        let data;
         if (!req.body) {
             res.status(400).send("400 - Bad Request - Invalid body.");
             return;
