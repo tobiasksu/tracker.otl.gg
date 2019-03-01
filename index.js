@@ -36,6 +36,8 @@ const compression = require("compression"),
     });
     app.get("/", Web.home);
     app.post("/api", Web.api);
+    app.get("/download", Web.download);
+    app.get("/about", Web.about);
 
     // Startup web server.
     const port = process.env.PORT || 43434;

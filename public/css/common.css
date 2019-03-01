@@ -82,3 +82,25 @@ a:hover {
 .grey {
     color: #999999;
 }
+
+.section {
+    padding: 10px;
+}
+
+h2 {
+    color: #ff6600;
+    padding: 10px;
+}
+
+.code {
+    background-color: #333333;
+    border-color: #999999;
+    font-family: "Courier New", Courier, monospace;
+    margin: 5px 0;
+    padding: 5px 0;
+}
+
+pre {
+    display: inline;
+    font-family: "Courier New", Courier, monospace;
+}

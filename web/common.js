@@ -53,11 +53,11 @@ class Common {
                 <body>
                     <div id="page">
                         <div id="menu">
-                            <ul>
+                            <ol style="fon">
                                 <li><a href="/">Home</a></li>
-                                <li><a href="/download">Download</a></li>
+                                <li><a href="/download">Download olproxy</a></li>
                                 <li><a href="/about">About</a></li>
-                            </ul>
+                            </ol>
                         </div>
                         <div id="header">Overload Game Browser</div>
                         ${html}

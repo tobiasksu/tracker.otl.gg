@@ -2,8 +2,10 @@ const fs = require("fs"),
     promisify = require("util").promisify,
 
     pages = {
+        about: {file: "./about"},
         api: {file: "./api"},
         common: {file: "./common"},
+        download: {file: "./download"},
         home: {file: "./home"}
     };
 
