@@ -1,3 +1,10 @@
+@font-face {
+    font-family: "Industry Medium";
+    src: url("/fonts/IndustryMedium.woff2") format("woff2"), url("/fonts/IndustryMedium.woff") format("woff"), url("/fonts/IndustryMedium.otf") format("opentype");
+    font-style: normal;
+    font-weight: 500;
+}
+
 /* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
@@ -52,7 +59,7 @@ table {
 }
 
 * {
-    font-family: "Arial";
+    font-family: "Industry Medium";
 }
 
 body {

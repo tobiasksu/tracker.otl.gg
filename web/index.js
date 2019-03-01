@@ -2,8 +2,9 @@ const fs = require("fs"),
     promisify = require("util").promisify,
 
     pages = {
-        home: {file: "./home"},
-        api: {file: "./api"}
+        api: {file: "./api"},
+        common: {file: "./common"},
+        home: {file: "./home"}
     };
 
 /**
@@ -57,6 +58,7 @@ Object.keys(pages).forEach((pageName) => {
     if (pageName !== "common") {
         Index[pageName] = async (req, res, next) => {
             try {
+                await Index.checkCache("common");
                 await Index.checkCache(pageName);
             } catch (err) {
                 console.log(err);
