@@ -1,15 +1,10 @@
 const fs = require("fs"),
+    path = require("path"),
     promisify = require("util").promisify,
 
     express = require("express"),
 
-    classes = {
-        about: {file: "./views/about", path: "/about", methods: ["get"]},
-        api: {file: "./views/api", path: "/api", methods: ["get", "post"]},
-        common: {file: "./includes/common", includes: true},
-        download: {file: "./views/download", path: "/download", methods: ["get"]},
-        home: {file: "./views/home", path: "/", methods: ["get"]}
-    };
+    classes = {};
 
 //  ####                  #
 //  #   #                 #
@@ -30,11 +25,11 @@ class Router {
     //  ##   #  #   ##    ##   #  #   ##    # #   ##   #  #   ##
     /**
      * Checks the cache and refreshes it if necessary.
-     * @param {string} className The name of the class.
+     * @param {string} file The name of the class.
      * @returns {Promise} A promise that resolves once the cache is checked.
      */
-    static async checkCache(className) {
-        const classInfo = classes[className];
+    static async checkCache(file) {
+        const classInfo = classes[file];
 
         if (!classInfo) {
             throw new Error("Invald class name.");
@@ -49,6 +44,39 @@ class Router {
         }
     }
 
+    //              #     ##   ##
+    //              #    #  #   #
+    //  ###   ##   ###   #      #     ###   ###    ###    ##    ###
+    // #  #  # ##   #    #      #    #  #  ##     ##     # ##  ##
+    //  ##   ##     #    #  #   #    # ##    ##     ##   ##      ##
+    // #      ##     ##   ##   ###    # #  ###    ###     ##   ###
+    //  ###
+    /**
+     * Gets all of the available classes.
+     * @param {string} dir The directory to get the classes for.
+     * @returns {Promise} A promise that resolves when all the classes are retrieved.
+     */
+    static async getClasses(dir) {
+        const list = await promisify(fs.readdir)(dir);
+
+        for (const file of list) {
+            const filename = path.resolve(dir, file);
+
+            const stat = await promisify(fs.stat)(filename);
+
+            if (stat && stat.isDirectory()) {
+                await Router.getClasses(filename);
+            } else {
+                const classInfo = require(filename);
+                classes[filename] = classInfo.route;
+                if (!classInfo.route.includes) {
+                    classes[filename].methods = Object.getOwnPropertyNames(classInfo).filter((p) => typeof classInfo[p] === "function");
+                }
+                classes[filename].file = filename;
+            }
+        }
+    }
+
     //              #    ###                #
     //              #    #  #               #
     //  ###   ##   ###   #  #   ##   #  #  ###    ##   ###
@@ -58,16 +86,18 @@ class Router {
     //  ###
     /**
      * Gets the router to use for the website.
-     * @returns {express.Router} The router to use for the website.
+     * @returns {Promise<express.Router>} A promise that resolves with the router to use for the website.
      */
-    static getRouter() {
-        const router = express.Router(),
-            classNames = Object.keys(classes),
-            includes = classNames.filter((c) => classes[c].includes),
-            pages = classNames.filter((c) => !classes[c].includes && classes[c].methods && classes[c].methods.length > 0);
+    static async getRouter() {
+        await Router.getClasses(`${__dirname}/web`);
 
-        pages.forEach((className) => {
-            const classInfo = classes[className];
+        const router = express.Router(),
+            filenames = Object.keys(classes),
+            includes = filenames.filter((c) => classes[c].include),
+            pages = filenames.filter((c) => !classes[c].include && classes[c].methods && classes[c].methods.length > 0);
+
+        pages.forEach((filename) => {
+            const classInfo = classes[filename];
 
             classInfo.methods.forEach((method) => {
                 router[method](classInfo.path, async (req, res, next) => {
@@ -75,7 +105,7 @@ class Router {
                         for (const include of includes) {
                             await Router.checkCache(include);
                         }
-                        await Router.checkCache(className);
+                        await Router.checkCache(filename);
                     } catch (err) {
                         console.log(err);
                     }
@@ -89,4 +119,4 @@ class Router {
     }
 }
 
-module.exports = Router.getRouter();
+module.exports = Router;

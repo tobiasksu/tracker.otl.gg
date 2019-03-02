@@ -79,4 +79,8 @@ class About {
     }
 }
 
+About.route = {
+    path: "/about"
+};
+
 module.exports = About;

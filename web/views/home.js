@@ -72,4 +72,8 @@ class Home {
     }
 }
 
+Home.route = {
+    path: "/"
+};
+
 module.exports = Home;

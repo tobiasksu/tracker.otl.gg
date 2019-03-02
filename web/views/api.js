@@ -54,10 +54,16 @@ class Api {
             return;
         }
 
-        Servers.update(`${req.headers["x-forwarded-for"]}` || req.connection.remoteAddress, req.body);
+        console.log(req.headers["x-forwarded-for"]);
+        console.log(req.ip);
+        Servers.update((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
 
         res.status(204).send();
     }
 }
+
+Api.route = {
+    path: "/api"
+};
 
 module.exports = Api;

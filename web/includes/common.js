@@ -129,4 +129,8 @@ class Common {
     }
 }
 
+Common.route = {
+    include: true
+};
+
 module.exports = Common;

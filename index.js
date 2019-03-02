@@ -2,7 +2,7 @@ const compression = require("compression"),
     express = require("express"),
     minify = require("express-minify"),
 
-    router = require("./web/router"),
+    Router = require("./router"),
 
     app = express();
 
@@ -16,8 +16,16 @@ const compression = require("compression"),
 /**
  * Starts up the application.
  */
-(function startup() {
+(async function startup() {
     console.log("Starting up...");
+
+    let router;
+    try {
+        router = await Router.getRouter();
+    } catch (err) {
+        console.log(err);
+        return;
+    }
 
     if (process.platform === "win32") {
         process.title = "Overload Game Browser";

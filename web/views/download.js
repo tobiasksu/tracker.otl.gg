@@ -78,4 +78,8 @@ class Download {
     }
 }
 
+Download.route = {
+    path: "/download"
+};
+
 module.exports = Download;
