@@ -1,8 +1,8 @@
-const Servers = require("../servers");
+const Servers = require("../../servers");
 
 /**
- * @typedef {import("express").Request} Express.Request
- * @typedef {import("express").Response} Express.Response
+ * @typedef {import("express").Request} express.Request
+ * @typedef {import("express").Response} express.Response
  */
 
 //    #             #
@@ -27,8 +27,8 @@ class Api {
     //  ###
     /**
      * Processes the request.
-     * @param {Express.Request} req The request.
-     * @param {Express.Response} res The response.
+     * @param {express.Request} req The request.
+     * @param {express.Response} res The response.
      * @returns {void} A promise that resolves when the request is complete.
      */
     static get(req, res) {
@@ -44,8 +44,8 @@ class Api {
     // #
     /**
      * Processes the request.
-     * @param {Express.Request} req The request.
-     * @param {Express.Response} res The response.
+     * @param {express.Request} req The request.
+     * @param {express.Response} res The response.
      * @returns {void} A promise that resolves when the request is complete.
      */
     static post(req, res) {
@@ -54,7 +54,7 @@ class Api {
             return;
         }
 
-        Servers.update(req.headers["x-forwarded-for"] || req.ip, req.body);
+        Servers.update(`${req.headers["x-forwarded-for"]}` || req.connection.remoteAddress, req.body);
 
         res.status(204).send();
     }

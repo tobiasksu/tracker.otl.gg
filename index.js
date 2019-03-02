@@ -2,7 +2,7 @@ const compression = require("compression"),
     express = require("express"),
     minify = require("express-minify"),
 
-    Web = require("./web"),
+    router = require("./web/router"),
 
     app = express();
 
@@ -34,11 +34,8 @@ const compression = require("compression"),
     app.get("/js/timeago.min.js", (req, res) => {
         res.sendFile(`${__dirname}/node_modules/timeago.js/dist/timeago.min.js`);
     });
-    app.get("/", Web.home);
-    app.get("/api", Web.api);
-    app.post("/api", Web.api);
-    app.get("/download", Web.download);
-    app.get("/about", Web.about);
+
+    app.use("/", router);
 
     // Startup web server.
     const port = process.env.PORT || 43434;
