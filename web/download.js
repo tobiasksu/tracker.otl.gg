@@ -78,4 +78,4 @@ class Download {
     }
 }
 
-module.exports = Download.get;
+module.exports = Download;

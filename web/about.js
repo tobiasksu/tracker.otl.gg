@@ -79,4 +79,4 @@ class About {
     }
 }
 
-module.exports = About.get;
+module.exports = About;

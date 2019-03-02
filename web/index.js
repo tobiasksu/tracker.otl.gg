@@ -48,7 +48,7 @@ class Index {
 
         if (!page.lastModified || page.lastModified !== stats.mtime) {
             delete require.cache[require.resolve(page.file)];
-            page.fx = require(page.file);
+            page.class = require(page.file);
             page.lastModified = stats.mtime;
         }
     }
@@ -66,7 +66,7 @@ Object.keys(pages).forEach((pageName) => {
                 console.log(err);
             }
 
-            return page.fx(req, res, next);
+            return page.class[req.method.toLowerCase()](req, res, next);
         };
     }
 });

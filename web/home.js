@@ -72,4 +72,4 @@ class Home {
     }
 }
 
-module.exports = Home.get;
+module.exports = Home;

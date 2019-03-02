@@ -35,6 +35,7 @@ const compression = require("compression"),
         res.sendFile(`${__dirname}/node_modules/timeago.js/dist/timeago.min.js`);
     });
     app.get("/", Web.home);
+    app.get("/api", Web.api);
     app.post("/api", Web.api);
     app.get("/download", Web.download);
     app.get("/about", Web.about);

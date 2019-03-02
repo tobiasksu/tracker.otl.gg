@@ -18,6 +18,23 @@ const Servers = require("../servers");
  * A class that handles calls to the website's API.
  */
 class Api {
+    //              #
+    //              #
+    //  ###   ##   ###
+    // #  #  # ##   #
+    //  ##   ##     #
+    // #      ##     ##
+    //  ###
+    /**
+     * Processes the request.
+     * @param {Express.Request} req The request.
+     * @param {Express.Response} res The response.
+     * @returns {void} A promise that resolves when the request is complete.
+     */
+    static get(req, res) {
+        res.status(200).send(Servers.servers);
+    }
+
     //                     #
     //                     #
     // ###    ##    ###   ###
@@ -43,4 +60,4 @@ class Api {
     }
 }
 
-module.exports = Api.post;
+module.exports = Api;
