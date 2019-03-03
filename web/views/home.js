@@ -56,14 +56,14 @@ class Home {
                 <div class="header">Last Game Started</div>
                 <div class="header">Notes</div>
                 ${Object.keys(servers).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
-                    <div>${servers[s].name}</div>
+                    <div>${Common.htmlEncode(servers[s].name)}</div>
                     <div>${s}</div>
-                    <div>${servers[s].map}</div>
-                    <div>${servers[s].mode}</div>
+                    <div>${Common.htmlEncode(servers[s].map)}</div>
+                    <div>${Common.htmlEncode(servers[s].mode)}</div>
                     <div>${servers[s].numPlayers}/${servers[s].maxNumPlayers}</div>
                     <div><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
                     <div><time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time></div>
-                    <div>${servers[s].notes}</div>
+                    <div>${Common.htmlEncode(servers[s].notes)}</div>
                 `).join("")}
             </div>
         `, req);
