@@ -1,6 +1,6 @@
 {
     "name": "olproxy.otl.gg",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "description": "An Overload game browser, based on https://github.com/arbruijn/olproxy.",
     "homepage": "https://github.com/roncli/olproxy.otl.gg",
     "bugs": {
