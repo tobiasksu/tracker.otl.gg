@@ -1,4 +1,4 @@
-const servers = {};
+const Db = require("./database");
 
 //   ###
 //  #   #
@@ -17,10 +17,10 @@ class Servers {
     // ###     ##   #      #     ##   #     ###
     /**
      * Retrieves the servers.
-     * @returns {object} The servers.
+     * @returns {Promise} A promise that resolves with the servers.
      */
     static get servers() {
-        return servers;
+        return Db.getServers();
     }
 
     //                #         #
@@ -34,26 +34,24 @@ class Servers {
      * Updates the data for a server.
      * @param {string} ip The IP address of the server to update.
      * @param {object} data The data to update the server with.
-     * @returns {void}
+     * @returns {Promise} A promise that resolves when the server has been updated.
      */
-    static update(ip, data) {
-        if (!servers[ip]) {
-            servers[ip] = {
-                firstSeen: new Date()
-            };
-        }
+    static async update(ip, data) {
+        let server = await Db.getServerByIp(ip);
 
-        if (servers[ip].lastSeen && new Date().getTime() - servers[ip].lastSeen.getTime() > 30 * 60 * 1000) {
-            servers[ip].firstSeen = new Date();
+        if (!server) {
+            server = {ip};
         }
 
         Object.keys(data).forEach((key) => {
             if (data[key]) {
-                servers[ip][key] = data[key];
+                server[key] = data[key];
             }
         });
 
-        servers[ip].lastSeen = new Date();
+        server.lastSeen = new Date();
+
+        await Db.updateServer(server);
     }
 }
 

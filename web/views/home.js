@@ -32,10 +32,10 @@ class Home {
      * Processes the request.
      * @param {express.Request} req The request.
      * @param {express.Response} res The response.
-     * @returns {void} A promise that resolves when the request is complete.
+     * @returns {Promise} A promise that resolves when the request is complete.
      */
-    static get(req, res) {
-        const servers = Servers.servers;
+    static async get(req, res) {
+        const servers = await Servers.servers;
 
         const html = Common.page(/* html */`
             <link rel="stylesheet" href="/css/home.css" />

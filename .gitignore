@@ -62,3 +62,6 @@ typings/
 
 # Industry Medium font
 IndustryMedium.*
+
+# Settings
+settings.js
