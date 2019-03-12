@@ -54,9 +54,7 @@ class Api {
             return;
         }
 
-        console.log(req.headers["x-forwarded-for"]);
-        console.log(req.ip);
-        await Servers.update((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
+        await Servers.update((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body, req.query.online === void 0 ? void 0 : req.query.online === "true");
 
         res.status(204).send();
     }

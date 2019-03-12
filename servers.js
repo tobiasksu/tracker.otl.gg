@@ -34,9 +34,10 @@ class Servers {
      * Updates the data for a server.
      * @param {string} ip The IP address of the server to update.
      * @param {object} data The data to update the server with.
+     * @param {boolean} [visible] Whether the server should be visible.
      * @returns {Promise} A promise that resolves when the server has been updated.
      */
-    static async update(ip, data) {
+    static async update(ip, data, visible) {
         let server = await Db.getServerByIp(ip);
 
         if (!server) {
@@ -51,7 +52,7 @@ class Servers {
 
         server.lastSeen = new Date();
 
-        await Db.updateServer(server);
+        await Db.updateServer(server, visible);
     }
 }
 

@@ -72,20 +72,22 @@ class Database {
     /**
      * Updates a server.
      * @param {object} server The server to update.
+     * @param {boolean} [visible] Whether the server should be visible.
      * @returns {Promise} A promise that resolves when the server has been updated.
      */
-    static async updateServer(server) {
+    static async updateServer(server, visible) {
         await db.query(/* sql */`
             MERGE tblServers s
-                USING (VALUES (@ip, @data)) AS v (IPAddress, Data)
+                USING (VALUES (@ip, @data, @visible)) AS v (IPAddress, Data, Visible)
                 ON s.IPAddress = v.IPAddress
             WHEN MATCHED THEN
-                UPDATE SET Data = v.Data
+                UPDATE SET Data = v.Data, Visible = CASE WHEN v.Visible IS NULL THEN s.Visible ELSE v.Visible END
             WHEN NOT MATCHED THEN
                 INSERT (IPAddress, Visible, Data) VALUES (v.IPAddress, 1, v.Data);
         `, {
             ip: {type: Db.VARCHAR(15), value: server.ip},
-            data: {type: Db.TEXT, value: JSON.stringify(server)}
+            data: {type: Db.TEXT, value: JSON.stringify(server)},
+            visible: {type: Db.BIT, value: visible}
         });
     }
 }
