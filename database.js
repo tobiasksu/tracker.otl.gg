@@ -34,7 +34,7 @@ class Database {
          */
         const data = await db.query(/* sql */`
             SELECT Data FROM tblServers
-            WHERE IP = @ip
+            WHERE IPAddress = @ip
         `, {ip: {type: Db.VARCHAR(15), value: ip}});
         return data && data.recordsets && data.recordsets[0] && data.recordsets[0][0] && JSON.parse(data.recordsets[0][0].Data) || {};
     }
