@@ -40,7 +40,7 @@ class Servers {
     static async update(ip, data, visible) {
         let server = await Db.getServerByIp(ip);
 
-        if (!server) {
+        if (!server.ip) {
             server = {ip};
         }
 

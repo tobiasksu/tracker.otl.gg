@@ -35,7 +35,7 @@ class Home {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const servers = (await Servers.servers).filter((s) => servers[s].name),
+        const servers = (await Servers.servers).filter((s) => s.name),
             now = new Date();
 
         const html = Common.page(/* html */`
@@ -56,9 +56,9 @@ class Home {
                 <div class="header">Last Updated</div>
                 <div class="header">Last Game Started</div>
                 <div class="header">Notes</div>
-                ${Object.keys(servers).filter((s) => now.getTime() - servers[s].lastSeen.getTime() <= 60 * 60 * 1000).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
+                ${Object.keys(servers).filter((s) => now.getTime() - new Date(servers[s].lastSeen).getTime() <= 60 * 60 * 1000).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
                     <div>${Common.htmlEncode(servers[s].name)}</div>
-                    <div>${s}</div>
+                    <div>${servers[s].ip}</div>
                     <div>
                         ${servers[s].map && servers[s].map.length > 0 ? /* html */`
                             <a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a>
@@ -69,14 +69,14 @@ class Home {
                     <div><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
                     <div>
                         ${servers[s].gameStarted ? /* html */`
-                            <time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time></div>
+                            <time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time>
                         ` : ""}
                     </div>
                     <div>${Common.htmlEncode(servers[s].notes)}</div>
                 `).join("")}
-                ${Object.keys(servers).filter((s) => now.getTime() - servers[s].lastSeen.getTime() > 60 * 60 * 1000).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
+                ${Object.keys(servers).filter((s) => now.getTime() - new Date(servers[s].lastSeen).getTime() > 60 * 60 * 1000).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
                     <div class="old">${Common.htmlEncode(servers[s].name)}</div>
-                    <div class="old">${s}</div>
+                    <div class="old">${servers[s].ip}</div>
                     <div class="old">
                         ${servers[s].map && servers[s].map.length > 0 ? /* html */`
                             <a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a>
@@ -87,7 +87,7 @@ class Home {
                     <div class="old"><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
                     <div class="old">
                         ${servers[s].gameStarted ? /* html */`
-                            <time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time></div>
+                            <time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time>
                         ` : ""}
                     </div>
                     <div class="old">${Common.htmlEncode(servers[s].notes)}</div>
