@@ -50,6 +50,7 @@ class Common {
                             <ol style="fon">
                                 <li><a href="/">Home</a></li>
                                 <li><a href="/download">Download olproxy</a></li>
+                                <li><a href="/server">Server Setup</a></li>
                                 <li><a href="/links">Links</a></li>
                                 <li><a href="/about">About</a></li>
                             </ol>
