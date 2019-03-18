@@ -32,7 +32,14 @@ class Api {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        res.status(200).send(await Servers.servers);
+        const servers = {},
+            data = await Servers.servers;
+
+        data.forEach((s) => {
+            servers[s.ip] = s;
+        });
+
+        res.status(200).send(servers);
     }
 
     //                     #
