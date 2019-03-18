@@ -69,7 +69,7 @@ class Home {
                 ${Object.keys(servers).filter((s) => now.getTime() - servers[s].lastSeen.getTime() > 60 * 60 * 1000).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
                     <div class="old">${Common.htmlEncode(servers[s].name)}</div>
                     <div class="old">${s}</div>
-                    <div class="old">${Common.htmlEncode(servers[s].map)}</div>
+                    <div class="old"><a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a></div>
                     <div class="old">${Common.htmlEncode(servers[s].mode)}</div>
                     <div class="old">${servers[s].numPlayers}/${servers[s].maxNumPlayers}</div>
                     <div class="old"><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
