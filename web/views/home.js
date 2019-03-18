@@ -35,7 +35,7 @@ class Home {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const servers = (await Servers.servers).filter((s) => servers[s].gameStarted && servers[s].map && servers[s].name && servers[s].maxNumPlayers),
+        const servers = (await Servers.servers).filter((s) => servers[s].name),
             now = new Date();
 
         const html = Common.page(/* html */`
@@ -59,21 +59,37 @@ class Home {
                 ${Object.keys(servers).filter((s) => now.getTime() - servers[s].lastSeen.getTime() <= 60 * 60 * 1000).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
                     <div>${Common.htmlEncode(servers[s].name)}</div>
                     <div>${s}</div>
-                    <div><a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a></div>
+                    <div>
+                        ${servers[s].map && servers[s].map.length > 0 ? /* html */`
+                            <a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a>
+                        ` : ""}
+                    </div>
                     <div>${Common.htmlEncode(servers[s].mode)}</div>
-                    <div>${servers[s].numPlayers}/${servers[s].maxNumPlayers}</div>
+                    <div>${servers[s].numPlayers || 0}/${servers[s].maxNumPlayers || 0}</div>
                     <div><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
-                    <div><time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time></div>
+                    <div>
+                        ${servers[s].gameStarted ? /* html */`
+                            <time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time></div>
+                        ` : ""}
+                    </div>
                     <div>${Common.htmlEncode(servers[s].notes)}</div>
                 `).join("")}
                 ${Object.keys(servers).filter((s) => now.getTime() - servers[s].lastSeen.getTime() > 60 * 60 * 1000).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => /* html */`
                     <div class="old">${Common.htmlEncode(servers[s].name)}</div>
                     <div class="old">${s}</div>
-                    <div class="old"><a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a></div>
+                    <div class="old">
+                        ${servers[s].map && servers[s].map.length > 0 ? /* html */`
+                            <a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a>
+                        ` : ""}
+                    </div>
                     <div class="old">${Common.htmlEncode(servers[s].mode)}</div>
-                    <div class="old">${servers[s].numPlayers}/${servers[s].maxNumPlayers}</div>
+                    <div class="old">${servers[s].numPlayers || 0}/${servers[s].maxNumPlayers || 0}</div>
                     <div class="old"><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
-                    <div class="old"><time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time></div>
+                    <div class="old">
+                        ${servers[s].gameStarted ? /* html */`
+                            <time class="timeago" datetime="${new Date(servers[s].gameStarted).toISOString()}">${new Date(servers[s].gameStarted)}</time></div>
+                        ` : ""}
+                    </div>
                     <div class="old">${Common.htmlEncode(servers[s].notes)}</div>
                 `).join("")}
             </div>
