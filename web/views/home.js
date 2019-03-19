@@ -64,7 +64,7 @@ class Home {
                             <a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a>
                         ` : ""}
                     </div>
-                    <div>${Common.htmlEncode(servers[s].mode)}</div>
+                    <div>${servers[s].mode ? Common.htmlEncode(servers[s].mode) : ""}</div>
                     <div>${servers[s].numPlayers || 0}/${servers[s].maxNumPlayers || 0}</div>
                     <div><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
                     <div>
@@ -82,7 +82,7 @@ class Home {
                             <a target="_blank" href="https://overloadmaps.com/${encodeURI(servers[s].map.toLowerCase().replace(/[ _]/g, "-"))}">${Common.htmlEncode(servers[s].map)}</a>
                         ` : ""}
                     </div>
-                    <div class="old">${Common.htmlEncode(servers[s].mode)}</div>
+                    <div class="old">${servers[s].mode ? Common.htmlEncode(servers[s].mode) : ""}</div>
                     <div class="old">${servers[s].numPlayers || 0}/${servers[s].maxNumPlayers || 0}</div>
                     <div class="old"><time class="timeago" datetime="${new Date(servers[s].lastSeen).toISOString()}">${new Date(servers[s].lastSeen)}</time></div>
                     <div class="old">
