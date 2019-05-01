@@ -55,8 +55,9 @@ class Links {
             </div>
             <div class="section">
                 <div class="header">Fan Sites</div>
+                <div>Overload Development Community: <a href="https://github.com/overload-development-community" target="_blank">https://github.com/overload-development-community</a></div>
                 <div>Overload Maps: <a target="_blank" href="https://overloadmaps.com/">https://overloadmaps.com/</a></div>
-                <div>Overlaod Teams League: <a target="_blank" href="http://otl.gg/">http://otl.gg/</a></div>
+                <div>Overlaod Teams League: <a target="_blank" href="https://otl.gg/">https://otl.gg/</a></div>
             </div>
         `, req);
 
