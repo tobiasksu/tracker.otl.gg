@@ -4,6 +4,13 @@ The source code for the website at http://olproxy.otl.gg.
 
 ## Version History
 
+### 1.0.3 - 4/30/2019
+
+* Fix bug with HTML encoding.
+* Fix bug when mode hasn't been set yet.
+* Update links.
+* Add SSL.
+
 ### 1.0.2 - 3/17/2019
 
 * Use database for backend server list persistence.
