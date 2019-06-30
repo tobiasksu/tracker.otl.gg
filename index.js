@@ -3,6 +3,7 @@ const compression = require("compression"),
     minify = require("express-minify"),
 
     Router = require("./router"),
+    settings = require("./settings"),
 
     app = express();
 
@@ -46,7 +47,7 @@ const compression = require("compression"),
     app.use("/", router);
 
     // Startup web server.
-    const port = process.env.PORT || 43434;
+    const port = process.env.PORT || settings.express.port;
 
     app.listen(port);
     console.log(`Web server listening on port ${port}.`);

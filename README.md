@@ -4,6 +4,11 @@ The source code for the website at http://olproxy.otl.gg.
 
 ## Version History
 
+### 1.1 - 6/30/2019
+
+* Save end game stats received from olproxy to the database.
+* Update appsettings.json with the "signOff" parameter.
+
 ### 1.0.3 - 4/30/2019
 
 * Fix bug with HTML encoding.

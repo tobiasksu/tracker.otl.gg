@@ -62,10 +62,11 @@ class Download {
                 </div>
                 <div class="code">
                     {<br />
-                    <pre>    </pre>isServer: true,<br />
-                    <pre>    </pre>trackerBaseUrl: "https://olproxy.otl.gg",<br />
-                    <pre>    </pre>serverName: "roncli's Testing Server",<br />
-                    <pre>    </pre>notes: "Contact roncli@roncli.com for details!"<br />
+                    <pre>    </pre>"isServer": true,<br />
+                    <pre>    </pre>"signOff": true,<br />
+                    <pre>    </pre>"trackerBaseUrl": "https://olproxy.otl.gg",<br />
+                    <pre>    </pre>"serverName": "roncli's Testing Server",<br />
+                    <pre>    </pre>"notes": "Contact roncli@roncli.com for details!"<br />
                     }
                 </div>
                 <div>

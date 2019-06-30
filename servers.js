@@ -23,6 +23,28 @@ class Servers {
         return Db.getServers();
     }
 
+    //          #     #   ##    #           #
+    //          #     #  #  #   #           #
+    //  ###   ###   ###   #    ###    ###  ###
+    // #  #  #  #  #  #    #    #    #  #   #
+    // # ##  #  #  #  #  #  #   #    # ##   #
+    //  # #   ###   ###   ##     ##   # #    ##
+    /**
+     * Adds a stat to a server.
+     * @param {string} ip The IP address of the server to update.
+     * @param {object} data The data with the stat to add.
+     * @returns {Promise} A promise that resolves when the stat has been added.
+     */
+    static async addStat(ip, data) {
+        if (data.name === "Stats") {
+            switch (data.type) {
+                case "EndGame":
+                    await Db.addCompleted(ip, data);
+                    break;
+            }
+        }
+    }
+
     //                #         #
     //                #         #
     // #  #  ###    ###   ###  ###    ##
