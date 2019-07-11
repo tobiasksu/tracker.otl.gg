@@ -1,9 +1,15 @@
+/**
+ * @typedef {import("express").Request} Express.Request
+ * @typedef {import("express").Response} Express.Response
+ */
+
 const fs = require("fs"),
     path = require("path"),
     promisify = require("util").promisify,
 
     express = require("express"),
 
+    Log = require("./logging/log"),
     classes = {};
 
 //  ####                  #
@@ -73,6 +79,7 @@ class Router {
                     classes[filename].methods = Object.getOwnPropertyNames(classInfo).filter((p) => typeof classInfo[p] === "function");
                 }
                 classes[filename].file = filename;
+                Router.checkCache(filename);
             }
         }
     }
@@ -89,28 +96,34 @@ class Router {
      * @returns {Promise<express.Router>} A promise that resolves with the router to use for the website.
      */
     static async getRouter() {
-        await Router.getClasses(`${__dirname}/web`);
+        await Router.getClasses(`${__dirname}/../web`);
 
         const router = express.Router(),
             filenames = Object.keys(classes),
             includes = filenames.filter((c) => classes[c].include),
-            pages = filenames.filter((c) => !classes[c].include && classes[c].methods && classes[c].methods.length > 0);
+            pages = filenames.filter((c) => !classes[c].include && classes[c].path && classes[c].methods && classes[c].methods.length > 0);
 
         pages.forEach((filename) => {
             const classInfo = classes[filename];
 
             classInfo.methods.forEach((method) => {
-                router[method](classInfo.path, async (req, res, next) => {
+                router[method](classInfo.path, async (/** @type {Express.Request} */ req, /** @type {Express.Response} */ res, /** @type {function} */ next) => {
                     try {
                         for (const include of includes) {
                             await Router.checkCache(include);
                         }
                         await Router.checkCache(filename);
+
+                        if (!classInfo.class[req.method.toLowerCase()]) {
+                            return classes[path.resolve(`${__dirname}/../web/controllers/405.js`)].class.get(req, res, next);
+                        }
+
+                        return await classInfo.class[req.method.toLowerCase()](req, res, next);
                     } catch (err) {
-                        console.log(err);
+                        Log.exception(`A web exception occurred in ${req.method.toLowerCase()} ${classInfo.path} from ${(req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip} for ${req.url}.`, err);
                     }
 
-                    return classInfo.class[req.method.toLowerCase()](req, res, next);
+                    return classes[path.resolve(`${__dirname}/../web/controllers/500.js`)].class.get(req, res, next);
                 });
             });
         });

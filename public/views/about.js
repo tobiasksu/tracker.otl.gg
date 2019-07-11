@@ -1,25 +1,14 @@
-const HtmlMinifier = require("html-minifier"),
-
-    Common = require("../includes/common"),
-
-    settings = require("../../settings");
-
+//    #    #                     #     #   #    #
+//   # #   #                     #     #   #
+//  #   #  # ##    ###   #   #  ####   #   #   ##     ###   #   #
+//  #   #  ##  #  #   #  #   #   #      # #     #    #   #  #   #
+//  #####  #   #  #   #  #   #   #      # #     #    #####  # # #
+//  #   #  ##  #  #   #  #  ##   #  #   # #     #    #      # # #
+//  #   #  # ##    ###    ## #    ##     #     ###    ###    # #
 /**
- * @typedef {import("express").Request} express.Request
- * @typedef {import("express").Response} express.Response
+ * A class that represents the about view.
  */
-
-//    #    #                     #
-//   # #   #                     #
-//  #   #  # ##    ###   #   #  ####
-//  #   #  ##  #  #   #  #   #   #
-//  #####  #   #  #   #  #   #   #
-//  #   #  ##  #  #   #  #  ##   #  #
-//  #   #  # ##    ###    ## #    ##
-/**
- * A class that represents the about page.
- */
-class About {
+class AboutView {
     //              #
     //              #
     //  ###   ##   ###
@@ -28,13 +17,11 @@ class About {
     // #      ##     ##
     //  ###
     /**
-     * Processes the request.
-     * @param {express.Request} req The request.
-     * @param {express.Response} res The response.
-     * @returns {void} A promise that resolves when the request is complete.
+     * Gets the rendered about page template.
+     * @returns {string} An HTML string of the about page.
      */
-    static get(req, res) {
-        const html = Common.page("", /* html */`
+    static get() {
+        return /* html */`
             <h2>About this website</h2>
             <div class="section">
                 <div class="header">What is the Overload Server Browser?</div>
@@ -73,14 +60,10 @@ class About {
                     olproxy is open source software, and is available on Github at <a href="https://github.com/arbruijn/olproxy" target="_blank">https://github.com/arbruijn/olproxy</a>.
                 </div>
             </div>
-        `, req);
-
-        res.status(200).send(HtmlMinifier.minify(html, settings.HtmlMinifier));
+        `;
     }
 }
 
-About.route = {
-    path: "/about"
-};
-
-module.exports = About;
+if (typeof module !== "undefined") {
+    module.exports = AboutView; // eslint-disable-line no-undef
+}

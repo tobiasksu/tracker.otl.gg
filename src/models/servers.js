@@ -1,4 +1,4 @@
-const Db = require("./database");
+const Db = require("../database/servers");
 
 //   ###
 //  #   #
@@ -11,38 +11,26 @@ const Db = require("./database");
  * A class that represents the servers currently online.
  */
 class Servers {
-    //  ###    ##   ###   # #    ##   ###    ###
-    // ##     # ##  #  #  # #   # ##  #  #  ##
-    //   ##   ##    #     # #   ##    #       ##
-    // ###     ##   #      #     ##   #     ###
+    //              #    #  #   #            #    #     ##
+    //              #    #  #                     #      #
+    //  ###   ##   ###   #  #  ##     ###   ##    ###    #     ##
+    // #  #  # ##   #    #  #   #    ##      #    #  #   #    # ##
+    //  ##   ##     #     ##    #      ##    #    #  #   #    ##
+    // #      ##     ##   ##   ###   ###    ###   ###   ###    ##
+    //  ###
     /**
-     * Retrieves the servers.
-     * @returns {Promise} A promise that resolves with the servers.
+     * Gets the list of visible servers.
+     * @returns {Promise<object[]>} A promise that resolves with the servers.
      */
-    static get servers() {
-        return Db.getServers();
-    }
+    static async getVisible() {
+        const servers = await Db.getVisible(),
+            now = new Date();
 
-    //          #     #   ##    #           #
-    //          #     #  #  #   #           #
-    //  ###   ###   ###   #    ###    ###  ###
-    // #  #  #  #  #  #    #    #    #  #   #
-    // # ##  #  #  #  #  #  #   #    # ##   #
-    //  # #   ###   ###   ##     ##   # #    ##
-    /**
-     * Adds a stat to a server.
-     * @param {string} ip The IP address of the server to update.
-     * @param {object} data The data with the stat to add.
-     * @returns {Promise} A promise that resolves when the stat has been added.
-     */
-    static async addStat(ip, data) {
-        if (data.name === "Stats") {
-            switch (data.type) {
-                case "EndGame":
-                    await Db.addCompleted(ip, data);
-                    break;
-            }
-        }
+        servers.forEach((server) => {
+            server.old = now.getTime() - new Date(server.lastSeen).getTime() > 60 * 60 * 1000;
+        });
+
+        return servers;
     }
 
     //                #         #
@@ -60,7 +48,7 @@ class Servers {
      * @returns {Promise} A promise that resolves when the server has been updated.
      */
     static async update(ip, data, visible) {
-        let server = await Db.getServerByIp(ip);
+        let server = await Db.getByIp(ip);
 
         if (!server.ip) {
             server = {ip};
@@ -78,7 +66,7 @@ class Servers {
 
         server.lastSeen = new Date();
 
-        await Db.updateServer(server, visible);
+        await Db.update(server, visible);
     }
 }
 

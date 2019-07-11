@@ -1,25 +1,14 @@
-const HtmlMinifier = require("html-minifier"),
-
-    Common = require("../includes/common"),
-
-    settings = require("../../settings");
-
+//  ####                         ##                      #  #   #    #
+//   #  #                         #                      #  #   #
+//   #  #   ###   #   #  # ##     #     ###    ###    ## #  #   #   ##     ###   #   #
+//   #  #  #   #  #   #  ##  #    #    #   #      #  #  ##   # #     #    #   #  #   #
+//   #  #  #   #  # # #  #   #    #    #   #   ####  #   #   # #     #    #####  # # #
+//   #  #  #   #  # # #  #   #    #    #   #  #   #  #  ##   # #     #    #      # # #
+//  ####    ###    # #   #   #   ###    ###    ####   ## #    #     ###    ###    # #
 /**
- * @typedef {import("express").Request} express.Request
- * @typedef {import("express").Response} express.Response
+ * A class that represents the download view.
  */
-
-//  ####                         ##                      #
-//   #  #                         #                      #
-//   #  #   ###   #   #  # ##     #     ###    ###    ## #
-//   #  #  #   #  #   #  ##  #    #    #   #      #  #  ##
-//   #  #  #   #  # # #  #   #    #    #   #   ####  #   #
-//   #  #  #   #  # # #  #   #    #    #   #  #   #  #  ##
-//  ####    ###    # #   #   #   ###    ###    ####   ## #
-/**
- * A class that represents the download page.
- */
-class Download {
+class DownloadView {
     //              #
     //              #
     //  ###   ##   ###
@@ -28,13 +17,11 @@ class Download {
     // #      ##     ##
     //  ###
     /**
-     * Processes the request.
-     * @param {express.Request} req The request.
-     * @param {express.Response} res The response.
-     * @returns {void} A promise that resolves when the request is complete.
+     * Gets the rendered download page template.
+     * @returns {string} An HTML string of the download page.
      */
-    static get(req, res) {
-        const html = Common.page("", /* html */`
+    static get() {
+        return /* html */`
             <h2>Download olproxy</h2>
             <div class="section">
                 <div class="header">Windows</div>
@@ -73,14 +60,10 @@ class Download {
                     You must set isServer to true and ensure the trackerBaseUrl is http://olproxy.otl.gg to get listed.  You should also set the serverName to name your server, and add any notes that you would like listed alongside your server within the Overload Game Browser.
                 </div>
             </div>
-        `, req);
-
-        res.status(200).send(HtmlMinifier.minify(html, settings.HtmlMinifier));
+         `;
     }
 }
 
-Download.route = {
-    path: "/download"
-};
-
-module.exports = Download;
+if (typeof module !== "undefined") {
+    module.exports = DownloadView; // eslint-disable-line no-undef
+}

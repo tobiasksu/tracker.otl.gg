@@ -1,8 +1,15 @@
-const pjson = require("../../package.json");
-
 /**
  * @typedef {import("express").Request} Express.Request
  */
+
+const HtmlMinifier = require("html-minifier"),
+    pjson = require("../../package.json"),
+    settings = require("../../settings");
+
+/**
+ * @type {typeof import("../../public/views/index")}
+ */
+let IndexView;
 
 //   ###
 //  #   #
@@ -28,49 +35,22 @@ class Common {
      * @returns {string} The HTML of the full web page.
      */
     static page(head, html, req) {
-        const year = new Date().getFullYear();
+        if (!IndexView) {
+            IndexView = require("../../public/views/index");
+        }
 
-        return /* html */`
-            <html>
-                <head>
-                    <title>Overload Game Browser</title>
-                    <meta name="og:title" content="Overload Game Browser" />
-                    <meta name="og:type" content="website" />
-                    <meta name="og:url" content="${req.protocol}://${req.get("host")}${req.originalUrl}" />
-                    <meta name="twitter:card" content="summary" />
-                    <meta name="twitter:creator" content="@roncli" />
-                    <link rel="stylesheet" href="/css/reset.css" />
-                    <link rel="stylesheet" href="/css/common.css" />
-                    <script src="/js/common.js"></script>
-                    ${head}
-                </head>
-                <body>
-                    <div id="page">
-                        <div id="menu">
-                            <ol style="fon">
-                                <li><a href="/">Home</a></li>
-                                <li><a href="/download">Download olproxy</a></li>
-                                <li><a href="/server">Server Setup</a></li>
-                                <li><a href="/links">Links</a></li>
-                                <li><a href="/about">About</a></li>
-                            </ol>
-                        </div>
-                        <div id="header">Overload Game Browser</div>
-                        ${html}
-                        <div id="copyright">
-                            <div class="left">
-                                Website Version ${pjson.version}, &copy;${+year > 2019 ? "2019-" : ""}${year} roncli Productions<br />
-                                olproxy, &copy;${+year > 2019 ? "2019-" : ""}${year} Arne de Bruijn
-                            </div>
-                            <div class="right">
-                                Bugs with the website?  <a href="https://github.com/roncli/olproxy.otl.gg/issues" target="_blank">Report on GitHub</a><br />
-                                Bugs with olproxy?  <a href="https://github.com/arbruijn/olproxy/issues" target="_blank">Report on GitHub</a><br />
-                            </div>
-                        </div>
-                    </div>
-                </body>
-            </html>
-        `;
+        return HtmlMinifier.minify(
+            IndexView.get({
+                head,
+                html,
+                protocol: req.protocol,
+                host: req.get("host"),
+                originalUrl: req.originalUrl,
+                year: new Date().getFullYear(),
+                version: pjson.version
+            }),
+            settings.htmlMinifier
+        );
     }
 
     // #      #          ##    ####                       #
@@ -85,11 +65,23 @@ class Common {
      * @returns {string} The encoded string.
      */
     static htmlEncode(str) {
-        if (str) {
-            return str.replace(/[\u0080-\uFFFF<>&]/gim, (i) => `&#${i.charCodeAt(0)};`);
-        } else {
-            return str;
-        }
+        return str.replace(/[\u0080-\uFFFF<>&]/gim, (i) => `&#${i.charCodeAt(0)};`);
+    }
+
+    //   #          ####                       #
+    //              #                          #
+    //   #    ###   ###   ###    ##    ##    ###   ##
+    //   #   ##     #     #  #  #     #  #  #  #  # ##
+    //   #     ##   #     #  #  #     #  #  #  #  ##
+    // # #   ###    ####  #  #   ##    ##    ###   ##
+    //  #
+    /**
+     * Javascript-encodes a string.
+     * @param {*} str The string.
+     * @returns {string} The encoded string.
+     */
+    static jsEncode(str) {
+        return str.replace(/"/gim, "\\\"");
     }
 }
 

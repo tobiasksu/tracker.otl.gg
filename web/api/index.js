@@ -1,23 +1,21 @@
-const Servers = require("../../servers");
+const Servers = require("../../src/models/servers");
 
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
 
-//    #             #
-//   # #
-//  #   #  # ##    ##
-//  #   #  ##  #    #
-//  #####  ##  #    #
-//  #   #  # ##     #
-//  #   #  #       ###
-//         #
-//         #
+//   ###              #
+//    #               #
+//    #    # ##    ## #   ###   #   #
+//    #    ##  #  #  ##  #   #   # #
+//    #    #   #  #   #  #####    #
+//    #    #   #  #  ##  #       # #
+//   ###   #   #   ## #   ###   #   #
 /**
- * A class that handles calls to the website's API.
+ * A class that handles calls to the website's base API.
  */
-class Api {
+class Index {
     //              #
     //              #
     //  ###   ##   ###
@@ -33,7 +31,7 @@ class Api {
      */
     static async get(req, res) {
         const servers = {},
-            data = await Servers.servers;
+            data = await Servers.getVisible();
 
         data.forEach((s) => {
             servers[s.ip] = s;
@@ -67,8 +65,8 @@ class Api {
     }
 }
 
-Api.route = {
+Index.route = {
     path: "/api"
 };
 
-module.exports = Api;
+module.exports = Index;

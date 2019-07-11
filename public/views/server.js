@@ -1,25 +1,14 @@
-const HtmlMinifier = require("html-minifier"),
-
-    Common = require("../includes/common"),
-
-    settings = require("../../settings");
-
+//   ###                                      #   #    #
+//  #   #                                     #   #
+//  #       ###   # ##   #   #   ###   # ##   #   #   ##     ###   #   #
+//   ###   #   #  ##  #  #   #  #   #  ##  #   # #     #    #   #  #   #
+//      #  #####  #       # #   #####  #       # #     #    #####  # # #
+//  #   #  #      #       # #   #      #       # #     #    #      # # #
+//   ###    ###   #        #     ###   #        #     ###    ###    # #
 /**
- * @typedef {import("express").Request} express.Request
- * @typedef {import("express").Response} express.Response
+ * A class that represents the server view.
  */
-
-//   ###
-//  #   #
-//  #       ###   # ##   #   #   ###   # ##
-//   ###   #   #  ##  #  #   #  #   #  ##  #
-//      #  #####  #       # #   #####  #
-//  #   #  #      #       # #   #      #
-//   ###    ###   #        #     ###   #
-/**
- * A class that represents the server setup page.
- */
-class Server {
+class ServerView {
     //              #
     //              #
     //  ###   ##   ###
@@ -28,13 +17,11 @@ class Server {
     // #      ##     ##
     //  ###
     /**
-     * Processes the request.
-     * @param {express.Request} req The request.
-     * @param {express.Response} res The response.
-     * @returns {void} A promise that resolves when the request is complete.
+     * Gets the rendered server page template.
+     * @returns {string} An HTML string of the server page.
      */
-    static get(req, res) {
-        const html = Common.page("", /* html */`
+    static get() {
+        return /* html */`
             <h2>Server Setup</h2>
             <div class="section">
                 <div class="header">Overview</div>
@@ -72,14 +59,10 @@ class Server {
                     If you'd like to add an example script for your operating system, please issue a pull request to the repository for this website at <a target="_blank" href="https://github.com/roncli/olproxy.otl.gg">https://github.com/roncli/olproxy.otl.gg</a>, adding your example to /web/views/server.js.
                 </div>
             </div>
-        `, req);
-
-        res.status(200).send(HtmlMinifier.minify(html, settings.HtmlMinifier));
+        `;
     }
 }
 
-Server.route = {
-    path: "/server"
-};
-
-module.exports = Server;
+if (typeof module !== "undefined") {
+    module.exports = ServerView; // eslint-disable-line no-undef
+}

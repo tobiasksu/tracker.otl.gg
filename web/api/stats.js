@@ -1,23 +1,21 @@
-const Servers = require("../../servers");
+const Completed = require("../../src/models/completed");
 
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
 
-//    #             #
-//   # #
-//  #   #  # ##    ##
-//  #   #  ##  #    #
-//  #####  ##  #    #
-//  #   #  # ##     #
-//  #   #  #       ###
-//         #
-//         #
+//   ###    #             #
+//  #   #   #             #
+//  #      ####    ###   ####    ###
+//   ###    #         #   #     #
+//      #   #      ####   #      ###
+//  #   #   #  #  #   #   #  #      #
+//   ###     ##    ####    ##   ####
 /**
- * A class that handles calls to the website's API.
+ * A class that handles calls to the website's stats API.
  */
-class Api {
+class Stats {
     //                     #
     //                     #
     // ###    ##    ###   ###
@@ -37,14 +35,14 @@ class Api {
             return;
         }
 
-        await Servers.addStat((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
+        await Completed.add((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
 
         res.status(204).send();
     }
 }
 
-Api.route = {
+Stats.route = {
     path: "/api/stats"
 };
 
-module.exports = Api;
+module.exports = Stats;

@@ -28,6 +28,7 @@
         "init-declarations": "off",
         "line-comment-position": "off",
         "linebreak-style": "off",
+        "lines-around-comment": "off",
         "max-depth": "off",
         "max-len": "off",
         "max-lines": "off",
@@ -105,5 +106,31 @@
                 }
             }
         ]
-    }
+    },
+    "overrides": [
+        {
+            "files": ["public/**/*.js"],
+            "env": {
+                "es6": false,
+                "node": false,
+                "browser": true
+            },
+            "parserOptions": {
+                "ecmaVersion": 5,
+                "sourceType": "script"
+            },
+            "rules": {
+                "no-new": "off",
+                "no-var": "off",
+                "prefer-arrow-callback": "off",
+                "prefer-template": "off"
+            }
+        },
+        {
+            "files": ["public/views/**/*.js"],
+            "rules": {
+                "no-implicit-globals": "off"
+            }
+        }
+    ]
 }

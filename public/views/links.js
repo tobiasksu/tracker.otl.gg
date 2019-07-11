@@ -1,25 +1,14 @@
-const HtmlMinifier = require("html-minifier"),
-
-    Common = require("../includes/common"),
-
-    settings = require("../../settings");
-
+//  #        #           #             #   #    #
+//  #                    #             #   #
+//  #       ##    # ##   #   #   ###   #   #   ##     ###   #   #
+//  #        #    ##  #  #  #   #       # #     #    #   #  #   #
+//  #        #    #   #  ###     ###    # #     #    #####  # # #
+//  #        #    #   #  #  #       #   # #     #    #      # # #
+//  #####   ###   #   #  #   #  ####     #     ###    ###    # #
 /**
- * @typedef {import("express").Request} express.Request
- * @typedef {import("express").Response} express.Response
+ * A class that represents the links view.
  */
-
-//  #        #           #
-//  #                    #
-//  #       ##    # ##   #   #   ###
-//  #        #    ##  #  #  #   #
-//  #        #    #   #  ###     ###
-//  #        #    #   #  #  #       #
-//  #####   ###   #   #  #   #  ####
-/**
- * A class that represents the links page.
- */
-class Links {
+class LinksView {
     //              #
     //              #
     //  ###   ##   ###
@@ -28,13 +17,11 @@ class Links {
     // #      ##     ##
     //  ###
     /**
-     * Processes the request.
-     * @param {express.Request} req The request.
-     * @param {express.Response} res The response.
-     * @returns {void} A promise that resolves when the request is complete.
+     * Gets the rendered links page template.
+     * @returns {string} An HTML string of the links page.
      */
-    static get(req, res) {
-        const html = Common.page("", /* html */`
+    static get() {
+        return /* html */`
             <h2>Links</h2>
             <div class="section">
                 <div class="header">Buy Overload</div>
@@ -59,14 +46,10 @@ class Links {
                 <div>Overload Maps: <a target="_blank" href="https://overloadmaps.com/">https://overloadmaps.com/</a></div>
                 <div>Overlaod Teams League: <a target="_blank" href="https://otl.gg/">https://otl.gg/</a></div>
             </div>
-        `, req);
-
-        res.status(200).send(HtmlMinifier.minify(html, settings.HtmlMinifier));
+        `;
     }
 }
 
-Links.route = {
-    path: "/links"
-};
-
-module.exports = Links;
+if (typeof module !== "undefined") {
+    module.exports = LinksView; // eslint-disable-line no-undef
+}

@@ -1,8 +1,11 @@
 const compression = require("compression"),
     express = require("express"),
     minify = require("express-minify"),
+    morgan = require("morgan"),
+    morganExtensions = require("./src/extensions/morgan.extensions"),
 
-    Router = require("./router"),
+    Log = require("./src/logging/log"),
+    Router = require("./src/router"),
     settings = require("./settings"),
 
     app = express();
@@ -34,12 +37,18 @@ const compression = require("compression"),
         process.stdout.write("\x1b]2;Overload Game Browser\x1b\x5c");
     }
 
+    // Add morgan extensions.
+    morganExtensions(morgan);
+
+    // Initialize middleware stack.
     app.use(express.json());
     app.use(compression());
+    app.use(morgan(":colorstatus \x1b[30m\x1b[0m:method\x1b[0m :url\x1b[30m\x1b[0m:newline    Date :date[iso]    IP :req[ip]    Time :colorresponse ms"));
     app.use(minify());
-    app.use(express.static("public"));
 
     // Web server routes.
+    app.use(express.static("public"));
+
     app.get("/js/timeago.min.js", (req, res) => {
         res.sendFile(`${__dirname}/node_modules/timeago.js/dist/timeago.min.js`);
     });
@@ -54,5 +63,5 @@ const compression = require("compression"),
 }());
 
 process.on("unhandledRejection", (reason) => {
-    console.log("Unhandled promise rejection caught.", reason);
+    Log.exception("Unhandled promise rejection caught.", reason);
 });
