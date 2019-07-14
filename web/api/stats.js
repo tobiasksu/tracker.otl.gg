@@ -35,7 +35,7 @@ class Stats {
             return;
         }
 
-        await Completed.add((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
+        await Completed.processStat((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
 
         res.status(204).send();
     }
