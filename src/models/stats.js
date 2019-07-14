@@ -2,19 +2,17 @@ const Db = require("../database/completed"),
     Game = require("./game"),
     Player = require("./player");
 
-//   ###                         ##            #                #
-//  #   #                         #            #                #
-//  #       ###   ## #   # ##     #     ###   ####    ###    ## #
-//  #      #   #  # # #  ##  #    #    #   #   #     #   #  #  ##
-//  #      #   #  # # #  ##  #    #    #####   #     #####  #   #
-//  #   #  #   #  # # #  # ##     #    #       #  #  #      #  ##
-//   ###    ###   #   #  #       ###    ###     ##    ###    ## #
-//                       #
-//                       #
+//   ###    #             #
+//  #   #   #             #
+//  #      ####    ###   ####    ###
+//   ###    #         #   #     #
+//      #   #      ####   #      ###
+//  #   #   #  #  #   #   #  #      #
+//   ###     ##    ####    ##   ####
 /**
- * A class that represents a completed match.
+ * A class that represents statistics.
  */
-class Completed {
+class Stats {
     // #     ##                   #
     // #      #                   #
     // ###    #    #  #  ###    ###   ##   ###
@@ -34,7 +32,7 @@ class Completed {
         game.events.push(data);
         game.goals.push(data);
 
-        const scorerPlayer = Completed.getPlayer(game, scorer);
+        const scorerPlayer = game.getPlayer(scorer);
 
         scorerPlayer.team = scorerTeam;
 
@@ -116,35 +114,6 @@ class Completed {
         await Db.add(ip, game);
     }
 
-    //              #    ###   ##
-    //              #    #  #   #
-    //  ###   ##   ###   #  #   #     ###  #  #   ##   ###
-    // #  #  # ##   #    ###    #    #  #  #  #  # ##  #  #
-    //  ##   ##     #    #      #    # ##   # #  ##    #
-    // #      ##     ##  #     ###    # #    #    ##   #
-    //  ###                                 #
-    /**
-     * Retrieves a player from a game.
-     * @param {Game} game The game to find the player in.
-     * @param {string} name The name of the player.
-     * @returns {Player} The player.
-     */
-    static getPlayer(game, name) {
-        if (!game.players.find((p) => p.name === name)) {
-            game.players.push(new Player({
-                name,
-                kills: 0,
-                assists: 0,
-                deaths: 0,
-                goals: 0,
-                goalAssists: 0,
-                blunders: 0
-            }));
-        }
-
-        return game.players.find((p) => p.name === name);
-    }
-
     //                   ##
     //                    #
     //  ###   ##    ###   #
@@ -165,8 +134,8 @@ class Completed {
         game.events.push(data);
         game.goals.push(data);
 
-        const scorerPlayer = Completed.getPlayer(game, scorer),
-            assistedPlayer = Completed.getPlayer(game, assisted);
+        const scorerPlayer = game.getPlayer(scorer),
+            assistedPlayer = game.getPlayer(assisted);
 
         scorerPlayer.team = scorerTeam;
         if (assistedPlayer) {
@@ -206,9 +175,9 @@ class Completed {
         game.events.push(data);
         game.kills.push(data);
 
-        const attackerPlayer = Completed.getPlayer(game, attacker),
-            defenderPlayer = Completed.getPlayer(game, defender),
-            assistedPlayer = Completed.getPlayer(game, assisted);
+        const attackerPlayer = game.getPlayer(attacker),
+            defenderPlayer = game.getPlayer(defender),
+            assistedPlayer = game.getPlayer(assisted);
 
         attackerPlayer.team = attackerTeam;
         defenderPlayer.team = defenderTeam;
@@ -280,25 +249,25 @@ class Completed {
         if (data.name === "Stats") {
             switch (data.type) {
                 case "StartGame":
-                    await Completed.startGame(ip, data);
+                    await Stats.startGame(ip, data);
                     break;
                 case "Kill":
-                    await Completed.kill(ip, data);
+                    await Stats.kill(ip, data);
                     break;
                 case "Goal":
-                    await Completed.goal(ip, data);
+                    await Stats.goal(ip, data);
                     break;
                 case "Blunder":
-                    await Completed.blunder(ip, data);
+                    await Stats.blunder(ip, data);
                     break;
                 case "Connect":
-                    await Completed.connect(ip, data);
+                    await Stats.connect(ip, data);
                     break;
                 case "Disconect":
-                    await Completed.disconnect(ip, data);
+                    await Stats.disconnect(ip, data);
                     break;
                 case "EndGame":
-                    await Completed.endGame(ip, data);
+                    await Stats.endGame(ip, data);
                     break;
             }
         }
@@ -335,4 +304,4 @@ class Completed {
     }
 }
 
-module.exports = Completed;
+module.exports = Stats;

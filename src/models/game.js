@@ -3,7 +3,8 @@
  * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>}} GameData
  */
 
-const ServersDb = require("../database/servers");
+const Player = require("./player"),
+    ServersDb = require("../database/servers");
 
 /**
  * @type {Object<string, Game>}
@@ -74,6 +75,34 @@ class Game {
         }
 
         return games[ip];
+    }
+
+    //              #    ###   ##
+    //              #    #  #   #
+    //  ###   ##   ###   #  #   #     ###  #  #   ##   ###
+    // #  #  # ##   #    ###    #    #  #  #  #  # ##  #  #
+    //  ##   ##     #    #      #    # ##   # #  ##    #
+    // #      ##     ##  #     ###    # #    #    ##   #
+    //  ###                                 #
+    /**
+     * Retrieves a player from a game.
+     * @param {string} name The name of the player.
+     * @returns {Player} The player.
+     */
+    getPlayer(name) {
+        if (!this.players.find((p) => p.name === name)) {
+            this.players.push(new Player({
+                name,
+                kills: 0,
+                assists: 0,
+                deaths: 0,
+                goals: 0,
+                goalAssists: 0,
+                blunders: 0
+            }));
+        }
+
+        return this.players.find((p) => p.name === name);
     }
 
     //               #     ##
