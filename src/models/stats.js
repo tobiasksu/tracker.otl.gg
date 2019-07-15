@@ -1,6 +1,7 @@
 const Db = require("../database/completed"),
     Game = require("./game"),
-    Player = require("./player");
+    Player = require("./player"),
+    Websocket = require("../websocket");
 
 //   ###    #             #
 //  #   #   #             #
@@ -45,8 +46,6 @@ class Stats {
         } else {
             game.teamScore[otherTeam] = 1;
         }
-
-        // TODO: Notify.
     }
 
     //                                      #
@@ -65,8 +64,6 @@ class Stats {
         const game = await Game.getGame(ip);
 
         game.events.push(data);
-
-        // TODO: Notify.
     }
 
     //    #   #                                                #
@@ -85,8 +82,6 @@ class Stats {
         const game = await Game.getGame(ip);
 
         game.events.push(data);
-
-        // TODO: Notify.
     }
 
     //                #   ##
@@ -152,8 +147,6 @@ class Stats {
         } else {
             game.teamScore[scorerTeam] = 1;
         }
-
-        // TODO: Notify.
     }
 
     // #      #    ##    ##
@@ -211,25 +204,6 @@ class Stats {
                 }
             }
         }
-
-        // TODO: Notify.
-    }
-
-    //              #     #      #
-    //              #           # #
-    // ###    ##   ###   ##     #    #  #
-    // #  #  #  #   #     #    ###   #  #
-    // #  #  #  #   #     #     #     # #
-    // #  #   ##     ##  ###    #      #
-    //                                #
-    /**
-     * Notify clients that a score has been updated.
-     * @param {Game} game The game to update.
-     * @param {object} data The data provided with the update.
-     * @returns {void}
-     */
-    static notify(game, data) {
-        // TODO
     }
 
     //                                              ##    #           #
@@ -271,6 +245,8 @@ class Stats {
                     break;
             }
         }
+
+        Websocket.broadcast({ip, data});
     }
 
     //         #                 #     ##
@@ -299,8 +275,6 @@ class Stats {
             blunders: 0,
             connected: data.time
         }));
-
-        // TODO: Notify.
     }
 }
 

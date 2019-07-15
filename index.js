@@ -7,6 +7,7 @@ const compression = require("compression"),
     Log = require("./src/logging/log"),
     Router = require("./src/router"),
     settings = require("./settings"),
+    Websocket = require("./src/websocket"),
 
     app = express();
 
@@ -55,11 +56,16 @@ const compression = require("compression"),
 
     app.use("/", router);
 
-    // Startup web server.
-    const port = process.env.PORT || settings.express.port;
+    // Startup websockets.
+    const server = Websocket.start();
 
-    app.listen(port);
-    console.log(`Web server listening on port ${port}.`);
+    // Startup webserver.
+    const port = +(process.env.PORT || settings.express.port);
+
+    server.on("request", app);
+    server.listen(port, () => {
+        console.log(`Web server and websockets listening on port ${port}.`);
+    });
 }());
 
 process.on("unhandledRejection", (reason) => {
