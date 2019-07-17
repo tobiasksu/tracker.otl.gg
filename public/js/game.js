@@ -53,18 +53,48 @@ class Game {
      * @returns {Promise<Game>} The game data.
      */
     static getGame(ip) {
-        if (!Game.games[ip]) {
-            Game.games[ip] = new Game({
+        let game = Game.games.find((g) => g.ip === ip);
+        if (!game) {
+            Game.games.push(game = new Game({
                 ip,
                 players: [],
                 kills: [],
                 goals: [],
                 events: [],
                 teamScore: {}
-            });
+            }));
         }
 
-        return Game.games[ip];
+        return game;
+    }
+
+    //              #     ##                  #   #     #     #
+    //              #    #  #                 #         #
+    //  ###   ##   ###   #      ##   ###    ###  ##    ###   ##     ##   ###
+    // #  #  # ##   #    #     #  #  #  #  #  #   #     #     #    #  #  #  #
+    //  ##   ##     #    #  #  #  #  #  #  #  #   #     #     #    #  #  #  #
+    // #      ##     ##   ##    ##   #  #   ###  ###     ##  ###    ##   #  #
+    //  ###
+    /**
+     * Gets the condition that will end the game.
+     * @returns {string} The condition that will end the game.
+     */
+    getCondition() {
+        let condition = "";
+
+        if (this.settings.scoreLimit) {
+            condition = `${condition}First to ${this.settings.scoreLimit}`;
+
+            if (this.settings.timeLimit) {
+                condition = `${condition}, `;
+            }
+        }
+
+        if (this.settings.timeLimit) {
+            condition = `${condition}${Math.round(this.settings.timeLimit / 60)}:00 time limit`;
+        }
+
+        return condition;
     }
 
     //              #    ###   ##
@@ -112,6 +142,6 @@ class Game {
 }
 
 /**
- * @type {Object<string, Game>}
+ * @type {Game[]}
  */
-Game.games = {};
+Game.games = [];

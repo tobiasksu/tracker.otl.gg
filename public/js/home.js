@@ -1,4 +1,4 @@
-/* global Game, Player, timeago, WebSocketClient */
+/* global Game, GameView, Player, timeago, WebSocketClient */
 
 //  #   #
 //  #   #
@@ -159,7 +159,10 @@ class Home {
         game.kills = kills;
         game.goals = goals;
 
-        // TODO: End Game
+        const el = document.querySelector(`#game-${ip}`);
+        el.parentNode.removeChild(el);
+
+        // TODO: Move game to completed list, expire after an hour.
     }
 
     //                   ##
@@ -293,6 +296,12 @@ class Home {
             blunders: 0,
             connected: data.time
         }));
+
+        document.querySelector("#games").insertAdjacentHTML("beforeend", /* html */`
+            <div class="game" id="game-${ip}">
+                ${GameView.get(game)}
+            </div>
+        `);
     }
 }
 

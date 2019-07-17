@@ -1,5 +1,38 @@
-#notice {
+#games .game {
     padding: 10px;
+    display: grid;
+    grid-template-columns: auto auto;
+    grid-column-gap: 5px;
+    column-gap: 5px;
+    width: 300px;
+}
+
+#games .game .server {
+    grid-column-end: span 2;
+    text-align: center;
+}
+
+#games .game .player {
+    
+}
+
+#games .game .score {
+    text-align: right;
+}
+
+#games .game .time {
+    grid-column-end: span 2;
+    text-align: center;
+}
+
+#games .game .map {
+    grid-column-end: span 2;
+    text-align: center;
+}
+
+#games .game .condition {
+    grid-column-end: span 2;
+    text-align: center;
 }
 
 #browser {

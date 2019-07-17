@@ -23,10 +23,8 @@ class HomeView {
      * @returns {string} An HTML string of the home page.
      */
     static get(games, servers) {
+        // TODO: Refresh browser every 60 seconds.
         return /* html */`
-            <div id="notice">
-                <div class="grey">Note: This page will automatically refresh every 60 seconds.</div>
-            </div>
             <div id="games">
                 ${HomeView.GamesView.get(games)}
             </div>

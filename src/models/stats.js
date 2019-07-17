@@ -108,7 +108,7 @@ class Stats {
 
         await Db.add(ip, game);
 
-        // TODO: End game
+        game.remove();
     }
 
     //                   ##
@@ -277,6 +277,13 @@ class Stats {
             blunders: 0,
             connected: data.time
         }));
+
+        if (game.settings.timeLimit) {
+            game.projectedEnd = new Date();
+            game.projectedEnd.setSeconds = game.projectedEnd.getSeconds() + game.settings.timeLimit;
+        } else {
+            game.startTime = new Date();
+        }
 
         data.server = game.server;
     }

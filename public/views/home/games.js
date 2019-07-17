@@ -24,7 +24,7 @@ class GamesView {
     static get(games) {
         return /* html */`
             ${Object.keys(games).map((s) => /* html */`
-                <div id="game-${games[s].ip}">
+                <div class="game" id="game-${games[s].ip}">
                     ${GamesView.GameView.get(games[s])}
                 </div>
             `).join("")}

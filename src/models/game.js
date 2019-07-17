@@ -1,15 +1,15 @@
 /**
  * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>}} GameData
+ * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>, startTime?: Date, projectedEnd?: Date}} GameData
  */
 
 const Player = require("./player"),
     ServersDb = require("../database/servers");
 
 /**
- * @type {Object<string, Game>}
+ * @type {Game[]}
  */
-const games = {};
+const games = [];
 
 //   ###
 //  #   #
@@ -44,6 +44,8 @@ class Game {
         this.events = data.events;
         this.damage = data.damage;
         this.teamScore = data.teamScore;
+        this.startTime = data.startTime;
+        this.projectedEnd = data.projectedEnd;
     }
 
     //              #     ##   ##    ##
@@ -55,7 +57,7 @@ class Game {
     //  ###
     /**
      * Gets the list of current games.
-     * @returns {Object<string, Game>} The list of games.
+     * @returns {Game[]} The list of games.
      */
     static getAll() {
         return games;
@@ -74,22 +76,24 @@ class Game {
      * @returns {Promise<Game>} The game data.
      */
     static async getGame(ip) {
-        if (!games[ip]) {
-            games[ip] = new Game({
+        let game = games.find((g) => g.ip === ip);
+
+        if (!game) {
+            games.push(game = new Game({
                 ip,
                 players: [],
                 kills: [],
                 goals: [],
                 events: [],
                 teamScore: {}
-            });
+            }));
 
             const server = await ServersDb.getByIp(ip);
 
-            games[ip].setServer(server);
+            game.setServer(server);
         }
 
-        return games[ip];
+        return game;
     }
 
     //              #    ###   ##
@@ -118,6 +122,18 @@ class Game {
         }
 
         return this.players.find((p) => p.name === name);
+    }
+
+    // ###    ##   # #    ##   # #    ##
+    // #  #  # ##  ####  #  #  # #   # ##
+    // #     ##    #  #  #  #  # #   ##
+    // #      ##   #  #   ##    #     ##
+    /**
+     * Removes a game from the list of games.
+     * @returns {void}
+     */
+    remove() {
+        games.splice(games.indexOf(this), 1);
     }
 
     //               #     ##
