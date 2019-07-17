@@ -107,6 +107,8 @@ class Stats {
         game.goals = goals;
 
         await Db.add(ip, game);
+
+        // TODO: End game
     }
 
     //                   ##
@@ -244,9 +246,9 @@ class Stats {
                     await Stats.endGame(ip, data);
                     break;
             }
-        }
 
-        Websocket.broadcast({ip, data});
+            Websocket.broadcast({ip, data});
+        }
     }
 
     //         #                 #     ##
@@ -275,6 +277,8 @@ class Stats {
             blunders: 0,
             connected: data.time
         }));
+
+        data.server = game.server;
     }
 }
 

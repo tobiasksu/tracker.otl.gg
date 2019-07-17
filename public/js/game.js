@@ -1,15 +1,9 @@
+/* global Player */
+
 /**
  * @typedef {import("./player")} Player
  * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>}} GameData
  */
-
-const Player = require("./player"),
-    ServersDb = require("../database/servers");
-
-/**
- * @type {Object<string, Game>}
- */
-const games = {};
 
 //   ###
 //  #   #
@@ -46,21 +40,6 @@ class Game {
         this.teamScore = data.teamScore;
     }
 
-    //              #     ##   ##    ##
-    //              #    #  #   #     #
-    //  ###   ##   ###   #  #   #     #
-    // #  #  # ##   #    ####   #     #
-    //  ##   ##     #    #  #   #     #
-    // #      ##     ##  #  #  ###   ###
-    //  ###
-    /**
-     * Gets the list of current games.
-     * @returns {Object<string, Game>} The list of games.
-     */
-    static getAll() {
-        return games;
-    }
-
     //              #     ##
     //              #    #  #
     //  ###   ##   ###   #      ###  # #    ##
@@ -73,9 +52,9 @@ class Game {
      * @param {string} ip The IP to get the game data for.
      * @returns {Promise<Game>} The game data.
      */
-    static async getGame(ip) {
-        if (!games[ip]) {
-            games[ip] = new Game({
+    static getGame(ip) {
+        if (!Game.games[ip]) {
+            Game.games[ip] = new Game({
                 ip,
                 players: [],
                 kills: [],
@@ -83,13 +62,9 @@ class Game {
                 events: [],
                 teamScore: {}
             });
-
-            const server = await ServersDb.getByIp(ip);
-
-            games[ip].setServer(server);
         }
 
-        return games[ip];
+        return Game.games[ip];
     }
 
     //              #    ###   ##
@@ -136,4 +111,7 @@ class Game {
     }
 }
 
-module.exports = Game;
+/**
+ * @type {Object<string, Game>}
+ */
+Game.games = {};
