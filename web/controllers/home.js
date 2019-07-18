@@ -1,4 +1,5 @@
 const Common = require("../includes/common"),
+    Completed = require("../../src/models/completed"),
     Game = require("../../src/models/game"),
     HomeView = require("../../public/views/home"),
     Servers = require("../../src/models/servers");
@@ -33,7 +34,8 @@ class Home {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const games = JSON.parse(JSON.stringify(Game.getAll())),
+        const completed = await Completed.getRecent(),
+            games = JSON.parse(JSON.stringify(Game.getAll())),
             servers = (await Servers.getVisible()).filter((s) => s.name);
 
         games.forEach((game) => {
@@ -61,7 +63,7 @@ class Home {
             <script src="/js/game.js"></script>
             <script src="/js/home.js"></script>
             <meta http-equiv="refresh" content="60" />
-        `, HomeView.get(games, servers), req));
+        `, HomeView.get(completed, games, servers), req));
     }
 }
 

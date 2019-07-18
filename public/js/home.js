@@ -153,8 +153,8 @@ class Home {
         const {start, end, damage, kills, goals} = data,
             game = Game.getGame(ip);
 
-        game.start = start;
-        game.end = end;
+        game.start = new Date(start);
+        game.end = new Date(end);
         game.damage = damage;
         game.kills = kills;
         game.goals = goals;

@@ -18,13 +18,17 @@ class HomeView {
     //  ###
     /**
      * Gets the rendered home page template.
-     * @param {object[]} games The games to display.
+     * @param {object[]} completed The completed games to display.
+     * @param {object[]} games The in-progress games to display.
      * @param {object[]} servers The servers to display.
      * @returns {string} An HTML string of the home page.
      */
-    static get(games, servers) {
+    static get(completed, games, servers) {
         // TODO: Refresh browser every 60 seconds.
         return /* html */`
+            <div id="completed">
+                ${HomeView.CompletedGamesView.get(completed)}
+            </div>
             <div id="games">
                 ${HomeView.GamesView.get(games)}
             </div>
@@ -33,11 +37,19 @@ class HomeView {
             </div>
             <script>
                 Home.games = ${JSON.stringify(games)};
+                ${completed.map((game) => /* html */`
+                    setTimeout(() => {
+                        const el = document.querySelector("#completed-${game.id}");
+                        el.parentNode.removeChild(el);
+                    }, ${game.remaining})
+                `).join("")}
             </script>
         `;
     }
 }
 
+// @ts-ignore
+HomeView.CompletedGamesView = typeof LogView === "undefined" ? require("./home/completedGames") : GamesView; // eslint-disable-line no-undef
 // @ts-ignore
 HomeView.GamesView = typeof LogView === "undefined" ? require("./home/games") : GamesView; // eslint-disable-line no-undef
 // @ts-ignore
