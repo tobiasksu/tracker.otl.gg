@@ -1,4 +1,5 @@
-const Db = require("../database/servers");
+const Db = require("../database/servers"),
+    Websocket = require("../websocket");
 
 //   ###
 //  #   #
@@ -65,6 +66,13 @@ class Servers {
         });
 
         server.lastSeen = new Date();
+
+        Websocket.broadcast({
+            name: "Server",
+            ip,
+            data: visible ? server : void 0,
+            visible
+        });
 
         await Db.update(server, visible);
     }

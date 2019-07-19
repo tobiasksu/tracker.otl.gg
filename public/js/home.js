@@ -1,4 +1,4 @@
-/* global Game, GameView, Player, timeago, WebSocketClient */
+/* global Common, CompletedGameView, Game, GameView, Player, ServersView, timeago, WebSocketClient */
 
 //  #   #
 //  #   #
@@ -42,28 +42,46 @@ class Home {
     static onmessage(message) {
         const {ip, data} = JSON.parse(message);
 
-        switch (data.type) {
-            case "StartGame":
-                Home.startGame(ip, data);
+        switch (data.name) {
+            case "Stats":
+                switch (data.type) {
+                    case "StartGame":
+                        Home.startGame(ip, data);
+                        break;
+                    case "Kill":
+                        Home.kill(ip, data);
+                        break;
+                    case "Goal":
+                        Home.goal(ip, data);
+                        break;
+                    case "Blunder":
+                        Home.blunder(ip, data);
+                        break;
+                    case "Connect":
+                        Home.connect(ip, data);
+                        break;
+                    case "Disconect":
+                        Home.disconnect(ip, data);
+                        break;
+                    case "EndGame":
+                        Home.endGame(ip, data);
+                        break;
+                }
                 break;
-            case "Kill":
-                Home.kill(ip, data);
+            case "Server": {
+                const oldServer = Home.servers.find((s) => s.ip === data.ip);
+                if (oldServer) {
+                    Home.servers.splice(Home.servers.indexOf(oldServer), 1);
+                }
+
+                if (data.visible) {
+                    Home.servers.push(data.data);
+                }
+
+                document.findElementById("browser").innerHTML = ServersView.get(Home.servers);
+
                 break;
-            case "Goal":
-                Home.goal(ip, data);
-                break;
-            case "Blunder":
-                Home.blunder(ip, data);
-                break;
-            case "Connect":
-                Home.connect(ip, data);
-                break;
-            case "Disconect":
-                Home.disconnect(ip, data);
-                break;
-            case "EndGame":
-                Home.endGame(ip, data);
-                break;
+            }
         }
     }
 
@@ -77,7 +95,7 @@ class Home {
      * Processes the blunder stat.
      * @param {string} ip The IP address of the server to update.
      * @param {{time: number, scorer: string, scorerTeam: string}} data The blunder data.
-     * @returns {Promise} A promise that resolves when the stat has been processed.
+     * @returns {void}
      */
     static blunder(ip, data) {
         const {scorer, scorerTeam} = data,
@@ -111,7 +129,7 @@ class Home {
      * Processes the connect stat.
      * @param {string} ip The IP address of the server to update.
      * @param {{time: number, player: string}} data The connect data.
-     * @returns {Promise} A promise that resolves when the stat has been processed.
+     * @returns {void}
      */
     static connect(ip, data) {
         const game = Game.getGame(ip);
@@ -129,7 +147,7 @@ class Home {
      * Processes the disconnect stat.
      * @param {string} ip The IP address of the server to update.
      * @param {{time: number, player: string}} data The connect data.
-     * @returns {Promise} A promise that resolves when the stat has been processed.
+     * @returns {void}
      */
     static disconnect(ip, data) {
         const game = Game.getGame(ip);
@@ -147,7 +165,7 @@ class Home {
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
      * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[]}} data The end game data.
-     * @returns {Promise} A promise that resolves when the stat has been processed.
+     * @returns {void}
      */
     static endGame(ip, data) {
         const {start, end, damage, kills, goals} = data,
@@ -159,10 +177,23 @@ class Home {
         game.kills = kills;
         game.goals = goals;
 
-        const el = document.querySelector(`#game-${ip}`);
-        el.parentNode.removeChild(el);
+        const gameEl = document.querySelector(`#game-${game.id}`);
+        gameEl.parentNode.removeChild(gameEl);
 
-        // TODO: Move game to completed list, expire after an hour.
+        const gameId = `#completed-${Common.uuidv4()}`;
+
+        document.querySelector("#completed").insertAdjacentHTML("beforeend", /* html */`
+            <div class="game" id="${gameId}">
+                ${CompletedGameView.get(game)}
+            </div>
+        `);
+
+        game.remove();
+
+        setTimeout(() => {
+            const completedEl = document.querySelector(gameId);
+            completedEl.parentNode.removeChild(completedEl);
+        }, 3600000);
     }
 
     //                   ##
@@ -176,7 +207,7 @@ class Home {
      * Processes the goal stat.
      * @param {string} ip The IP address of the server to update.
      * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, assistedTeam: string}} data The goal data.
-     * @returns {Promise} A promise that resolves when the stat has been processed.
+     * @returns {void}
      */
     static goal(ip, data) {
         const {scorer, scorerTeam, assisted, assistedTeam} = data,
@@ -215,7 +246,7 @@ class Home {
      * Processes the kill stat.
      * @param {string} ip The IP address of the server to update.
      * @param {{time: number, attacker: string, attackerTeam: string, defender: string, defenderTeam: string, assisted: string, assistedTeam: string, weapon: string}} data The kill data.
-     * @returns {Promise} A promise that resolves when the stat has been processed.
+     * @returns {void}
      */
     static kill(ip, data) {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data,

@@ -43,6 +43,7 @@
         ],
         "newline-per-chained-call": "off",
         "no-await-in-loop": "off",
+        "no-bitwise": "off",
         "no-confusing-arrow": "off",
         "no-console": "off",
         "no-continue": "off",
@@ -111,7 +112,7 @@
         {
             "files": ["public/**/*.js"],
             "env": {
-                "es6": false,
+                "es6": true,
                 "node": false,
                 "browser": true
             },

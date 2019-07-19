@@ -24,7 +24,6 @@ class HomeView {
      * @returns {string} An HTML string of the home page.
      */
     static get(completed, games, servers) {
-        // TODO: Refresh browser every 60 seconds.
         return /* html */`
             <div id="completed">
                 ${HomeView.CompletedGamesView.get(completed)}
@@ -36,7 +35,11 @@ class HomeView {
                 ${HomeView.ServersView.get(servers)}
             </div>
             <script>
+                ${games.map((game) => /* html */`
+                    Game.games.push(new Game(${JSON.stringify(game)}));
+                `).join("")}
                 Home.games = ${JSON.stringify(games)};
+                Home.servers = ${JSON.stringify(servers)};
                 ${completed.map((game) => /* html */`
                     setTimeout(() => {
                         const el = document.querySelector("#completed-${game.id}");

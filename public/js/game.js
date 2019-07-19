@@ -50,7 +50,7 @@ class Game {
     /**
      * Gets the game data for the specified IP, or creates it if it doesn't exit.
      * @param {string} ip The IP to get the game data for.
-     * @returns {Promise<Game>} The game data.
+     * @returns {Game} The game data.
      */
     static getGame(ip) {
         let game = Game.games.find((g) => g.ip === ip);
@@ -123,6 +123,18 @@ class Game {
         }
 
         return this.players.find((p) => p.name === name);
+    }
+
+    // ###    ##   # #    ##   # #    ##
+    // #  #  # ##  ####  #  #  # #   # ##
+    // #     ##    #  #  #  #  # #   ##
+    // #      ##   #  #   ##    #     ##
+    /**
+     * Removes a game from the list of games.
+     * @returns {void}
+     */
+    remove() {
+        Game.games.splice(Game.games.indexOf(this), 1);
     }
 
     //               #     ##
