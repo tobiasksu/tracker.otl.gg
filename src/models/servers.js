@@ -68,10 +68,12 @@ class Servers {
         server.lastSeen = new Date();
 
         Websocket.broadcast({
-            name: "Server",
             ip,
-            data: visible ? server : void 0,
-            visible
+            data: {
+                name: "Server",
+                server: visible ? server : void 0,
+                visible
+            }
         });
 
         await Db.update(server, visible);

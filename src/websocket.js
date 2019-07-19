@@ -4,8 +4,13 @@
 
 const http = require("http"),
     Ws = require("ws"),
-    Wss = Ws.Server;
+    Wss = Ws.Server,
 
+    gameMatch = /\/game\/(?<ip>.*)/;
+
+/**
+ * @type {Ws.Server}
+ */
 let wss;
 
 //  #   #         #                           #              #
@@ -26,7 +31,7 @@ class Websocket {
     // #  #  #     #  #  # ##  #  #  #     # ##    ##    #
     // ###   #      ##    # #   ###   ##    # #  ###      ##
     /**
-     * Broadcasts a message to every connected websocket client.
+     * Broadcasts a message to qualifying connected websocket clients.
      * @param {object} message The message to send.
      * @returns {void}
      */
@@ -34,7 +39,15 @@ class Websocket {
         message = JSON.stringify(message);
 
         wss.clients.forEach((client) => {
-            client.send(message);
+            if (client.url === "/") {
+                client.send(message);
+            } else if (gameMatch.test(client.url)) {
+                const {groups: {ip}} = gameMatch.exec(client.url);
+
+                if (message.ip === ip) {
+                    client.send(message);
+                }
+            }
         });
     }
 

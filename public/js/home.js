@@ -69,13 +69,13 @@ class Home {
                 }
                 break;
             case "Server": {
-                const oldServer = Home.servers.find((s) => s.ip === data.ip);
+                const oldServer = Home.servers.find((s) => s.ip === ip);
                 if (oldServer) {
                     Home.servers.splice(Home.servers.indexOf(oldServer), 1);
                 }
 
                 if (data.visible) {
-                    Home.servers.push(data.data);
+                    Home.servers.push(data.server);
                 }
 
                 document.findElementById("browser").innerHTML = ServersView.get(Home.servers);
