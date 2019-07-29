@@ -23,15 +23,12 @@ class Stats {
     /**
      * Processes the blunder stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, scorer: string, scorerTeam: string}} data The blunder data.
+     * @param {object} data The blunder data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async blunder(ip, data) {
         const {scorer, scorerTeam} = data,
             game = await Game.getGame(ip);
-
-        game.events.push(data);
-        game.goals.push(data);
 
         const scorerPlayer = game.getPlayer(scorer);
 
@@ -46,6 +43,10 @@ class Stats {
         } else {
             game.teamScore[otherTeam] = 1;
         }
+
+        game.goals.push(data);
+        data.description = `BLUNDER! ${scorer} own goals for ${otherTeam}!`;
+        game.events.push(data);
     }
 
     //                                      #
@@ -57,12 +58,13 @@ class Stats {
     /**
      * Processes the connect stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, player: string}} data The connect data.
+     * @param {object} data The connect data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async connect(ip, data) {
         const game = await Game.getGame(ip);
 
+        data.description = `${data.player} connected.`;
         game.events.push(data);
     }
 
@@ -75,12 +77,13 @@ class Stats {
     /**
      * Processes the disconnect stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, player: string}} data The connect data.
+     * @param {object} data The connect data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async disconnect(ip, data) {
         const game = await Game.getGame(ip);
 
+        data.description = `${data.player} disconnected.`;
         game.events.push(data);
     }
 
@@ -128,8 +131,6 @@ class Stats {
         const {scorer, scorerTeam, assisted, assistedTeam} = data,
             game = await Game.getGame(ip);
 
-        game.events.push(data);
-        game.goals.push(data);
 
         const scorerPlayer = game.getPlayer(scorer),
             assistedPlayer = game.getPlayer(assisted);
@@ -149,6 +150,10 @@ class Stats {
         } else {
             game.teamScore[scorerTeam] = 1;
         }
+
+        game.goals.push(data);
+        data.description = `GOAL! ${scorer} scored for ${otherTeam}! Assisted by ${assisted}.`;
+        game.events.push(data);
     }
 
     // #      #    ##    ##
@@ -164,11 +169,8 @@ class Stats {
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async kill(ip, data) {
-        const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data,
+        const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam, weapon} = data,
             game = await Game.getGame(ip);
-
-        game.events.push(data);
-        game.kills.push(data);
 
         const attackerPlayer = game.getPlayer(attacker),
             defenderPlayer = game.getPlayer(defender),
@@ -184,7 +186,7 @@ class Stats {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
-            if (attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]--;
                 } else {
@@ -198,7 +200,7 @@ class Stats {
                 assistedPlayer.assists++;
             }
 
-            if (attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]++;
                 } else {
@@ -206,6 +208,10 @@ class Stats {
                 }
             }
         }
+
+        game.kills.push(data);
+        data.description = `${attacker} killed ${defender} with ${weapon}.${assisted ? ` Assisted by ${assisted}.` : ""}`;
+        game.events.push(data);
     }
 
     //                                              ##    #           #
@@ -286,6 +292,7 @@ class Stats {
         }
 
         data.server = game.server;
+        data.condition = Game.getCondition(game);
     }
 }
 

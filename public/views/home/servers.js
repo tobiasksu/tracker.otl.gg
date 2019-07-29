@@ -38,7 +38,7 @@ class ServersView {
 }
 
 // @ts-ignore
-ServersView.ServerView = typeof LogView === "undefined" ? require("./server") : ServerView; // eslint-disable-line no-undef
+ServersView.ServerView = typeof ServerView === "undefined" ? require("./server") : ServerView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = ServersView; // eslint-disable-line no-undef

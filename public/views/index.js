@@ -54,7 +54,9 @@ class IndexView {
                             </ol>
                         </div>
                         <div id="header">Overload Game Browser</div>
-                        ${html}
+                        <div id="body">
+                            ${html}
+                        </div>
                         <div id="copyright">
                             <div class="left">
                                 Website Version ${version}, &copy;${+year > 2019 ? "2019-" : ""}${year} roncli Productions<br />
@@ -71,9 +73,6 @@ class IndexView {
         `;
     }
 }
-
-// @ts-ignore
-IndexView.Common = typeof Common === "undefined" ? require("../../web/includes/common") : Common; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = IndexView; // eslint-disable-line no-undef

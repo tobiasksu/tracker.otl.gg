@@ -1,9 +1,4 @@
-/* global Player */
-
-/**
- * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>}} GameData
- */
+/* global DetailsView, EventsView, PlayersView, WebSocketClient */
 
 //   ###
 //  #   #
@@ -13,147 +8,257 @@
 //  #   #  #   #  # # #  #
 //   ###    ####  #   #   ###
 /**
- * A class that represents a game.
+ * A class that provides functions for the game page.
  */
 class Game {
-    //                           #                       #
-    //                           #                       #
-    //  ##    ##   ###    ###   ###   ###   #  #   ##   ###    ##   ###
-    // #     #  #  #  #  ##      #    #  #  #  #  #      #    #  #  #  #
-    // #     #  #  #  #    ##    #    #     #  #  #      #    #  #  #
-    //  ##    ##   #  #  ###      ##  #      ###   ##     ##   ##   #
+    // ###    ##   #  #   ##                #                 #    #                    #           #
+    // #  #  #  #  ####  #  #               #                 #    #                    #           #
+    // #  #  #  #  ####  #      ##   ###   ###    ##   ###   ###   #      ##    ###   ###   ##    ###
+    // #  #  #  #  #  #  #     #  #  #  #   #    # ##  #  #   #    #     #  #  #  #  #  #  # ##  #  #
+    // #  #  #  #  #  #  #  #  #  #  #  #   #    ##    #  #   #    #     #  #  # ##  #  #  ##    #  #
+    // ###    ##   #  #   ##    ##   #  #    ##   ##   #  #    ##  ####   ##    # #   ###   ##    ###
     /**
-     * Creates a new game from the data provided.
-     * @param {GameData} data The data to create the game with.
+     * Makes sure all timeago fields are rendered and starts the websocket.
+     * @returns {void}
      */
-    constructor(data) {
-        this.ip = data.ip;
-        this.settings = data.settings;
-        this.server = data.server;
-        this.start = data.start;
-        this.end = data.end;
-        this.players = data.players;
-        this.kills = data.kills;
-        this.goals = data.goals;
-        this.events = data.events;
-        this.damage = data.damage;
-        this.teamScore = data.teamScore;
+    static DOMContentLoaded() {
+        Game.ws = new WebSocketClient();
+        Game.ws.onmessage = Game.onmessage;
+        Game.ws.open(window.location.protocol + "//" + window.location.host + "/game/" + Game.game.ip);
     }
 
-    //              #     ##
-    //              #    #  #
-    //  ###   ##   ###   #      ###  # #    ##
-    // #  #  # ##   #    # ##  #  #  ####  # ##
-    //  ##   ##     #    #  #  # ##  #  #  ##
-    // #      ##     ##   ###   # #  #  #   ##
-    //  ###
+    //  ##   ###   # #    ##    ###    ###    ###   ###   ##
+    // #  #  #  #  ####  # ##  ##     ##     #  #  #  #  # ##
+    // #  #  #  #  #  #  ##      ##     ##   # ##   ##   ##
+    //  ##   #  #  #  #   ##   ###    ###     # #  #      ##
+    //                                              ###
     /**
-     * Gets the game data for the specified IP, or creates it if it doesn't exit.
-     * @param {string} ip The IP to get the game data for.
-     * @returns {Game} The game data.
+     * Handles incoming messages.
+     * @param {string} message The data received.
+     * @returns {void}
      */
-    static getGame(ip) {
-        let game = Game.games.find((g) => g.ip === ip);
-        if (!game) {
-            Game.games.push(game = new Game({
-                ip,
-                players: [],
-                kills: [],
-                goals: [],
-                events: [],
-                teamScore: {}
-            }));
+    static onmessage(message) {
+        const {data} = JSON.parse(message);
+
+        switch (data.name) {
+            case "Stats": {
+                switch (data.type) {
+                    case "Kill":
+                        Game.kill(data);
+                        break;
+                    case "Goal":
+                        Game.goal(data);
+                        break;
+                    case "Blunder":
+                        Game.blunder(data);
+                        break;
+                    case "Connect":
+                        Game.connect(data);
+                        break;
+                    case "Disconect":
+                        Game.disconnect(data);
+                        break;
+                    case "EndGame":
+                        Game.endGame(data);
+                        break;
+                }
+
+                document.getElementById("events").innerHTML = EventsView.get(Game.game);
+
+                break;
+            }
+        }
+    }
+
+    // #     ##                   #
+    // #      #                   #
+    // ###    #    #  #  ###    ###   ##   ###
+    // #  #   #    #  #  #  #  #  #  # ##  #  #
+    // #  #   #    #  #  #  #  #  #  ##    #
+    // ###   ###    ###  #  #   ###   ##   #
+    /**
+     * Processes the blunder stat.
+     * @param {{time: number, scorer: string, scorerTeam: string}} data The blunder data.
+     * @returns {void}
+     */
+    static blunder(data) {
+        const {scorer, scorerTeam} = data;
+
+        Game.game.events.push(data);
+        Game.game.goals.push(data);
+
+        const scorerPlayer = Game.game.getPlayer(scorer);
+
+        scorerPlayer.team = scorerTeam;
+
+        scorerPlayer.blunders++;
+
+        const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+
+        if (Game.game.teamScore[otherTeam]) {
+            Game.game.teamScore[otherTeam]++;
+        } else {
+            Game.game.teamScore[otherTeam] = 1;
         }
 
-        return game;
+        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
     }
 
-    //              #     ##                  #   #     #     #
-    //              #    #  #                 #         #
-    //  ###   ##   ###   #      ##   ###    ###  ##    ###   ##     ##   ###
-    // #  #  # ##   #    #     #  #  #  #  #  #   #     #     #    #  #  #  #
-    //  ##   ##     #    #  #  #  #  #  #  #  #   #     #     #    #  #  #  #
-    // #      ##     ##   ##    ##   #  #   ###  ###     ##  ###    ##   #  #
+    //                                      #
+    //                                      #
+    //  ##    ##   ###   ###    ##    ##   ###
+    // #     #  #  #  #  #  #  # ##  #      #
+    // #     #  #  #  #  #  #  ##    #      #
+    //  ##    ##   #  #  #  #   ##    ##     ##
+    /**
+     * Processes the connect stat.
+     * @param {{time: number, player: string}} data The connect data.
+     * @returns {void}
+     */
+    static connect(data) {
+        Game.game.events.push(data);
+    }
+
+    //    #   #                                                #
+    //    #                                                    #
+    //  ###  ##     ###    ##    ##   ###   ###    ##    ##   ###
+    // #  #   #    ##     #     #  #  #  #  #  #  # ##  #      #
+    // #  #   #      ##   #     #  #  #  #  #  #  ##    #      #
+    //  ###  ###   ###     ##    ##   #  #  #  #   ##    ##     ##
+    /**
+     * Processes the disconnect stat.
+     * @param {{time: number, player: string}} data The connect data.
+     * @returns {void}
+     */
+    static disconnect(data) {
+        Game.game.events.push(data);
+    }
+
+    //                #   ##
+    //                #  #  #
+    //  ##   ###    ###  #      ###  # #    ##
+    // # ##  #  #  #  #  # ##  #  #  ####  # ##
+    // ##    #  #  #  #  #  #  # ##  #  #  ##
+    //  ##   #  #   ###   ###   # #  #  #   ##
+    /**
+     * Processes the end game stat.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[]}} data The end game data.
+     * @returns {void}
+     */
+    static endGame(data) {
+        const {start, end, damage, kills, goals} = data;
+
+        Game.game.start = new Date(start);
+        Game.game.end = new Date(end);
+        Game.game.damage = damage;
+        Game.game.kills = kills;
+        Game.game.goals = goals;
+
+        Game.ws.close();
+
+        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
+    }
+
+    //                   ##
+    //                    #
+    //  ###   ##    ###   #
+    // #  #  #  #  #  #   #
+    //  ##   #  #  # ##   #
+    // #      ##    # #  ###
     //  ###
     /**
-     * Gets the condition that will end the game.
-     * @returns {string} The condition that will end the game.
+     * Processes the goal stat.
+     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, assistedTeam: string}} data The goal data.
+     * @returns {void}
      */
-    getCondition() {
-        let condition = "";
+    static goal(data) {
+        const {scorer, scorerTeam, assisted, assistedTeam} = data;
 
-        if (this.settings.scoreLimit) {
-            condition = `${condition}First to ${this.settings.scoreLimit}`;
+        Game.game.events.push(data);
+        Game.game.goals.push(data);
 
-            if (this.settings.timeLimit) {
-                condition = `${condition}, `;
+        const scorerPlayer = Game.game.getPlayer(scorer),
+            assistedPlayer = Game.game.getPlayer(assisted);
+
+        scorerPlayer.team = scorerTeam;
+        if (assistedPlayer) {
+            assistedPlayer.team = assistedTeam;
+        }
+
+        scorerPlayer.goals++;
+        if (assistedPlayer) {
+            assistedPlayer.goalAssists++;
+        }
+
+        if (Game.game.teamScore[scorerTeam]) {
+            Game.game.teamScore[scorerTeam]++;
+        } else {
+            Game.game.teamScore[scorerTeam] = 1;
+        }
+
+        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
+    }
+
+    // #      #    ##    ##
+    // #            #     #
+    // # #   ##     #     #
+    // ##     #     #     #
+    // # #    #     #     #
+    // #  #  ###   ###   ###
+    /**
+     * Processes the kill stat.
+     * @param {{time: number, attacker: string, attackerTeam: string, defender: string, defenderTeam: string, assisted: string, assistedTeam: string, weapon: string}} data The kill data.
+     * @returns {void}
+     */
+    static kill(data) {
+        const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data;
+
+        Game.game.events.push(data);
+        Game.game.kills.push(data);
+
+        const attackerPlayer = Game.game.getPlayer(attacker),
+            defenderPlayer = Game.game.getPlayer(defender),
+            assistedPlayer = Game.game.getPlayer(assisted);
+
+        attackerPlayer.team = attackerTeam;
+        defenderPlayer.team = defenderTeam;
+        if (assistedPlayer) {
+            assistedPlayer.team = assistedTeam;
+        }
+
+        if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam) {
+            attackerPlayer.kills--;
+            defenderPlayer.deaths++;
+
+            if ((!Game.game.settings || Game.game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+                if (Game.game.teamScore[attackerTeam]) {
+                    Game.game.teamScore[attackerTeam]--;
+                } else {
+                    Game.game.teamScore[attackerTeam] = -1;
+                }
+            }
+        } else {
+            attackerPlayer.kills++;
+            defenderPlayer.deaths++;
+            if (assistedPlayer) {
+                assistedPlayer.assists++;
+            }
+
+            if ((!Game.game.settings || Game.game.settings.matchMode !== "MONSTERBALL") && Game.game.settings.matchMode !== "MONSTERBALL" && attackerTeam && attackerTeam !== "ANARCHY") {
+                if (Game.game.teamScore[attackerTeam]) {
+                    Game.game.teamScore[attackerTeam]++;
+                } else {
+                    Game.game.teamScore[attackerTeam] = 1;
+                }
             }
         }
 
-        if (this.settings.timeLimit) {
-            condition = `${condition}${Math.round(this.settings.timeLimit / 60)}:00 time limit`;
-        }
-
-        return condition;
-    }
-
-    //              #    ###   ##
-    //              #    #  #   #
-    //  ###   ##   ###   #  #   #     ###  #  #   ##   ###
-    // #  #  # ##   #    ###    #    #  #  #  #  # ##  #  #
-    //  ##   ##     #    #      #    # ##   # #  ##    #
-    // #      ##     ##  #     ###    # #    #    ##   #
-    //  ###                                 #
-    /**
-     * Retrieves a player from a game.
-     * @param {string} name The name of the player.
-     * @returns {Player} The player.
-     */
-    getPlayer(name) {
-        if (!this.players.find((p) => p.name === name)) {
-            this.players.push(new Player({
-                name,
-                kills: 0,
-                assists: 0,
-                deaths: 0,
-                goals: 0,
-                goalAssists: 0,
-                blunders: 0
-            }));
-        }
-
-        return this.players.find((p) => p.name === name);
-    }
-
-    // ###    ##   # #    ##   # #    ##
-    // #  #  # ##  ####  #  #  # #   # ##
-    // #     ##    #  #  #  #  # #   ##
-    // #      ##   #  #   ##    #     ##
-    /**
-     * Removes a game from the list of games.
-     * @returns {void}
-     */
-    remove() {
-        Game.games.splice(Game.games.indexOf(this), 1);
-    }
-
-    //               #     ##
-    //               #    #  #
-    //  ###    ##   ###    #     ##   ###   # #    ##   ###
-    // ##     # ##   #      #   # ##  #  #  # #   # ##  #  #
-    //   ##   ##     #    #  #  ##    #     # #   ##    #
-    // ###     ##     ##   ##    ##   #      #     ##   #
-    /**
-     * Sets the server for the game.
-     * @param {string} server The server.
-     * @returns {void}
-     */
-    setServer(server) {
-        this.server = server;
+        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
     }
 }
 
-/**
- * @type {Game[]}
- */
-Game.games = [];
+document.addEventListener("DOMContentLoaded", Game.DOMContentLoaded);

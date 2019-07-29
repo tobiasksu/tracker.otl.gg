@@ -33,7 +33,7 @@ class GamesView {
 }
 
 // @ts-ignore
-GamesView.GameView = typeof LogView === "undefined" ? require("./game") : GameView; // eslint-disable-line no-undef
+GamesView.GameView = typeof GameView === "undefined" ? require("./game") : GameView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = GamesView; // eslint-disable-line no-undef

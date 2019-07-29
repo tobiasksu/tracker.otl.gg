@@ -38,7 +38,6 @@ class HomeView {
                 ${games.map((game) => /* html */`
                     Game.games.push(new Game(${JSON.stringify(game)}));
                 `).join("")}
-                Home.games = ${JSON.stringify(games)};
                 Home.servers = ${JSON.stringify(servers)};
                 ${completed.map((game) => /* html */`
                     setTimeout(() => {
@@ -52,11 +51,11 @@ class HomeView {
 }
 
 // @ts-ignore
-HomeView.CompletedGamesView = typeof LogView === "undefined" ? require("./home/completedGames") : GamesView; // eslint-disable-line no-undef
+HomeView.CompletedGamesView = typeof CompletedGamesView === "undefined" ? require("./home/completedGames") : CompletedGamesView; // eslint-disable-line no-undef
 // @ts-ignore
-HomeView.GamesView = typeof LogView === "undefined" ? require("./home/games") : GamesView; // eslint-disable-line no-undef
+HomeView.GamesView = typeof GamesView === "undefined" ? require("./home/games") : GamesView; // eslint-disable-line no-undef
 // @ts-ignore
-HomeView.ServersView = typeof LogView === "undefined" ? require("./home/servers") : ServersView; // eslint-disable-line no-undef
+HomeView.ServersView = typeof ServersView === "undefined" ? require("./home/servers") : ServersView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = HomeView; // eslint-disable-line no-undef

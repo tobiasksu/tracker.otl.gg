@@ -269,7 +269,7 @@ class Home {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
-            if (attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]--;
                 } else {
@@ -283,7 +283,7 @@ class Home {
                 assistedPlayer.assists++;
             }
 
-            if (attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]++;
                 } else {

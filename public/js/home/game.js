@@ -1,15 +1,9 @@
+/* global Player */
+
 /**
  * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>, startTime?: Date, projectedEnd?: Date}} GameData
+ * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>}} GameData
  */
-
-const Player = require("./player"),
-    ServersDb = require("../database/servers");
-
-/**
- * @type {Game[]}
- */
-const games = [];
 
 //   ###
 //  #   #
@@ -44,39 +38,6 @@ class Game {
         this.events = data.events;
         this.damage = data.damage;
         this.teamScore = data.teamScore;
-        this.startTime = data.startTime;
-        this.projectedEnd = data.projectedEnd;
-    }
-
-    //              #     ##   ##    ##
-    //              #    #  #   #     #
-    //  ###   ##   ###   #  #   #     #
-    // #  #  # ##   #    ####   #     #
-    //  ##   ##     #    #  #   #     #
-    // #      ##     ##  #  #  ###   ###
-    //  ###
-    /**
-     * Gets the list of current games.
-     * @returns {Game[]} The list of games.
-     */
-    static getAll() {
-        return games;
-    }
-
-    //              #    ###         ###
-    //              #    #  #         #
-    //  ###   ##   ###   ###   #  #   #    ###
-    // #  #  # ##   #    #  #  #  #   #    #  #
-    //  ##   ##     #    #  #   # #   #    #  #
-    // #      ##     ##  ###     #   ###   ###
-    //  ###                     #          #
-    /**
-     * Gets the game data for the specified IP.
-     * @param {string} ip The IP to get the game data for.
-     * @returns {Game} The game data.
-     */
-    static getByIp(ip) {
-        return games.find((g) => g.ip === ip);
     }
 
     //              #     ##
@@ -89,13 +50,12 @@ class Game {
     /**
      * Gets the game data for the specified IP, or creates it if it doesn't exit.
      * @param {string} ip The IP to get the game data for.
-     * @returns {Promise<Game>} The game data.
+     * @returns {Game} The game data.
      */
-    static async getGame(ip) {
-        let game = games.find((g) => g.ip === ip);
-
+    static getGame(ip) {
+        let game = Game.games.find((g) => g.ip === ip);
         if (!game) {
-            games.push(game = new Game({
+            Game.games.push(game = new Game({
                 ip,
                 players: [],
                 kills: [],
@@ -103,41 +63,9 @@ class Game {
                 events: [],
                 teamScore: {}
             }));
-
-            game.server = await ServersDb.getByIp(ip);
         }
 
         return game;
-    }
-
-    //              #     ##                  #   #     #     #
-    //              #    #  #                 #         #
-    //  ###   ##   ###   #      ##   ###    ###  ##    ###   ##     ##   ###
-    // #  #  # ##   #    #     #  #  #  #  #  #   #     #     #    #  #  #  #
-    //  ##   ##     #    #  #  #  #  #  #  #  #   #     #     #    #  #  #  #
-    // #      ##     ##   ##    ##   #  #   ###  ###     ##  ###    ##   #  #
-    //  ###
-    /**
-     * Gets the condition that will end the game.
-     * @param {object} game The game to get the condition for.
-     * @returns {string} The condition that will end the game.
-     */
-    static getCondition(game) {
-        let condition = "";
-
-        if (game.settings.scoreLimit) {
-            condition = `${condition}First to ${game.settings.scoreLimit}`;
-
-            if (game.settings.timeLimit) {
-                condition = `${condition}, `;
-            }
-        }
-
-        if (game.settings.timeLimit) {
-            condition = `${condition}${Math.round(game.settings.timeLimit / 60)}:00 time limit`;
-        }
-
-        return condition;
     }
 
     //              #    ###   ##
@@ -177,8 +105,26 @@ class Game {
      * @returns {void}
      */
     remove() {
-        games.splice(games.indexOf(this), 1);
+        Game.games.splice(Game.games.indexOf(this), 1);
+    }
+
+    //               #     ##
+    //               #    #  #
+    //  ###    ##   ###    #     ##   ###   # #    ##   ###
+    // ##     # ##   #      #   # ##  #  #  # #   # ##  #  #
+    //   ##   ##     #    #  #  ##    #     # #   ##    #
+    // ###     ##     ##   ##    ##   #      #     ##   #
+    /**
+     * Sets the server for the game.
+     * @param {string} server The server.
+     * @returns {void}
+     */
+    setServer(server) {
+        this.server = server;
     }
 }
 
-module.exports = Game;
+/**
+ * @type {Game[]}
+ */
+Game.games = [];

@@ -1,14 +1,14 @@
-//   ###                        #   #    #
-//  #   #                       #   #
-//  #       ###   ## #    ###   #   #   ##     ###   #   #
-//  #          #  # # #  #   #   # #     #    #   #  #   #
-//  #  ##   ####  # # #  #####   # #     #    #####  # # #
-//  #   #  #   #  # # #  #       # #     #    #      # # #
-//   ###    ####  #   #   ###     #     ###    ###    # #
+//  ####           #              #     ##           #   #    #
+//   #  #          #                     #           #   #
+//   #  #   ###   ####    ###    ##      #     ###   #   #   ##     ###   #   #
+//   #  #  #   #   #         #    #      #    #       # #     #    #   #  #   #
+//   #  #  #####   #      ####    #      #     ###    # #     #    #####  # # #
+//   #  #  #       #  #  #   #    #      #        #   # #     #    #      # # #
+//  ####    ###     ##    ####   ###    ###   ####     #     ###    ###    # #
 /**
- * A class that represents the game view.
+ * A class that represetns the game details view.
  */
-class GameView {
+class DetailsView {
     //              #
     //              #
     //  ###   ##   ###
@@ -17,9 +17,9 @@ class GameView {
     // #      ##     ##
     //  ###
     /**
-     * Gets the rendered game template.
+     * Gets the rendered game page template.
      * @param {object} game The game to display.
-     * @returns {string} An HTML string of the game.
+     * @returns {string} An HTML string of the game page.
      */
     static get(game) {
         let scores;
@@ -40,9 +40,9 @@ class GameView {
         }
 
         return /* html */`
-            <div class="server">${GameView.Common.htmlEncode(game.server || game.ip)}</div>
+            <div class="server">${DetailsView.Common.htmlEncode(game.server || game.ip)}</div>
             ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((score, player) => /* html */`
-                <div class="player">${GameView.Common.htmlEncode(player)}</div>
+                <div class="player">${DetailsView.Common.htmlEncode(player)}</div>
                 <div class="score">${score}</div>
             `).join("")}
             <div class="time">
@@ -52,15 +52,15 @@ class GameView {
                     <script>new Elapsed(${game.elapsed});</script>
                 ` : ""}
             </div>
-            <div class="map">${GameView.Common.htmlEncode(game.settings.level)}</div>
+            <div class="map">${DetailsView.Common.htmlEncode(game.settings.level)}</div>
             <div class="condition">${game.condition}</div>
         `;
     }
 }
 
 // @ts-ignore
-GameView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
+DetailsView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
-    module.exports = GameView; // eslint-disable-line no-undef
+    module.exports = DetailsView; // eslint-disable-line no-undef
 }

@@ -48,6 +48,8 @@ class Home {
                 game.elapsed = new Date().getTime() - new Date(game.startTime).getTime();
                 delete game.startTime;
             }
+
+            game.condition = Game.getCondition(game);
         });
 
         res.status(200).send(Common.page(/* html */`
@@ -59,8 +61,8 @@ class Home {
             <script src="/views/home/servers.js"></script>
             <script src="/js/countdown.js"></script>
             <script src="/js/elapsed.js"></script>
-            <script src="/js/player.js"></script>
-            <script src="/js/game.js"></script>
+            <script src="/js/home/player.js"></script>
+            <script src="/js/home/game.js"></script>
             <script src="/js/home.js"></script>
             <meta http-equiv="refresh" content="60" />
         `, HomeView.get(completed, games, servers), req));
