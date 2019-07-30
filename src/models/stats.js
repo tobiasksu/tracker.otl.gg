@@ -124,7 +124,7 @@ class Stats {
     /**
      * Processes the goal stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, assistedTeam: string}} data The goal data.
+     * @param {object} data The goal data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async goal(ip, data) {
@@ -152,7 +152,7 @@ class Stats {
         }
 
         game.goals.push(data);
-        data.description = `GOAL! ${scorer} scored for ${otherTeam}! Assisted by ${assisted}.`;
+        data.description = `GOAL! ${scorer} scored for ${scorerTeam}! Assisted by ${assisted}.`;
         game.events.push(data);
     }
 
@@ -165,7 +165,7 @@ class Stats {
     /**
      * Processes the kill stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, attacker: string, attackerTeam: string, defender: string, defenderTeam: string, assisted: string, assistedTeam: string, weapon: string}} data The kill data.
+     * @param {object} data The kill data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async kill(ip, data) {

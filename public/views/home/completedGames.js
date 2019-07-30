@@ -26,7 +26,7 @@ class CompletedGamesView {
     static get(games) {
         return /* html */`
             ${Object.keys(games).map((s) => /* html */`
-                <div class="game" id="completed-{games[s].id}">
+                <div class="game" id="completed-${games[s].id}">
                     ${CompletedGamesView.CompletedGameView.get(games[s].data)}
                 </div>
             `).join("")}

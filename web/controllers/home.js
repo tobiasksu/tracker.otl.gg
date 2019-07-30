@@ -52,6 +52,12 @@ class Home {
             game.condition = Game.getCondition(game);
         });
 
+        completed.forEach((game) => {
+            game.remaining = Math.max(new Date(game.data.end).getTime() + 3600000 - new Date().getTime(), 1000);
+
+            game.data.condition = Game.getCondition(game.data);
+        });
+
         res.status(200).send(Common.page(/* html */`
             <link rel="stylesheet" href="/css/home.css" />
             <script src="/js/timeago.min.js"></script>
@@ -59,12 +65,12 @@ class Home {
             <script src="/views/home/games.js"></script>
             <script src="/views/home/server.js"></script>
             <script src="/views/home/servers.js"></script>
+            <script src="/js/websocketclient.js"></script>
             <script src="/js/countdown.js"></script>
             <script src="/js/elapsed.js"></script>
             <script src="/js/home/player.js"></script>
             <script src="/js/home/game.js"></script>
             <script src="/js/home.js"></script>
-            <meta http-equiv="refresh" content="60" />
         `, HomeView.get(completed, games, servers), req));
     }
 }

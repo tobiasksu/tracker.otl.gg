@@ -26,7 +26,7 @@ class Home {
 
         Home.ws = new WebSocketClient();
         Home.ws.onmessage = Home.onmessage;
-        Home.ws.open(window.location.protocol + "//" + window.location.host);
+        Home.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host);
     }
 
     //  ##   ###   # #    ##    ###    ###    ###   ###   ##

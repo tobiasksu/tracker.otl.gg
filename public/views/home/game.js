@@ -40,10 +40,10 @@ class GameView {
         }
 
         return /* html */`
-            <div class="server">${GameView.Common.htmlEncode(game.server || game.ip)}</div>
-            ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((score, player) => /* html */`
+            <div class="server">${GameView.Common.htmlEncode(game.server ? game.server.name : game.ip)}</div>
+            ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((player) => /* html */`
                 <div class="player">${GameView.Common.htmlEncode(player)}</div>
-                <div class="score">${score}</div>
+                <div class="score">${scores[player]}</div>
             `).join("")}
             <div class="time">
                 ${game.countdown ? /* html */`

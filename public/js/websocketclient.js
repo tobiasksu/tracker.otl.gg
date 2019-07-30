@@ -39,16 +39,16 @@ class WebSocketClient {
         this.url = url;
         this.instance = new WebSocket(this.url);
 
-        this.instance.on("open", () => {
+        this.instance.onpen = () => {
             wsc.onopen();
-        });
+        };
 
-        this.instance.on("message", (data, flags) => {
+        this.instance.onmessage = (data, flags) => {
             wsc.number++;
             wsc.onmessage(data, flags, wsc.number);
-        });
+        };
 
-        this.instance.on("close", (ev) => {
+        this.instance.onclose = (ev) => {
             switch (ev.code) {
                 case 1000: // Normal closure.
                     console.log("WebSocket: closed");
@@ -58,9 +58,9 @@ class WebSocketClient {
                     break;
             }
             wsc.onclose(ev);
-        });
+        };
 
-        this.instance.on("error", (err) => {
+        this.instance.onerror = (err) => {
             switch (err.code) {
                 case "ECONNREFUSED":
                     wsc.reconnect(err);
@@ -69,7 +69,7 @@ class WebSocketClient {
                     wsc.onerror(err);
                     break;
             }
-        });
+        };
     }
 
     //                       #

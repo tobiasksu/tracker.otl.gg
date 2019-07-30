@@ -153,6 +153,10 @@ class Game {
      * @returns {Player} The player.
      */
     getPlayer(name) {
+        if (!name) {
+            return void 0;
+        }
+
         if (!this.players.find((p) => p.name === name)) {
             this.players.push(new Player({
                 name,

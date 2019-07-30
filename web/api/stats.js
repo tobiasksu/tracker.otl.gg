@@ -1,4 +1,4 @@
-const Completed = require("../../src/models/completed");
+const StatsModel = require("../../src/models/stats");
 
 /**
  * @typedef {import("express").Request} express.Request
@@ -35,7 +35,7 @@ class Stats {
             return;
         }
 
-        await Completed.processStat((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
+        await StatsModel.processStat((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body);
 
         res.status(204).send();
     }

@@ -123,19 +123,25 @@ class Log {
                 log.obj = `${log.obj.message}`;
             }
 
-            await request.post({
-                uri: "http://logger.roncli.com/api/add",
-                body: {
-                    key: settings.logger.key,
-                    application: "otl.gg",
-                    category: "exception",
-                    message: `${log.message}\n${util.inspect(log.obj)}`,
-                    date: new Date().getTime()
-                },
-                json: true
-            }).catch(() => {
-                console.log(log.message, log.obj);
-            });
+            try {
+                await request.post({
+                    uri: settings.logger.url,
+                    body: {
+                        key: settings.logger.key,
+                        application: "olproxy.otl.gg",
+                        category: "exception",
+                        message: `${log.message}\n${util.inspect(log.obj)}`,
+                        date: new Date().getTime()
+                    },
+                    json: true
+                }).catch((err) => {
+                    console.log("Error while writing log:", err);
+                    console.log("Error that failed to be written:", log.message, log.obj);
+                });
+            } catch (err) {
+                console.log("Error while writing log:", err);
+                console.log("Error that failed to be written:", log.message, log.obj);
+            }
         }
 
         queue.splice(0, queue.length);

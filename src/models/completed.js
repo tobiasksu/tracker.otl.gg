@@ -36,6 +36,7 @@ class Completed {
 
         games.forEach((game) => {
             game.remaining = 3600000 + game.date.getTime() + new Date().getTime();
+            game.data = JSON.parse(game.data);
         });
 
         return games;

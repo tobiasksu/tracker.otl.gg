@@ -24,7 +24,7 @@ class Game {
     static DOMContentLoaded() {
         Game.ws = new WebSocketClient();
         Game.ws.onmessage = Game.onmessage;
-        Game.ws.open(window.location.protocol + "//" + window.location.host + "/game/" + Game.game.ip);
+        Game.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host + "/game/" + Game.game.ip);
     }
 
     //  ##   ###   # #    ##    ###    ###    ###   ###   ##
