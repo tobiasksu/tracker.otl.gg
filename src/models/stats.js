@@ -200,7 +200,7 @@ class Stats {
                 assistedPlayer.assists++;
             }
 
-            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+            if (game.settings && (!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]++;
                 } else {
@@ -286,7 +286,7 @@ class Stats {
 
         if (game.settings.timeLimit) {
             game.projectedEnd = new Date();
-            game.projectedEnd.setSeconds = game.projectedEnd.getSeconds() + game.settings.timeLimit;
+            game.projectedEnd.setSeconds(game.projectedEnd.getSeconds() + game.settings.timeLimit);
         } else {
             game.startTime = new Date();
         }

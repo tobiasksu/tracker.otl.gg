@@ -38,7 +38,7 @@ class Game {
      * @returns {void}
      */
     static onmessage(message) {
-        const {data} = JSON.parse(message);
+        const {data} = JSON.parse(message.data);
 
         switch (data.name) {
             case "Stats": {

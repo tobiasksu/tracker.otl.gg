@@ -125,16 +125,18 @@ class Game {
     static getCondition(game) {
         let condition = "";
 
-        if (game.settings.scoreLimit) {
-            condition = `${condition}First to ${game.settings.scoreLimit}`;
+        if (game.settings) {
+            if (game.settings.scoreLimit) {
+                condition = `${condition}First to ${game.settings.scoreLimit}`;
+
+                if (game.settings.timeLimit) {
+                    condition = `${condition}, `;
+                }
+            }
 
             if (game.settings.timeLimit) {
-                condition = `${condition}, `;
+                condition = `${condition}${Math.round(game.settings.timeLimit / 60)}:00 time limit`;
             }
-        }
-
-        if (game.settings.timeLimit) {
-            condition = `${condition}${Math.round(game.settings.timeLimit / 60)}:00 time limit`;
         }
 
         return condition;

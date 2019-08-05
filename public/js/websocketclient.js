@@ -51,7 +51,6 @@ class WebSocketClient {
         this.instance.onclose = (ev) => {
             switch (ev.code) {
                 case 1000: // Normal closure.
-                    console.log("WebSocket: closed");
                     break;
                 default: // Abnormal closure.
                     wsc.reconnect(ev);
@@ -105,11 +104,10 @@ class WebSocketClient {
     reconnect(ev) {
         const wsc = this;
 
-        console.log(`WebSocketClient: retry in ${this.autoReconnectInterval}ms`, ev);
-        this.instance.removeAllListeners();
+        this.instance.close();
+        this.instance = null;
 
         setTimeout(() => {
-            console.log("WebSocketClient: reconnecting...");
             wsc.open(wsc.url);
         }, this.autoReconnectInterval);
     }
@@ -124,9 +122,7 @@ class WebSocketClient {
      * @param {object} ev The event that triggered the open.
      * @returns {void}
      */
-    onopen(ev) {
-        console.log("WebSocketClient: open", ev);
-    }
+    onopen(ev) {}
 
     //  ##   ###   # #    ##    ###    ###    ###   ###   ##
     // #  #  #  #  ####  # ##  ##     ##     #  #  #  #  # ##
@@ -140,9 +136,7 @@ class WebSocketClient {
      * @param {number} number The message number.
      * @returns {void}
      */
-    onmessage(data, flags, number) {
-        console.log("WebSocketClient: message", data, flags, number);
-    }
+    onmessage(data, flags, number) {}
 
     //  ##   ###    ##   ###   ###    ##   ###
     // #  #  #  #  # ##  #  #  #  #  #  #  #  #
@@ -153,9 +147,7 @@ class WebSocketClient {
      * @param {object} err The error.
      * @returns {void}
      */
-    onerror(err) {
-        console.log("WebSocketClient: error", err);
-    }
+    onerror(err) {}
 
     //                   ##
     //                    #
@@ -168,7 +160,5 @@ class WebSocketClient {
      * @param {object} ev The event that triggered the close.
      * @returns {void}
      */
-    onclose(ev) {
-        console.log("WebSocketClient: closed", ev);
-    }
+    onclose(ev) {}
 }

@@ -40,7 +40,7 @@ class Home {
      * @returns {void}
      */
     static onmessage(message) {
-        const {ip, data} = JSON.parse(message);
+        const {ip, data} = JSON.parse(message.data);
 
         switch (data.name) {
             case "Stats":
