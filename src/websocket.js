@@ -38,10 +38,7 @@ class Websocket {
     static broadcast(message) {
         message = JSON.stringify(message);
 
-        console.log(wss.clients.size);
-
         wss.clients.forEach((client) => {
-            console.log(client);
             if (client.url === "/") {
                 client.send(message);
             } else if (gameMatch.test(client.url)) {

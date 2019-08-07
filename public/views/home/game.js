@@ -1,3 +1,5 @@
+/* global Countdown */
+
 //   ###                        #   #    #
 //  #   #                       #   #
 //  #       ###   ## #    ###   #   #   ##     ###   #   #
@@ -22,44 +24,34 @@ class GameView {
      * @returns {string} An HTML string of the game.
      */
     static get(game) {
-        let scores;
-
-        if (game.teamScore && Object.keys(game.teamScore).length > 0) {
-            scores = game.teamScore;
-        } else {
-            scores = {};
-            if (game.players.length > 2) {
-                game.players.forEach((player) => {
-                    scores[player.name] = 3 * player.kills + player.assists;
-                });
-            } else {
-                game.players.forEach((player) => {
-                    scores[player.name] = player.kills;
-                });
-            }
+        // @ts-ignore
+        if (typeof window !== "undefined") {
+            // @ts-ignore
+            setTimeout(Countdown.create, 1);
         }
 
         return /* html */`
             <div class="server">${GameView.Common.htmlEncode(game.server ? game.server.name : game.ip)}</div>
-            ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((player) => /* html */`
-                <div class="player">${GameView.Common.htmlEncode(player)}</div>
-                <div class="score">${scores[player]}</div>
-            `).join("")}
+            <div class="scores">
+                ${GameView.ScoreView.get(game)}
+            </div>
             <div class="time">
                 ${game.countdown ? /* html */`
-                    <script>new Countdown(${game.countdown});</script>
+                    <div class="countdown" data-countdown="${game.countdown}"><script>new Countdown(${game.countdown});</script></div>
                 ` : game.elapsed ? /* html */`
                     <script>new Elapsed(${game.elapsed});</script>
                 ` : ""}
             </div>
-            <div class="map">${GameView.Common.htmlEncode(game.settings.level)}</div>
-            <div class="condition">${game.condition}</div>
+            <div class="map">${game.settings && GameView.Common.htmlEncode(game.settings.level) || ""}</div>
+            <div class="condition">${game.settings && game.settings.condition || ""}</div>
         `;
     }
 }
 
 // @ts-ignore
 GameView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
+// @ts-ignore
+GameView.ScoreView = typeof ScoreView === "undefined" ? require("./score") : ScoreView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = GameView; // eslint-disable-line no-undef

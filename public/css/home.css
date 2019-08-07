@@ -1,33 +1,35 @@
-#games .game {
+.game {
     padding: 10px;
     display: grid;
-    grid-template-columns: auto auto;
+    grid-template-columns: auto;
     grid-column-gap: 5px;
     column-gap: 5px;
     width: 300px;
 }
 
-#games .game .server {
-    grid-column-end: span 2;
+.game .server {
     text-align: center;
 }
 
-#games .game .score {
+.game .scores {
+    display: grid;
+    grid-template-columns: auto auto;
+    width: 300px;
+}
+
+.game .scores .score {
     text-align: right;
 }
 
-#games .game .time {
-    grid-column-end: span 2;
+.game .time {
     text-align: center;
 }
 
-#games .game .map {
-    grid-column-end: span 2;
+.game .map {
     text-align: center;
 }
 
-#games .game .condition {
-    grid-column-end: span 2;
+.game .condition {
     text-align: center;
 }
 

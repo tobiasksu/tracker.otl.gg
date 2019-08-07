@@ -61,8 +61,11 @@ class Home {
         res.status(200).send(Common.page(/* html */`
             <link rel="stylesheet" href="/css/home.css" />
             <script src="/js/timeago.min.js"></script>
+            <script src="/views/home/score.js"></script>
             <script src="/views/home/game.js"></script>
             <script src="/views/home/games.js"></script>
+            <script src="/views/home/completedGame.js"></script>
+            <script src="/views/home/completedGames.js"></script>
             <script src="/views/home/server.js"></script>
             <script src="/views/home/servers.js"></script>
             <script src="/js/websocketclient.js"></script>

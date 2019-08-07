@@ -38,6 +38,7 @@ class Game {
         this.events = data.events;
         this.damage = data.damage;
         this.teamScore = data.teamScore;
+        this.countdown = data.countdown;
     }
 
     //              #     ##
@@ -81,6 +82,10 @@ class Game {
      * @returns {Player} The player.
      */
     getPlayer(name) {
+        if (!name) {
+            return void 0;
+        }
+
         if (!this.players.find((p) => p.name === name)) {
             this.players.push(new Player({
                 name,

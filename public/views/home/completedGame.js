@@ -43,10 +43,12 @@ class CompletedGameView {
 
         return /* html */`
             <div class="server">${CompletedGameView.Common.htmlEncode(game.server || game.ip)}</div>
-            ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((score, player) => /* html */`
-                <div class="player">${CompletedGameView.Common.htmlEncode(player)}</div>
-                <div class="score">${score}</div>
-            `).join("")}
+            <div class="scores">
+                ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((score, player) => /* html */`
+                    <div class="player">${CompletedGameView.Common.htmlEncode(player)}</div>
+                    <div class="score">${score}</div>
+                `).join("")}
+            </div>
             <div class="map">${CompletedGameView.Common.htmlEncode(game.settings.level)}</div>
             <div class="condition">${game.getCondition()}</div>
         `;

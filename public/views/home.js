@@ -41,7 +41,7 @@ class HomeView {
                 Home.servers = ${JSON.stringify(servers)};
                 ${completed.map((game) => /* html */`
                     setTimeout(() => {
-                        const el = document.querySelector("#completed-${game.id}");
+                        const el = document.getElementById("completed-${game.id}");
                         el.parentNode.removeChild(el);
                     }, ${game.remaining})
                 `).join("")}

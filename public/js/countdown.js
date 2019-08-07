@@ -18,14 +18,37 @@ class Countdown {
     /**
      * Creates a new countdown instance.
      * @param {number} timeRemaining The amount of time remaining, in milliseconds.
+     * @param {Element} [el] The element to write to.
      */
-    constructor(timeRemaining) {
+    constructor(timeRemaining, el) {
         this.deadline = new Date(new Date().getTime() + timeRemaining);
         this.id = ++Countdown.id;
 
-        document.write(`<span id="countdown-${this.id}"></span>`);
+        if (el) {
+            el.innerHTML = `<span id="countdown-${this.id}"></span>`;
+        } else {
+            document.write(`<span id="countdown-${this.id}"></span>`);
+        }
 
         this.update();
+    }
+
+    //                          #
+    //                          #
+    //  ##   ###    ##    ###  ###    ##
+    // #     #  #  # ##  #  #   #    # ##
+    // #     #     ##    # ##   #    ##
+    //  ##   #      ##    # #    ##   ##
+    /**
+     * Creates new instances of the Countdown object.
+     * @returns {void}
+     */
+    static create() {
+        const countdowns = document.querySelectorAll(".countdown");
+
+        countdowns.forEach((countdown) => {
+            new Countdown(+countdown.dataset.countdown, countdown);
+        });
     }
 
     //                #         #

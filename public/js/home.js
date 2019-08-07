@@ -1,4 +1,4 @@
-/* global Common, CompletedGameView, Game, GameView, Player, ServersView, timeago, WebSocketClient */
+/* global Common, CompletedGameView, Game, GameView, Player, ScoreView, ServersView, timeago, WebSocketClient */
 
 //  #   #
 //  #   #
@@ -40,7 +40,8 @@ class Home {
      * @returns {void}
      */
     static onmessage(message) {
-        const {ip, data} = JSON.parse(message.data);
+        const {ip, data} = JSON.parse(message.data),
+            game = Game.getGame(ip);
 
         switch (data.name) {
             case "Stats":
@@ -67,6 +68,8 @@ class Home {
                         Home.endGame(ip, data);
                         break;
                 }
+
+                document.getElementById(`game-${ip}`).querySelector(".scores").innerHTML = ScoreView.get(game);
                 break;
             case "Server": {
                 const oldServer = Home.servers.find((s) => s.ip === ip);
@@ -78,7 +81,8 @@ class Home {
                     Home.servers.push(data.server);
                 }
 
-                document.findElementById("browser").innerHTML = ServersView.get(Home.servers);
+                document.getElementById("browser").innerHTML = ServersView.get(Home.servers);
+                timeago().render(document.querySelectorAll(".timeago"));
 
                 break;
             }
@@ -177,12 +181,12 @@ class Home {
         game.kills = kills;
         game.goals = goals;
 
-        const gameEl = document.querySelector(`#game-${game.id}`);
+        const gameEl = document.getElementById(`game-${ip}`);
         gameEl.parentNode.removeChild(gameEl);
 
-        const gameId = `#completed-${Common.uuidv4()}`;
+        const gameId = `completed-${Common.uuidv4()}`;
 
-        document.querySelector("#completed").insertAdjacentHTML("beforeend", /* html */`
+        document.getElementById("completed").insertAdjacentHTML("beforeend", /* html */`
             <div class="game" id="${gameId}">
                 ${CompletedGameView.get(game)}
             </div>
@@ -191,7 +195,7 @@ class Home {
         game.remove();
 
         setTimeout(() => {
-            const completedEl = document.querySelector(gameId);
+            const completedEl = document.getElementById(gameId);
             completedEl.parentNode.removeChild(completedEl);
         }, 3600000);
     }
@@ -306,14 +310,7 @@ class Home {
      * @returns {void}
      */
     static startGame(ip, data) {
-        const game = new Game({
-            ip,
-            players: [],
-            kills: [],
-            goals: [],
-            events: [],
-            teamScore: {}
-        });
+        const game = Game.getGame(ip);
 
         game.server = data.server;
         game.settings = data;
@@ -328,7 +325,7 @@ class Home {
             connected: data.time
         }));
 
-        document.querySelector("#games").insertAdjacentHTML("beforeend", /* html */`
+        document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
             <div class="game" id="game-${ip}">
                 ${GameView.get(game)}
             </div>
