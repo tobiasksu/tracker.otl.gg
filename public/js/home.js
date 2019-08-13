@@ -194,6 +194,8 @@ class Home {
             </div>
         `);
 
+        timeago().render(document.querySelectorAll(".timeago"));
+
         game.remove();
 
         setTimeout(() => {

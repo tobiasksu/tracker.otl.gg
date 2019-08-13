@@ -35,15 +35,19 @@ class GameView {
             <div class="scores">
                 ${GameView.ScoreView.get(game)}
             </div>
-            <div class="time">
-                ${game.countdown ? /* html */`
-                    <script>new Countdown(${game.countdown});</script>
-                ` : game.elapsed || game.elapsed === 0 ? /* html */`
-                    <script>new Elapsed(${game.elapsed});</script>
+            <div class="info">
+                <div class="time">
+                    ${game.countdown ? /* html */`
+                        <script>new Countdown(${game.countdown});</script>
+                    ` : game.elapsed || game.elapsed === 0 ? /* html */`
+                        <script>new Elapsed(${game.elapsed});</script>
+                    ` : ""}
+                </div>
+                <div class="map">${game.settings && GameView.Common.htmlEncode(game.settings.level) || ""}</div>
+                ${game.settings && game.settings.condition ? /* html */`
+                    <div class="condition">${game.settings.condition}</div>
                 ` : ""}
             </div>
-            <div class="map">${game.settings && GameView.Common.htmlEncode(game.settings.level) || ""}</div>
-            <div class="condition">${game.settings && game.settings.condition || ""}</div>
         `;
     }
 }
