@@ -42,15 +42,15 @@ class CompletedGameView {
         }
 
         return /* html */`
-            <div class="server">${CompletedGameView.Common.htmlEncode(game.server || game.ip)}</div>
+            <div class="server">${CompletedGameView.Common.htmlEncode(game.server && game.server.name || game.ip)}</div>
             <div class="scores">
-                ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((score, player) => /* html */`
+                ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((player) => /* html */`
                     <div class="player">${CompletedGameView.Common.htmlEncode(player)}</div>
-                    <div class="score">${score}</div>
+                    <div class="score">${scores[player]}</div>
                 `).join("")}
             </div>
-            <div class="map">${CompletedGameView.Common.htmlEncode(game.settings.level)}</div>
-            <div class="condition">${game.getCondition()}</div>
+            <div class="map">${game.settings && game.settings.level ? CompletedGameView.Common.htmlEncode(game.settings.level) : ""}</div>
+            <div class="condition">${game.settings && game.settings.condition || ""}</div>
         `;
     }
 }

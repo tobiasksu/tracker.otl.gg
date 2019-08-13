@@ -42,7 +42,9 @@ const compression = require("compression"),
     morganExtensions(morgan);
 
     // Initialize middleware stack.
-    app.use(express.json());
+    app.use(express.json({
+        limit: "1mb"
+    }));
     app.use(compression());
     app.use(morgan(":colorstatus \x1b[30m\x1b[0m:method\x1b[0m :url\x1b[30m\x1b[0m:newline    Date :date[iso]    IP :req[ip]    Time :colorresponse ms"));
     app.use(minify());

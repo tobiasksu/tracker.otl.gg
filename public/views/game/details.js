@@ -40,7 +40,7 @@ class DetailsView {
         }
 
         return /* html */`
-            <div class="server">${DetailsView.Common.htmlEncode(game.server || game.ip)}</div>
+            <div class="server">${DetailsView.Common.htmlEncode(game.server && game.server.name || game.ip)}</div>
             ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((player) => /* html */`
                 <div class="player">${DetailsView.Common.htmlEncode(player)}</div>
                 <div class="score">${scores[player]}</div>
@@ -48,7 +48,7 @@ class DetailsView {
             <div class="time">
                 ${game.countdown ? /* html */`
                     <script>new Countdown(${game.countdown});</script>
-                ` : game.elapsed ? /* html */`
+                ` : game.elapsed || game.elapsed === 0 ? /* html */`
                     <script>new Elapsed(${game.elapsed});</script>
                 ` : ""}
             </div>

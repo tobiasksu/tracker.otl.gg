@@ -1,4 +1,4 @@
-/* global Common, CompletedGameView, Game, GameView, Player, ScoreView, ServersView, timeago, WebSocketClient */
+/* global Common, CompletedGameView, Countdown, Elapsed, Game, GameView, Player, ScoreView, ServersView, timeago, WebSocketClient */
 
 //  #   #
 //  #   #
@@ -64,12 +64,14 @@ class Home {
                     case "Disconect":
                         Home.disconnect(ip, data);
                         break;
-                    case "EndGame":
-                        Home.endGame(ip, data);
-                        break;
                 }
 
+                // TODO: What happens if the first packet we receive isn't StartGame? 🤔
                 document.getElementById(`game-${ip}`).querySelector(".scores").innerHTML = ScoreView.get(game);
+
+                if (data.type === "EndGame") {
+                    Home.endGame(ip, data);
+                }
                 break;
             case "Server": {
                 const oldServer = Home.servers.find((s) => s.ip === ip);
@@ -269,7 +271,7 @@ class Home {
             assistedPlayer.team = assistedTeam;
         }
 
-        if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam) {
+        if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam || attacker === defender) {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
@@ -324,12 +326,22 @@ class Home {
             blunders: 0,
             connected: data.time
         }));
+        game.countdown = data.countdown;
+        game.elapsed = data.elapsed;
 
         document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
             <div class="game" id="game-${ip}">
                 ${GameView.get(game)}
             </div>
         `);
+
+        const el = document.getElementById(`game-${ip}`).querySelector(".time");
+
+        if (game.countdown) {
+            new Countdown(game.countdown, el);
+        } else if (game.elapsed || game.elapsed === 0) {
+            new Elapsed(game.elapsed, el);
+        }
     }
 }
 

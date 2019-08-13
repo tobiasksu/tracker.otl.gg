@@ -21,11 +21,15 @@ class Elapsed {
      * Creates a new elapsed timer instance.
      * @param {number} elapsed The amount of time elapsed, in milliseconds.
      */
-    constructor(elapsed) {
+    constructor(elapsed, el) {
         this.start = new Date(new Date().getTime() - elapsed);
         this.id = ++Elapsed.id;
 
-        document.write(`<span id="elapsed-${this.id}"></span>`);
+        if (el) {
+            el.innerHTML = `<span id="elapsed-${this.id}"></span>`;
+        } else {
+            document.write(`<span id="elapsed-${this.id}"></span>`);
+        }
 
         this.update();
     }
@@ -55,7 +59,7 @@ class Elapsed {
 
         setTimeout(() => {
             this.update();
-        }, difference % 1000 + 1);
+        }, 1001 - difference % 1000);
     }
 }
 

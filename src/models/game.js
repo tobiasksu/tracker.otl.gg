@@ -1,6 +1,6 @@
 /**
  * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>, startTime?: Date, projectedEnd?: Date}} GameData
+ * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>, startTime?: Date, projectedEnd?: Date, countdown?: number, elapsed?: number}} GameData
  */
 
 const Player = require("./player"),
@@ -46,6 +46,8 @@ class Game {
         this.teamScore = data.teamScore;
         this.startTime = data.startTime;
         this.projectedEnd = data.projectedEnd;
+        this.countdown = data.countdown;
+        this.elapsed = data.elapsed;
     }
 
     //              #     ##   ##    ##

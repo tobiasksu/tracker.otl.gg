@@ -182,7 +182,7 @@ class Stats {
             assistedPlayer.team = assistedTeam;
         }
 
-        if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam) {
+        if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam || attacker === defender) {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
@@ -272,6 +272,10 @@ class Stats {
     static async startGame(ip, data) {
         const game = await Game.getGame(ip);
 
+        if (data.timeLimit && data.timeLimit === 2147483647) {
+            delete data.timeLimit;
+        }
+
         game.settings = data;
         game.players = data.players.map((player) => new Player({
             name: player,
@@ -287,12 +291,16 @@ class Stats {
         if (game.settings.timeLimit) {
             game.projectedEnd = new Date();
             game.projectedEnd.setSeconds(game.projectedEnd.getSeconds() + game.settings.timeLimit);
+            game.countdown = game.settings.timeLimit * 1000;
         } else {
             game.startTime = new Date();
+            game.elapsed = 0;
         }
 
         data.server = game.server;
         data.condition = Game.getCondition(game);
+        data.countdown = game.countdown;
+        data.elapsed = game.elapsed;
     }
 }
 

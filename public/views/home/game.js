@@ -37,8 +37,8 @@ class GameView {
             </div>
             <div class="time">
                 ${game.countdown ? /* html */`
-                    <div class="countdown" data-countdown="${game.countdown}"><script>new Countdown(${game.countdown});</script></div>
-                ` : game.elapsed ? /* html */`
+                    <script>new Countdown(${game.countdown});</script>
+                ` : game.elapsed || game.elapsed === 0 ? /* html */`
                     <script>new Elapsed(${game.elapsed});</script>
                 ` : ""}
             </div>

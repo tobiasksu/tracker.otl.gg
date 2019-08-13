@@ -35,7 +35,7 @@ class CompletedGamesView {
 }
 
 // @ts-ignore
-CompletedGamesView.CompletedGameView = typeof CompletedGameView === "undefined" ? require("./game") : CompletedGameView; // eslint-disable-line no-undef
+CompletedGamesView.CompletedGameView = typeof CompletedGameView === "undefined" ? require("./completedGame") : CompletedGameView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = CompletedGamesView; // eslint-disable-line no-undef

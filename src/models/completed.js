@@ -1,8 +1,9 @@
 /**
- * @typedef {{id: number, ip: string, data: object, date: Date, remaining?: number}} CompletedGame
+ * @typedef {{id: number, ip: string, data: object, date: Date, remaining?: number, server?: object}} CompletedGame
  */
 
-const Db = require("../database/completed");
+const Db = require("../database/completed"),
+    ServersDb = require("../database/servers");
 
 //   ###                         ##            #                #
 //  #   #                         #            #                #
@@ -34,12 +35,13 @@ class Completed {
          */
         const games = await Db.getRecent();
 
-        games.forEach((game) => {
+        for (const game of games) {
             game.remaining = 3600000 + game.date.getTime() + new Date().getTime();
             game.data = JSON.parse(game.data);
-        });
+            game.server = await ServersDb.getByIp(game.ip);
+        }
 
-        return games;
+        return games.filter((g) => g.data && g.data.events && g.data.events.length && g.data.events.length > 0);
     }
 }
 
