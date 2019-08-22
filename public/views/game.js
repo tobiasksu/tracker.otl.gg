@@ -23,17 +23,19 @@ class GameView {
      */
     static get(game) {
         return /* html */`
-            <div id="game">
-                ${GameView.DetailsView.get(game)}
-            </div>
-            <div id="players">
-                ${GameView.PlayersView.get(game)}
+            <div id="top">
+                <div id="game">
+                    ${GameView.DetailsView.get(game)}
+                </div>
+                <div id="players">
+                    ${GameView.PlayersView.get(game)}
+                </div>
             </div>
             <div id="events">
                 ${GameView.EventsView.get(game)}
             </div>
             <script>
-                Game.game = new Game(${JSON.stringify(game)});
+                GameJs.game = new Game(${JSON.stringify(game)});
             </script>
         `;
     }

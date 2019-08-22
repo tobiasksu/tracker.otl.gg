@@ -20,6 +20,7 @@ class Elapsed {
     /**
      * Creates a new elapsed timer instance.
      * @param {number} elapsed The amount of time elapsed, in milliseconds.
+     * @param {Element} [el] The element to write to.
      */
     constructor(elapsed, el) {
         this.start = new Date(new Date().getTime() - elapsed);

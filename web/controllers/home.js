@@ -58,9 +58,11 @@ class Home {
             game.data.condition = Game.getCondition(game.data);
         });
 
+        res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
+
         res.status(200).send(Common.page(/* html */`
             <link rel="stylesheet" href="/css/home.css" />
-            <script src="/js/timeago.min.js"></script>
+            <script src="/js/common/timeago.min.js"></script>
             <script src="/views/home/score.js"></script>
             <script src="/views/home/game.js"></script>
             <script src="/views/home/games.js"></script>
@@ -68,11 +70,11 @@ class Home {
             <script src="/views/home/completedGames.js"></script>
             <script src="/views/home/server.js"></script>
             <script src="/views/home/servers.js"></script>
-            <script src="/js/websocketclient.js"></script>
-            <script src="/js/countdown.js"></script>
-            <script src="/js/elapsed.js"></script>
-            <script src="/js/home/player.js"></script>
-            <script src="/js/home/game.js"></script>
+            <script src="/js/common/websocketclient.js"></script>
+            <script src="/js/common/countdown.js"></script>
+            <script src="/js/common/elapsed.js"></script>
+            <script src="/js/common/player.js"></script>
+            <script src="/js/common/game.js"></script>
             <script src="/js/home.js"></script>
         `, HomeView.get(completed, games, servers), req));
     }

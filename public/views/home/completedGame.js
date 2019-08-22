@@ -42,21 +42,23 @@ class CompletedGameView {
         }
 
         return /* html */`
-            <div class="server">${CompletedGameView.Common.htmlEncode(game.server && game.server.name || game.ip)}</div>
-            <div class="scores">
-                ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((player) => /* html */`
-                    <div class="player">${CompletedGameView.Common.htmlEncode(player)}</div>
-                    <div class="score">${scores[player]}</div>
-                `).join("")}
-            </div>
-            <div class="info">
-                <div class="time">
-                    Copleted <time class="timeago" datetime="${new Date(game.end).toISOString()}">${new Date(game.end)}</time>
+            <div class="table">
+                <div class="server">${CompletedGameView.Common.htmlEncode(game.server && game.server.name || game.ip)}</div>
+                <div class="scores">
+                    ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((player) => /* html */`
+                        <div class="player">${CompletedGameView.Common.htmlEncode(player)}</div>
+                        <div class="score">${scores[player]}</div>
+                    `).join("")}
                 </div>
-                <div class="map">${game.settings && game.settings.level ? CompletedGameView.Common.htmlEncode(game.settings.level) : ""}</div>
-                ${game.settings && game.settings.condition ? /* html */`
-                    <div class="condition">${game.settings.condition}</div>
-                ` : ""}
+                <div class="info">
+                    <div class="time">
+                        Completed <time class="timeago" datetime="${new Date(game.end).toISOString()}">${new Date(game.end)}</time>
+                    </div>
+                    <div class="map">${game.settings && game.settings.level ? CompletedGameView.Common.htmlEncode(game.settings.level) : ""}</div>
+                    ${game.settings && game.settings.condition ? /* html */`
+                        <div class="condition">${game.settings.condition}</div>
+                    ` : ""}
+                </div>
             </div>
         `;
     }

@@ -41,17 +41,33 @@ class Game {
             return;
         }
 
+        if (game.projectedEnd) {
+            game.countdown = new Date(game.projectedEnd).getTime() - new Date().getTime();
+            delete game.projectedEnd;
+        }
+
+        if (game.startTime) {
+            game.elapsed = new Date().getTime() - new Date(game.startTime).getTime();
+            delete game.startTime;
+        }
+
         game.condition = GameModel.getCondition(game);
 
+        res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
+
         res.status(200).send(Common.page(/* html */`
-            <link rel="stylesheet" href="/css/home.css" />
+            <link rel="stylesheet" href="/css/game.css" />
+            <script src="/js/common/timeago.min.js"></script>
+            <script src="/views/game/score.js"></script>
             <script src="/views/game/details.js"></script>
             <script src="/views/game/players.js"></script>
             <script src="/views/game/events.js"></script>
-            <script src="/js/countdown.js"></script>
-            <script src="/js/elapsed.js"></script>
+            <script src="/js/common/websocketclient.js"></script>
+            <script src="/js/common/countdown.js"></script>
+            <script src="/js/common/elapsed.js"></script>
+            <script src="/js/common/player.js"></script>
+            <script src="/js/common/game.js"></script>
             <script src="/js/game.js"></script>
-            <meta http-equiv="refresh" content="60" />
         `, GameView.get(game), req));
     }
 }

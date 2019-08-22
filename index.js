@@ -52,7 +52,7 @@ const compression = require("compression"),
     // Web server routes.
     app.use(express.static("public"));
 
-    app.get("/js/timeago.min.js", (req, res) => {
+    app.get("/js/common/timeago.min.js", (req, res) => {
         res.sendFile(`${__dirname}/node_modules/timeago.js/dist/timeago.min.js`);
     });
 

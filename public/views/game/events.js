@@ -23,9 +23,8 @@ class EventsView {
      */
     static get(game) {
         return /* html */`
-            ${game.events.map((event) => /* html */`
-                <div class="time">${event.time}</div>
-                <div class="type">${event.type}</div>
+            ${game.events.sort((a, b) => b.time - a.time).map((event) => /* html */`
+                <div class="time">${EventsView.Common.formatTimeSpan(event.time)}</div>
                 <div class="event">${event.description}</div>
             `).join("")}
         `;

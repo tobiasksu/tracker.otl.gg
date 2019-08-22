@@ -152,7 +152,7 @@ class Stats {
         }
 
         game.goals.push(data);
-        data.description = `GOAL! ${scorer} scored for ${scorerTeam}! Assisted by ${assisted}.`;
+        data.description = `GOAL! ${scorer} scored for ${scorerTeam}!${assisted ? ` Assisted by ${assisted}.` : ""}`;
         game.events.push(data);
     }
 
@@ -180,6 +180,13 @@ class Stats {
         defenderPlayer.team = defenderTeam;
         if (assistedPlayer) {
             assistedPlayer.team = assistedTeam;
+        }
+
+        if (!game.teamScore[defenderTeam]) {
+            game.teamScore[defenderTeam] = 0;
+        }
+        if (!game.teamScore[attackerTeam]) {
+            game.teamScore[attackerTeam] = 0;
         }
 
         if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam || attacker === defender) {
@@ -245,7 +252,7 @@ class Stats {
                 case "Connect":
                     await Stats.connect(ip, data);
                     break;
-                case "Disconect":
+                case "Disconnect":
                     await Stats.disconnect(ip, data);
                     break;
                 case "EndGame":

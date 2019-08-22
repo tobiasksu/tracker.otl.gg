@@ -36,16 +36,16 @@ class Websocket {
      * @returns {void}
      */
     static broadcast(message) {
-        message = JSON.stringify(message);
+        const str = JSON.stringify(message);
 
         wss.clients.forEach((client) => {
             if (client.url === "/") {
-                client.send(message);
+                client.send(str);
             } else if (gameMatch.test(client.url)) {
                 const {groups: {ip}} = gameMatch.exec(client.url);
 
                 if (message.ip === ip) {
-                    client.send(message);
+                    client.send(str);
                 }
             }
         });

@@ -1,0 +1,110 @@
+#top {
+    display: grid;
+    grid-template-columns: max-content max-content;
+}
+
+#game .table {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: auto;
+    width: 300px;
+}
+
+#game .table > div {
+    border: solid 1px #999999;
+    margin-bottom: -1px;
+    padding: 3px 3px 0 3px;
+}
+
+#game .table .server {
+    text-align: center;
+}
+
+#game .table .scores {
+    display: grid;
+    grid-template-columns: auto auto;
+}
+
+#game .table .scores .score {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#game .table .time {
+    text-align: center;
+}
+
+#game .table .time span {
+    font-variant-numeric: tabular-nums;
+}
+
+#game .table .info {
+    font-size: 12px;
+}
+
+#game .table .map {
+    text-align: center;
+}
+
+#game .table .condition {
+    text-align: center;
+}
+
+#players .table {
+    padding: 10px;
+    display: grid;
+}
+
+#players .table > div {
+    border: solid 1px #999999;
+    margin-bottom: -1px;
+    margin-left: -1px;
+    padding: 3px 3px 0 3px;
+}
+
+#players .table .header {
+    text-align: center;
+}
+
+#players .table .goals:not(.header) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#players .table .goalAssists:not(.header) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#players .table .blunders:not(.header) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#players .table .kills:not(.header) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#players .table .assists:not(.header) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#players .table .deaths:not(.header) {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+#events {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 10px;
+    column-gap: 10px;
+}
+
+#events .time {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}

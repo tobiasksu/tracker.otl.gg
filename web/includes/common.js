@@ -22,6 +22,45 @@ let IndexView;
  * A class that handles common web functions.
  */
 class Common {
+    //   #                            #    ###    #                 ##
+    //  # #                           #     #                      #  #
+    //  #     ##   ###   # #    ###  ###    #    ##    # #    ##    #    ###    ###  ###
+    // ###   #  #  #  #  ####  #  #   #     #     #    ####  # ##    #   #  #  #  #  #  #
+    //  #    #  #  #     #  #  # ##   #     #     #    #  #  ##    #  #  #  #  # ##  #  #
+    //  #     ##   #     #  #   # #    ##   #    ###   #  #   ##    ##   ###    # #  #  #
+    //                                                                   #
+    /**
+     * Formats a time span.
+     * @param {number} seconds The number of seconds.
+     * @returns {string} The formatted time span.
+     */
+    static formatTimeSpan(seconds) {
+        return `${seconds > 3600 ? `${Math.floor(seconds / 3600)}:` : ""}${seconds > 60 ? `${Common.pad(Math.floor(seconds / 60) % 60, seconds >= 600 ? 2 : 1)}:` : ""}${Common.pad(Math.floor(seconds % 60), seconds >= 10 ? 2 : 1)}.${Common.pad(Math.floor(seconds * 1000) % 1000, 3)}`;
+    }
+
+    //                #
+    //                #
+    // ###    ###   ###
+    // #  #  #  #  #  #
+    // #  #  # ##  #  #
+    // ###    # #   ###
+    // #
+    /**
+     * Pads a number with leading zeros.
+     * @param {number} value The value.  Must be a whole number.
+     * @param {number} digits The desired number of digits in the result.
+     * @returns {string} A string with the number padded with the appropriate amount of leading zeros.
+     */
+    static pad(value, digits) {
+        let ret = value.toString();
+
+        while (ret.length < digits) {
+            ret = `0${ret}`;
+        }
+
+        return ret;
+    }
+
     // ###    ###   ###   ##
     // #  #  #  #  #  #  # ##
     // #  #  # ##   ##   ##

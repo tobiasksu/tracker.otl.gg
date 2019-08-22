@@ -1,16 +1,16 @@
-/* global DetailsView, EventsView, PlayersView, WebSocketClient */
+/* global DetailsView, EventsView, PlayersView, ScoreView, timeago, WebSocketClient */
 
-//   ###
-//  #   #
-//  #       ###   ## #    ###
-//  #          #  # # #  #   #
-//  #  ##   ####  # # #  #####
-//  #   #  #   #  # # #  #
-//   ###    ####  #   #   ###
+//   ###                          ###
+//  #   #                           #
+//  #       ###   ## #    ###       #   ###
+//  #          #  # # #  #   #      #  #
+//  #  ##   ####  # # #  #####      #   ###
+//  #   #  #   #  # # #  #      #   #      #
+//   ###    ####  #   #   ###    ###   ####
 /**
  * A class that provides functions for the game page.
  */
-class Game {
+class GameJs {
     // ###    ##   #  #   ##                #                 #    #                    #           #
     // #  #  #  #  ####  #  #               #                 #    #                    #           #
     // #  #  #  #  ####  #      ##   ###   ###    ##   ###   ###   #      ##    ###   ###   ##    ###
@@ -24,9 +24,9 @@ class Game {
     static DOMContentLoaded() {
         timeago().render(document.querySelectorAll(".timeago"));
 
-        Game.ws = new WebSocketClient();
-        Game.ws.onmessage = Game.onmessage;
-        Game.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host + "/game/" + Game.game.ip);
+        GameJs.ws = new WebSocketClient();
+        GameJs.ws.onmessage = GameJs.onmessage;
+        GameJs.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host + "/game/" + GameJs.game.ip);
     }
 
     //  ##   ###   # #    ##    ###    ###    ###   ###   ##
@@ -46,26 +46,27 @@ class Game {
             case "Stats": {
                 switch (data.type) {
                     case "Kill":
-                        Game.kill(data);
+                        GameJs.kill(data);
                         break;
                     case "Goal":
-                        Game.goal(data);
+                        GameJs.goal(data);
                         break;
                     case "Blunder":
-                        Game.blunder(data);
+                        GameJs.blunder(data);
                         break;
                     case "Connect":
-                        Game.connect(data);
+                        GameJs.connect(data);
                         break;
-                    case "Disconect":
-                        Game.disconnect(data);
+                    case "Disconnect":
+                        GameJs.disconnect(data);
                         break;
                     case "EndGame":
-                        Game.endGame(data);
+                        GameJs.endGame(data);
                         break;
                 }
 
-                document.getElementById("events").innerHTML = EventsView.get(Game.game);
+                document.getElementById("game").querySelector(".scores").innerHTML = ScoreView.get(GameJs.game);
+                document.getElementById("events").innerHTML = EventsView.get(GameJs.game);
 
                 break;
             }
@@ -86,10 +87,10 @@ class Game {
     static blunder(data) {
         const {scorer, scorerTeam} = data;
 
-        Game.game.events.push(data);
-        Game.game.goals.push(data);
+        GameJs.game.events.push(data);
+        GameJs.game.goals.push(data);
 
-        const scorerPlayer = Game.game.getPlayer(scorer);
+        const scorerPlayer = GameJs.game.getPlayer(scorer);
 
         scorerPlayer.team = scorerTeam;
 
@@ -97,14 +98,13 @@ class Game {
 
         const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
 
-        if (Game.game.teamScore[otherTeam]) {
-            Game.game.teamScore[otherTeam]++;
+        if (GameJs.game.teamScore[otherTeam]) {
+            GameJs.game.teamScore[otherTeam]++;
         } else {
-            Game.game.teamScore[otherTeam] = 1;
+            GameJs.game.teamScore[otherTeam] = 1;
         }
 
-        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
-        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
     }
 
     //                                      #
@@ -119,7 +119,7 @@ class Game {
      * @returns {void}
      */
     static connect(data) {
-        Game.game.events.push(data);
+        GameJs.game.events.push(data);
     }
 
     //    #   #                                                #
@@ -134,7 +134,7 @@ class Game {
      * @returns {void}
      */
     static disconnect(data) {
-        Game.game.events.push(data);
+        GameJs.game.events.push(data);
     }
 
     //                #   ##
@@ -151,16 +151,20 @@ class Game {
     static endGame(data) {
         const {start, end, damage, kills, goals} = data;
 
-        Game.game.start = new Date(start);
-        Game.game.end = new Date(end);
-        Game.game.damage = damage;
-        Game.game.kills = kills;
-        Game.game.goals = goals;
+        GameJs.game.start = new Date(start);
+        GameJs.game.end = new Date(end);
+        GameJs.game.damage = damage;
+        GameJs.game.kills = kills;
+        GameJs.game.goals = goals;
 
-        Game.ws.close();
+        GameJs.ws.instance.close();
 
-        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
-        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+        document.querySelector("#game .time").innerHTML = /* html */`
+            Completed <time class="timeago" datetime="${new Date(GameJs.game.end).toISOString()}">${new Date(GameJs.game.end)}</time>
+        `;
+
+        timeago().render(document.querySelectorAll(".timeago"));
     }
 
     //                   ##
@@ -178,11 +182,11 @@ class Game {
     static goal(data) {
         const {scorer, scorerTeam, assisted, assistedTeam} = data;
 
-        Game.game.events.push(data);
-        Game.game.goals.push(data);
+        GameJs.game.events.push(data);
+        GameJs.game.goals.push(data);
 
-        const scorerPlayer = Game.game.getPlayer(scorer),
-            assistedPlayer = Game.game.getPlayer(assisted);
+        const scorerPlayer = GameJs.game.getPlayer(scorer),
+            assistedPlayer = GameJs.game.getPlayer(assisted);
 
         scorerPlayer.team = scorerTeam;
         if (assistedPlayer) {
@@ -194,14 +198,13 @@ class Game {
             assistedPlayer.goalAssists++;
         }
 
-        if (Game.game.teamScore[scorerTeam]) {
-            Game.game.teamScore[scorerTeam]++;
+        if (GameJs.game.teamScore[scorerTeam]) {
+            GameJs.game.teamScore[scorerTeam]++;
         } else {
-            Game.game.teamScore[scorerTeam] = 1;
+            GameJs.game.teamScore[scorerTeam] = 1;
         }
 
-        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
-        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
     }
 
     // #      #    ##    ##
@@ -218,12 +221,12 @@ class Game {
     static kill(data) {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data;
 
-        Game.game.events.push(data);
-        Game.game.kills.push(data);
+        GameJs.game.events.push(data);
+        GameJs.game.kills.push(data);
 
-        const attackerPlayer = Game.game.getPlayer(attacker),
-            defenderPlayer = Game.game.getPlayer(defender),
-            assistedPlayer = Game.game.getPlayer(assisted);
+        const attackerPlayer = GameJs.game.getPlayer(attacker),
+            defenderPlayer = GameJs.game.getPlayer(defender),
+            assistedPlayer = GameJs.game.getPlayer(assisted);
 
         attackerPlayer.team = attackerTeam;
         defenderPlayer.team = defenderTeam;
@@ -231,15 +234,22 @@ class Game {
             assistedPlayer.team = assistedTeam;
         }
 
+        if (!GameJs.game.teamScore[attackerTeam]) {
+            GameJs.game.teamScore[attackerTeam] = 0;
+        }
+        if (!GameJs.game.teamScore[defenderTeam]) {
+            GameJs.game.teamScore[defenderTeam] = 0;
+        }
+
         if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam) {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
-            if ((!Game.game.settings || Game.game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
-                if (Game.game.teamScore[attackerTeam]) {
-                    Game.game.teamScore[attackerTeam]--;
+            if ((!GameJs.game.settings || GameJs.game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+                if (GameJs.game.teamScore[attackerTeam]) {
+                    GameJs.game.teamScore[attackerTeam]--;
                 } else {
-                    Game.game.teamScore[attackerTeam] = -1;
+                    GameJs.game.teamScore[attackerTeam] = -1;
                 }
             }
         } else {
@@ -249,18 +259,17 @@ class Game {
                 assistedPlayer.assists++;
             }
 
-            if ((!Game.game.settings || Game.game.settings.matchMode !== "MONSTERBALL") && Game.game.settings.matchMode !== "MONSTERBALL" && attackerTeam && attackerTeam !== "ANARCHY") {
-                if (Game.game.teamScore[attackerTeam]) {
-                    Game.game.teamScore[attackerTeam]++;
+            if ((!GameJs.game.settings || GameJs.game.settings.matchMode !== "MONSTERBALL") && GameJs.game.settings.matchMode !== "MONSTERBALL" && attackerTeam && attackerTeam !== "ANARCHY") {
+                if (GameJs.game.teamScore[attackerTeam]) {
+                    GameJs.game.teamScore[attackerTeam]++;
                 } else {
-                    Game.game.teamScore[attackerTeam] = 1;
+                    GameJs.game.teamScore[attackerTeam] = 1;
                 }
             }
         }
 
-        document.getElementById("game").innerHTML = DetailsView.get(Game.game);
-        document.getElementById("players").innerHTML = PlayersView.get(Game.game);
+        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
     }
 }
 
-document.addEventListener("DOMContentLoaded", Game.DOMContentLoaded);
+document.addEventListener("DOMContentLoaded", GameJs.DOMContentLoaded);

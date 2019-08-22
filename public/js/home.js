@@ -61,7 +61,7 @@ class Home {
                     case "Connect":
                         Home.connect(ip, data);
                         break;
-                    case "Disconect":
+                    case "Disconnect":
                         Home.disconnect(ip, data);
                         break;
                 }
@@ -271,6 +271,13 @@ class Home {
         defenderPlayer.team = defenderTeam;
         if (assistedPlayer) {
             assistedPlayer.team = assistedTeam;
+        }
+
+        if (!game.teamScore[attackerTeam]) {
+            game.teamScore[attackerTeam] = 0;
+        }
+        if (!game.teamScore[defenderTeam]) {
+            game.teamScore[defenderTeam] = 0;
         }
 
         if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam || attacker === defender) {

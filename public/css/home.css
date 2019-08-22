@@ -3,42 +3,50 @@
     flex-flow: row wrap;
 }
 
-.game {
+.game .table {
     padding: 10px;
     display: grid;
     grid-template-columns: auto;
-    grid-column-gap: 5px;
-    column-gap: 5px;
     width: 300px;
 }
 
-.game > div {
+.game .table > div {
     border: solid 1px #999999;
+    margin-bottom: -1px;
+    padding: 3px 3px 0 3px;
 }
 
-.game .server {
+.game .table .server {
     text-align: center;
 }
 
-.game .scores {
+.game .table .scores {
     display: grid;
     grid-template-columns: auto auto;
-    width: 300px;
 }
 
-.game .scores .score {
+.game .table .scores .score {
     text-align: right;
+    font-variant-numeric: tabular-nums;
 }
 
-.game .time {
+.game .table .time {
     text-align: center;
 }
 
-.game .map {
+.game .table .time span {
+    font-variant-numeric: tabular-nums;
+}
+
+.game .table .info {
+    font-size: 12px;
+}
+
+.game .table .map {
     text-align: center;
 }
 
-.game .condition {
+.game .table .condition {
     text-align: center;
 }
 
