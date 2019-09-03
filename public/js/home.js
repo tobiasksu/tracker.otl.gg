@@ -58,6 +58,9 @@ class Home {
                     case "Blunder":
                         Home.blunder(ip, data);
                         break;
+                    case "CTF":
+                        Home.ctf(ip, data);
+                        break;
                     case "Connect":
                         Home.connect(ip, data);
                         break;
@@ -143,6 +146,52 @@ class Home {
         game.events.push(data);
     }
 
+    //        #      #
+    //        #     # #
+    //  ##   ###    #
+    // #      #    ###
+    // #      #     #
+    //  ##     ##   #
+    /**
+     * Process the CTF stat.
+     * @param {string} ip The IP address of the server to update.
+     * @param {{time: number, event: string, scorer: string, scorerTeam: string}} data The CTF data.
+     * @returns {void}
+     */
+    static ctf(ip, data) {
+        const {event, scorer, scorerTeam} = data,
+            game = Game.getGame(ip);
+
+        game.events.push(data);
+        game.flagStats.push(data);
+
+        const scorerPlayer = game.getPlayer(scorer);
+
+        scorerPlayer.team = scorerTeam;
+
+        switch (event) {
+            case "Return":
+                scorerPlayer.returns++;
+                break;
+            case "Pickup":
+                scorerPlayer.pickups++;
+                break;
+            case "Capture":
+                scorerPlayer.captures++;
+
+                if (game.teamScore[scorerTeam]) {
+                    game.teamScore[scorerTeam]++;
+                } else {
+                    game.teamScore[scorerTeam] = 1;
+                }
+
+                break;
+            case "CarrierKill":
+                scorerPlayer.carrierKills++;
+                break;
+        }
+    }
+
     //    #   #                                                #
     //    #                                                    #
     //  ###  ##     ###    ##    ##   ###   ###    ##    ##   ###
@@ -170,11 +219,11 @@ class Home {
     /**
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[]}} data The end game data.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[]}} data The end game data.
      * @returns {void}
      */
     static endGame(ip, data) {
-        const {start, end, damage, kills, goals} = data,
+        const {start, end, damage, kills, goals, flagStats} = data,
             game = Game.getGame(ip);
 
         game.start = new Date(start);
@@ -182,6 +231,7 @@ class Home {
         game.damage = damage;
         game.kills = kills;
         game.goals = goals;
+        game.flagStats = flagStats;
 
         const gameEl = document.getElementById(`game-${ip}`);
         gameEl.parentNode.removeChild(gameEl);
@@ -273,10 +323,10 @@ class Home {
             assistedPlayer.team = assistedTeam;
         }
 
-        if (!game.teamScore[attackerTeam]) {
+        if (attackerTeam && !game.teamScore[attackerTeam]) {
             game.teamScore[attackerTeam] = 0;
         }
-        if (!game.teamScore[defenderTeam]) {
+        if (defenderTeam && !game.teamScore[defenderTeam]) {
             game.teamScore[defenderTeam] = 0;
         }
 
@@ -284,7 +334,7 @@ class Home {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
-            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings || !game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL" && game.settings.matchMode !== "CTF") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]--;
                 } else {
@@ -298,7 +348,7 @@ class Home {
                 assistedPlayer.assists++;
             }
 
-            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings || !game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL" && game.settings.matchMode !== "CTF") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]++;
                 } else {

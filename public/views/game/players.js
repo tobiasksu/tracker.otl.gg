@@ -25,7 +25,7 @@ class PlayersView {
      */
     static get(game) {
         return /* html */`
-            <div class="table" style="grid-template-columns: repeat(${4 + (game.settings && game.settings.matchMode !== "ANARCHY" ? 1 : 0) + (game.settings && game.settings.matchMode === "MONSTERBALL" ? 3 : 0)}, auto);">
+            <div class="table" style="grid-template-columns: repeat(${4 + (game.settings && game.settings.matchMode !== "ANARCHY" ? 1 : 0) + (game.settings && game.settings.matchMode === "MONSTERBALL" ? 3 : 0) + (game.settings && game.settings.matchMode === "CTF" ? 4 : 0)}, auto);">
                 <div class="name header">Player</div>
                 ${game.settings && game.settings.matchMode !== "ANARCHY" ? /* html */`
                     <div class="team header">Team</div>
@@ -34,6 +34,12 @@ class PlayersView {
                     <div class="goals header">Goals</div>
                     <div class="goalAssists header">Goal Assists</div>
                     <div class="blunders header">Blunders</div>
+                ` : ""}
+                ${game.settings && game.settings.matchMode === "CTF" ? /* html */`
+                    <div class="captures header">Captures</div>
+                    <div class="pickups header">Pickups</div>
+                    <div class="carrierKills header">Carrier Kills</div>
+                    <div class="returns header">Returns</div>
                 ` : ""}
                 <div class="kills header">Kills</div>
                 <div class="assists header">Assists</div>
@@ -47,6 +53,12 @@ class PlayersView {
                         <div class="goals">${player.goals}</div>
                         <div class="goalAssists">${player.goalAssists}</div>
                         <div class="blunders">${player.blunders}</div>
+                    ` : ""}
+                    ${game.settings && game.settings.matchMode === "CTF" ? /* html */`
+                        <div class="captures">${player.captures}</div>
+                        <div class="pickups">${player.pickups}</div>
+                        <div class="carrierKills">${player.carrierKills}</div>
+                        <div class="returns">${player.returns}</div>
                     ` : ""}
                     <div class="kills">${player.kills}</div>
                     <div class="assists">${player.assists}</div>

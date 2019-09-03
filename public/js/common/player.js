@@ -1,5 +1,5 @@
 /**
- * @typedef {{name: string, team?: string, kills: number, assists: number, deaths: number, goals: number, goalAssists: number, blunders: number, connected?: number, disconnected?: number}} PlayerData
+ * @typedef {{name: string, team?: string, kills: number, assists: number, deaths: number, goals: number, goalAssists: number, blunders: number, returns: number, pickups: number, captures: number, carrierKills: number, connected?: number, disconnected?: number}} PlayerData
  */
 
 //  ####    ##
@@ -34,6 +34,10 @@ class Player {
         this.goals = data.goals;
         this.goalAssists = data.goalAssists;
         this.blunders = data.blunders;
+        this.returns = data.returns;
+        this.pickups = data.pickups;
+        this.captures = data.captures;
+        this.carrierKills = data.carrierKills;
         this.connected = data.connected;
         this.disconnected = data.disconnected;
     }

@@ -68,6 +68,65 @@ class Stats {
         game.events.push(data);
     }
 
+    //        #      #
+    //        #     # #
+    //  ##   ###    #
+    // #      #    ###
+    // #      #     #
+    //  ##     ##   #
+    /**
+     * Process the CTF stat.
+     * @param {string} ip The IP address of the server to update.
+     * @param {object} data The CTF data.
+     * @returns {Promise} A promise that resolves when the stat has been processed.
+     */
+    static async ctf(ip, data) {
+        const {event, scorer, scorerTeam} = data,
+            game = await Game.getGame(ip);
+
+        const scorerPlayer = game.getPlayer(scorer);
+
+        scorerPlayer.team = scorerTeam;
+
+        game.flagStats.push(data);
+
+        switch (event) {
+            case "Return":
+                scorerPlayer.returns++;
+                data.description = `${scorer} returned the ${scorerTeam} flag.`;
+                break;
+            case "Pickup": {
+                const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+
+                scorerPlayer.pickups++;
+                data.description = `${scorer} picked up the ${otherTeam} flag.`;
+                break;
+            } case "Capture":
+                scorerPlayer.captures++;
+
+                if (game.teamScore[scorerTeam]) {
+                    game.teamScore[scorerTeam]++;
+                } else {
+                    game.teamScore[scorerTeam] = 1;
+                }
+
+                data.description = `${scorer} scores for ${scorerTeam}!`;
+
+                break;
+            case "CarrierKill": {
+                const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+
+                scorerPlayer.carrierKills++;
+
+                data.description = `${scorer} killed the ${otherTeam} flag carrier!`;
+
+                break;
+            }
+        }
+
+        game.events.push(data);
+    }
+
     //    #   #                                                #
     //    #                                                    #
     //  ###  ##     ###    ##    ##   ###   ###    ##    ##   ###
@@ -96,11 +155,11 @@ class Stats {
     /**
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[]}} data The end game data.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[]}} data The end game data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async endGame(ip, data) {
-        const {start, end, damage, kills, goals} = data,
+        const {start, end, damage, kills, goals, flagStats} = data,
             game = await Game.getGame(ip);
 
         game.start = start;
@@ -108,6 +167,7 @@ class Stats {
         game.damage = damage;
         game.kills = kills;
         game.goals = goals;
+        game.flagStats = flagStats;
 
         await Db.add(ip, game);
 
@@ -182,18 +242,18 @@ class Stats {
             assistedPlayer.team = assistedTeam;
         }
 
-        if (!game.teamScore[defenderTeam]) {
-            game.teamScore[defenderTeam] = 0;
-        }
-        if (!game.teamScore[attackerTeam]) {
+        if (attackerTeam && !game.teamScore[attackerTeam]) {
             game.teamScore[attackerTeam] = 0;
+        }
+        if (defenderTeam && !game.teamScore[defenderTeam]) {
+            game.teamScore[defenderTeam] = 0;
         }
 
         if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam || attacker === defender) {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
-            if ((!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings || !game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL" && game.settings.matchMode !== "CTF") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]--;
                 } else {
@@ -207,7 +267,7 @@ class Stats {
                 assistedPlayer.assists++;
             }
 
-            if (game.settings && (!game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!game.settings || !game.settings.matchMode || game.settings.matchMode !== "MONSTERBALL" && game.settings.matchMode !== "CTF") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (game.teamScore[attackerTeam]) {
                     game.teamScore[attackerTeam]++;
                 } else {
@@ -248,6 +308,9 @@ class Stats {
                     break;
                 case "Blunder":
                     await Stats.blunder(ip, data);
+                    break;
+                case "CTF":
+                    await Stats.ctf(ip, data);
                     break;
                 case "Connect":
                     await Stats.connect(ip, data);
@@ -292,6 +355,10 @@ class Stats {
             goals: 0,
             goalAssists: 0,
             blunders: 0,
+            returns: 0,
+            pickups: 0,
+            captures: 0,
+            carrierKills: 0,
             connected: data.time
         }));
 

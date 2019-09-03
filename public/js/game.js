@@ -1,4 +1,4 @@
-/* global DetailsView, EventsView, PlayersView, ScoreView, timeago, WebSocketClient */
+/* global EventsView, PlayersView, ScoreView, timeago, WebSocketClient */
 
 //   ###                          ###
 //  #   #                           #
@@ -53,6 +53,9 @@ class GameJs {
                         break;
                     case "Blunder":
                         GameJs.blunder(data);
+                        break;
+                    case "CTF":
+                        GameJs.ctf(data);
                         break;
                     case "Connect":
                         GameJs.connect(data);
@@ -122,6 +125,52 @@ class GameJs {
         GameJs.game.events.push(data);
     }
 
+    //        #      #
+    //        #     # #
+    //  ##   ###    #
+    // #      #    ###
+    // #      #     #
+    //  ##     ##   #
+    /**
+     * Process the CTF stat.
+     * @param {{time: number, event: string, scorer: string, scorerTeam: string}} data The CTF data.
+     * @returns {void}
+     */
+    static ctf(data) {
+        const {event, scorer, scorerTeam} = data;
+
+        GameJs.game.events.push(data);
+        GameJs.game.flagStats.push(data);
+
+        const scorerPlayer = GameJs.game.getPlayer(scorer);
+
+        scorerPlayer.team = scorerTeam;
+
+        switch (event) {
+            case "Return":
+                scorerPlayer.returns++;
+                break;
+            case "Pickup":
+                scorerPlayer.pickups++;
+                break;
+            case "Capture":
+                scorerPlayer.captures++;
+
+                if (GameJs.game.teamScore[scorerTeam]) {
+                    GameJs.game.teamScore[scorerTeam]++;
+                } else {
+                    GameJs.game.teamScore[scorerTeam] = 1;
+                }
+
+                break;
+            case "CarrierKill":
+                scorerPlayer.carrierKills++;
+                break;
+        }
+
+        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+    }
+
     //    #   #                                                #
     //    #                                                    #
     //  ###  ##     ###    ##    ##   ###   ###    ##    ##   ###
@@ -149,13 +198,14 @@ class GameJs {
      * @returns {void}
      */
     static endGame(data) {
-        const {start, end, damage, kills, goals} = data;
+        const {start, end, damage, kills, goals, flagStats} = data;
 
         GameJs.game.start = new Date(start);
         GameJs.game.end = new Date(end);
         GameJs.game.damage = damage;
         GameJs.game.kills = kills;
         GameJs.game.goals = goals;
+        GameJs.game.flagStats = flagStats;
 
         GameJs.ws.instance.close();
 
@@ -234,10 +284,10 @@ class GameJs {
             assistedPlayer.team = assistedTeam;
         }
 
-        if (!GameJs.game.teamScore[attackerTeam]) {
+        if (attackerTeam && !GameJs.game.teamScore[attackerTeam]) {
             GameJs.game.teamScore[attackerTeam] = 0;
         }
-        if (!GameJs.game.teamScore[defenderTeam]) {
+        if (defenderTeam && !GameJs.game.teamScore[defenderTeam]) {
             GameJs.game.teamScore[defenderTeam] = 0;
         }
 
@@ -245,7 +295,7 @@ class GameJs {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
-            if ((!GameJs.game.settings || GameJs.game.settings.matchMode !== "MONSTERBALL") && attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!GameJs.game.settings || GameJs.game.settings.matchMode !== "MONSTERBALL" && GameJs.game.settings.matchMode !== "CTF") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (GameJs.game.teamScore[attackerTeam]) {
                     GameJs.game.teamScore[attackerTeam]--;
                 } else {
@@ -259,7 +309,7 @@ class GameJs {
                 assistedPlayer.assists++;
             }
 
-            if ((!GameJs.game.settings || GameJs.game.settings.matchMode !== "MONSTERBALL") && GameJs.game.settings.matchMode !== "MONSTERBALL" && attackerTeam && attackerTeam !== "ANARCHY") {
+            if ((!GameJs.game.settings || GameJs.game.settings.matchMode !== "MONSTERBALL" && GameJs.game.settings.matchMode !== "CTF") && attackerTeam && attackerTeam !== "ANARCHY") {
                 if (GameJs.game.teamScore[attackerTeam]) {
                     GameJs.game.teamScore[attackerTeam]++;
                 } else {

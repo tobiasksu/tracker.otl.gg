@@ -27,7 +27,7 @@ class Completed {
     //  ###
     /**
      * Gets the games that completed within the past hour.
-     * @returns {Promise<CompletedGame[]>} The recent games.
+     * @returns {Promise<CompletedGame[]>} A promise that resolves with the recent games.
      */
     static async getRecent() {
         /**

@@ -35,6 +35,7 @@ class Game {
         this.players = data.players;
         this.kills = data.kills;
         this.goals = data.goals;
+        this.flagStats = data.flagStats;
         this.events = data.events;
         this.damage = data.damage;
         this.teamScore = data.teamScore;
@@ -61,6 +62,7 @@ class Game {
                 players: [],
                 kills: [],
                 goals: [],
+                flagStats: [],
                 events: [],
                 teamScore: {}
             }));
@@ -94,7 +96,11 @@ class Game {
                 deaths: 0,
                 goals: 0,
                 goalAssists: 0,
-                blunders: 0
+                blunders: 0,
+                returns: 0,
+                pickups: 0,
+                captures: 0,
+                carrierKills: 0
             }));
         }
 

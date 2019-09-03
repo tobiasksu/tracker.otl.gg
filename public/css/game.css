@@ -66,31 +66,15 @@
     text-align: center;
 }
 
-#players .table .goals:not(.header) {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-}
-
-#players .table .goalAssists:not(.header) {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-}
-
-#players .table .blunders:not(.header) {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-}
-
-#players .table .kills:not(.header) {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-}
-
-#players .table .assists:not(.header) {
-    text-align: right;
-    font-variant-numeric: tabular-nums;
-}
-
+#players .table .goals:not(.header),
+#players .table .goalAssists:not(.header),
+#players .table .blunders:not(.header),
+#players .table .captures:not(.header),
+#players .table .pickups:not(.header),
+#players .table .carrierKills:not(.header),
+#players .table .returns:not(.header),
+#players .table .kills:not(.header),
+#players .table .assists:not(.header),
 #players .table .deaths:not(.header) {
     text-align: right;
     font-variant-numeric: tabular-nums;

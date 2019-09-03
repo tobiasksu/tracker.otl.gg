@@ -1,6 +1,6 @@
 /**
  * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], events: object[], damage?: object[], teamScore: Object<string, number>, startTime?: Date, projectedEnd?: Date, countdown?: number, elapsed?: number}} GameData
+ * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], flagStats: object[], events: object[], damage?: object[], teamScore: Object<string, number>, startTime?: Date, projectedEnd?: Date, countdown?: number, elapsed?: number}} GameData
  */
 
 const Player = require("./player"),
@@ -41,6 +41,7 @@ class Game {
         this.players = data.players;
         this.kills = data.kills;
         this.goals = data.goals;
+        this.flagStats = data.flagStats;
         this.events = data.events;
         this.damage = data.damage;
         this.teamScore = data.teamScore;
@@ -102,6 +103,7 @@ class Game {
                 players: [],
                 kills: [],
                 goals: [],
+                flagStats: [],
                 events: [],
                 teamScore: {}
             }));
@@ -169,7 +171,11 @@ class Game {
                 deaths: 0,
                 goals: 0,
                 goalAssists: 0,
-                blunders: 0
+                blunders: 0,
+                returns: 0,
+                pickups: 0,
+                captures: 0,
+                carrierKills: 0
             }));
         }
 
