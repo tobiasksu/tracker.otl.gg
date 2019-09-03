@@ -35,6 +35,33 @@ class CompletedDb {
         });
     }
 
+    //              #    ###         ###      #
+    //              #    #  #         #       #
+    //  ###   ##   ###   ###   #  #   #     ###
+    // #  #  # ##   #    #  #  #  #   #    #  #
+    //  ##   ##     #    #  #   # #   #    #  #
+    // #      ##     ##  ###     #   ###    ###
+    //  ###                     #
+    /**
+     * Gets a completed game by ID.
+     * @param {number} id The Game ID.
+     * @returns {Promise<{id: number, ip: string, data: object, date: Date}>} A promise that resolves with the game.
+     */
+    static async getById(id) {
+        /**
+         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[]]}}
+         */
+        const data = await db.query(/* sql */`
+            SELECT CompletedId, IPAddress, Data, CrDate FROM tblCompleted WHERE CompletedId = @id
+        `, {id: {type: Db.INT, value: id}});
+        return data && data.recordsets && data.recordsets[0] && data.recordsets[0][0] && {
+            id: data.recordsets[0][0].CompletedId,
+            ip: data.recordsets[0][0].IPAddress,
+            data: data.recordsets[0][0].Data,
+            date: data.recordsets[0][0].CrDate
+        } || void 0;
+    }
+
     //              #    ###                            #
     //              #    #  #                           #
     //  ###   ##   ###   #  #   ##    ##    ##   ###   ###
@@ -44,7 +71,7 @@ class CompletedDb {
     //  ###
     /**
      * Gets the games that completed within the past hour.
-     * @returns {Promise<{id: number, ip: string, data: object, date: Date}[]>} The recent games.
+     * @returns {Promise<{id: number, ip: string, data: object, date: Date}[]>} A promise that resolves with the recent games.
      */
     static async getRecent() {
         /**
