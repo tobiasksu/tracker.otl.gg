@@ -36,7 +36,7 @@ class DetailsView {
                             <script>new Elapsed(${game.elapsed});</script>
                         ` : ""}
                     </div>
-                    <div class="map">${DetailsView.Common.htmlEncode(game.settings.level)}</div>
+                    <div class="map">${game.settings.matchMode}${game.settings.level && ` - ${DetailsView.Common.htmlEncode(game.settings.level)}` || ""}</div>
                     <div class="condition">${game.condition}</div>
                 </div>
             </div>

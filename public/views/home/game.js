@@ -44,7 +44,7 @@ class GameView {
                             <script>new Elapsed(${game.elapsed});</script>
                         ` : ""}
                     </div>
-                    <div class="map">${game.settings && GameView.Common.htmlEncode(game.settings.level) || ""}</div>
+                    <div class="map">${game.settings.matchMode}${game.settings.level && ` - ${GameView.Common.htmlEncode(game.settings.level)}` || ""}</div>
                     ${game.settings && game.settings.condition ? /* html */`
                         <div class="condition">${game.settings.condition}</div>
                     ` : ""}

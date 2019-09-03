@@ -24,9 +24,7 @@ class ScoreView {
     static get(game) {
         let scores;
 
-        if (game.teamScore && Object.keys(game.teamScore).length > 0) {
-            scores = game.teamScore;
-        } else {
+        if (game.settings.matchMode === "ANARCHY") {
             scores = {};
             if (game.players.length > 2) {
                 game.players.forEach((player) => {
@@ -37,6 +35,8 @@ class ScoreView {
                     scores[player.name] = player.kills;
                 });
             }
+        } else {
+            scores = game.teamScore;
         }
 
         return /* html */`

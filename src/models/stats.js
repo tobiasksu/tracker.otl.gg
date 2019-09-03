@@ -30,6 +30,19 @@ class Stats {
         const {scorer, scorerTeam} = data,
             game = await Game.getGame(ip);
 
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode !== "MONSTERBALL") {
+            game.settings.matchMode = "MONSTERBALL";
+            game.teamScore = {"BLUE": 0, "ORANGE": 0};
+        }
+
         const scorerPlayer = game.getPlayer(scorer);
 
         scorerPlayer.team = scorerTeam;
@@ -84,6 +97,19 @@ class Stats {
         const {event, scorer, scorerTeam} = data,
             game = await Game.getGame(ip);
 
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode !== "CTF") {
+            game.settings.matchMode = "CTF";
+            game.teamScore = {"BLUE": 0, "ORANGE": 0};
+        }
+
         const scorerPlayer = game.getPlayer(scorer);
 
         scorerPlayer.team = scorerTeam;
@@ -93,13 +119,17 @@ class Stats {
         switch (event) {
             case "Return":
                 scorerPlayer.returns++;
+
                 data.description = `${scorer} returned the ${scorerTeam} flag.`;
+
                 break;
             case "Pickup": {
                 const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
 
                 scorerPlayer.pickups++;
+
                 data.description = `${scorer} picked up the ${otherTeam} flag.`;
+
                 break;
             } case "Capture":
                 scorerPlayer.captures++;
@@ -169,6 +199,87 @@ class Stats {
         game.goals = goals;
         game.flagStats = flagStats;
 
+        game.players = [];
+
+        game.kills.forEach((kill) => {
+            const attackerPlayer = game.getPlayer(kill.attacker),
+                defenderPlayer = game.getPlayer(kill.defender),
+                assistedPlayer = game.getPlayer(kill.assisted);
+
+            if (kill.attacker === kill.defender) {
+                attackerPlayer.kills--;
+                defenderPlayer.deaths++;
+            } else {
+                attackerPlayer.kills++;
+                defenderPlayer.deaths++;
+
+                if (assistedPlayer) {
+                    assistedPlayer.assists++;
+                }
+            }
+        });
+
+        switch (game.settings.matchMode) {
+            case "TEAM ANARCHY": {
+                game.teamScore = {};
+
+                const teams = game.kills.map((k) => k.attackerTeam).concat(game.kills.map((k) => k.defenderTeam)).concat(game.kills.map((k) => k.assistedTeam)).filter((k) => k).filter((k, index, self) => self.indexOf(k) === index);
+
+                teams.forEach((team) => {
+                    game.teamScore[team] = game.kills.filter((k) => k.attackerTeam === team && k.defenderTeam !== team).length - game.kills.filter((k) => k.attackerTeam === team && k.defenderTeam === team).length;
+                });
+
+                break;
+            } case "MONSTERBALL":
+                game.teamScore = {
+                    "BLUE": game.goals.filter((g) => g.scorerTeam === "BLUE" && !g.blunder || g.scorerTeam === "ORANGE" && g.blunder).length,
+                    "ORANGE": game.goals.filter((g) => g.scorerTeam === "ORANGE" && !g.blunder || g.scorerTeam === "BLUE" && g.blunder).length
+                };
+
+                game.goals.forEach((goal) => {
+                    const scorerPlayer = game.getPlayer(goal.scorer),
+                        assistedPlayer = game.getPlayer(goal.assisted);
+
+                    if (goal.blunder) {
+                        scorerPlayer.blunders++;
+                    } else {
+                        scorerPlayer.goals++;
+                    }
+
+                    if (assistedPlayer) {
+                        assistedPlayer.goalAssists++;
+                    }
+                });
+
+                break;
+            case "CTF":
+                game.teamScore = {
+                    "BLUE": game.flagStats.filter((f) => f.scorerTeam === "BLUE" && f.event === "Capture").length,
+                    "ORANGE": game.flagStats.filter((f) => f.scorerTeam === "ORANGE" && f.event === "Capture").length
+                };
+
+                game.flagStats.forEach((flag) => {
+                    const scorerPlayer = game.getPlayer(flag.scorer);
+
+                    switch (flag.event) {
+                        case "Capture":
+                            scorerPlayer.captures++;
+                            break;
+                        case "Pickup":
+                            scorerPlayer.pickups++;
+                            break;
+                        case "CarrierKill":
+                            scorerPlayer.carrierKills++;
+                            break;
+                        case "Return":
+                            scorerPlayer.returns++;
+                            break;
+                    }
+                });
+
+                break;
+        }
+
         await Db.add(ip, game);
 
         game.remove();
@@ -191,6 +302,18 @@ class Stats {
         const {scorer, scorerTeam, assisted, assistedTeam} = data,
             game = await Game.getGame(ip);
 
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode !== "MONSTERBALL") {
+            game.settings.matchMode = "MONSTERBALL";
+            game.teamScore = {"BLUE": 0, "ORANGE": 0};
+        }
 
         const scorerPlayer = game.getPlayer(scorer),
             assistedPlayer = game.getPlayer(assisted);
@@ -231,6 +354,18 @@ class Stats {
     static async kill(ip, data) {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam, weapon} = data,
             game = await Game.getGame(ip);
+
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode === "ANARCHY" && (attackerTeam || defenderTeam)) {
+            game.settings.matchMode = "TEAM ANARCHY";
+        }
 
         const attackerPlayer = game.getPlayer(attacker),
             defenderPlayer = game.getPlayer(defender),
@@ -295,6 +430,16 @@ class Stats {
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async processStat(ip, data) {
+        if (!Game.getByIp(ip) && data.type !== "StartGame") {
+            await Stats.startGame(ip, {matchMode: "ANARCHY"});
+
+            Websocket.broadcast({ip, data: {
+                matchMode: "ANARCHY",
+                name: "Stats",
+                type: "StartGame"
+            }});
+        }
+
         if (data.name === "Stats") {
             switch (data.type) {
                 case "StartGame":
@@ -347,7 +492,8 @@ class Stats {
         }
 
         game.settings = data;
-        game.players = data.players.map((player) => new Player({
+
+        game.players = data.player && data.players.map((player) => new Player({
             name: player,
             kills: 0,
             assists: 0,
@@ -360,7 +506,7 @@ class Stats {
             captures: 0,
             carrierKills: 0,
             connected: data.time
-        }));
+        })) || [];
 
         if (game.settings.timeLimit) {
             game.projectedEnd = new Date();

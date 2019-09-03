@@ -54,7 +54,7 @@ class CompletedGameView {
                     <div class="time">
                         Completed <time class="timeago" datetime="${new Date(game.end).toISOString()}">${new Date(game.end)}</time>
                     </div>
-                    <div class="map">${game.settings && game.settings.level ? CompletedGameView.Common.htmlEncode(game.settings.level) : ""}</div>
+                    <div class="map">${game.settings.matchMode}${game.settings.level && ` - ${CompletedGameView.Common.htmlEncode(game.settings.level)}` || ""}</div>
                     ${game.settings && game.settings.condition ? /* html */`
                         <div class="condition">${game.settings.condition}</div>
                     ` : ""}

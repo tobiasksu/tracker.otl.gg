@@ -90,6 +90,20 @@ class GameJs {
     static blunder(data) {
         const {scorer, scorerTeam} = data;
 
+        if (!GameJs.game.settings) {
+            GameJs.game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!GameJs.game.settings.matchMode) {
+            GameJs.game.settings.matchMode = "ANARCHY";
+        }
+
+        if (GameJs.game.settings.matchMode !== "MONSTERBALL") {
+            GameJs.game.settings.matchMode = "MONSTERBALL";
+            GameJs.game.teamScore = {"BLUE": 0, "ORANGE": 0};
+            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+        }
+
         GameJs.game.events.push(data);
         GameJs.game.goals.push(data);
 
@@ -138,6 +152,20 @@ class GameJs {
      */
     static ctf(data) {
         const {event, scorer, scorerTeam} = data;
+
+        if (!GameJs.game.settings) {
+            GameJs.game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!GameJs.game.settings.matchMode) {
+            GameJs.game.settings.matchMode = "ANARCHY";
+        }
+
+        if (GameJs.game.settings.matchMode !== "CTF") {
+            GameJs.game.settings.matchMode = "CTF";
+            GameJs.game.teamScore = {"BLUE": 0, "ORANGE": 0};
+            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+        }
 
         GameJs.game.events.push(data);
         GameJs.game.flagStats.push(data);
@@ -232,6 +260,20 @@ class GameJs {
     static goal(data) {
         const {scorer, scorerTeam, assisted, assistedTeam} = data;
 
+        if (!GameJs.game.settings) {
+            GameJs.game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!GameJs.game.settings.matchMode) {
+            GameJs.game.settings.matchMode = "ANARCHY";
+        }
+
+        if (GameJs.game.settings.matchMode !== "MONSTERBALL") {
+            GameJs.game.settings.matchMode = "MONSTERBALL";
+            GameJs.game.teamScore = {"BLUE": 0, "ORANGE": 0};
+            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+        }
+
         GameJs.game.events.push(data);
         GameJs.game.goals.push(data);
 
@@ -270,6 +312,19 @@ class GameJs {
      */
     static kill(data) {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data;
+
+        if (!GameJs.game.settings) {
+            GameJs.game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!GameJs.game.settings.matchMode) {
+            GameJs.game.settings.matchMode = "ANARCHY";
+        }
+
+        if (GameJs.game.settings.matchMode === "ANARCHY" && (attackerTeam || defenderTeam)) {
+            GameJs.game.settings.matchMode = "TEAM ANARCHY";
+            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+        }
 
         GameJs.game.events.push(data);
         GameJs.game.kills.push(data);

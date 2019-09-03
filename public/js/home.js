@@ -69,7 +69,6 @@ class Home {
                         break;
                 }
 
-                // TODO: What happens if the first packet we receive isn't StartGame? 🤔
                 document.getElementById(`game-${ip}`).querySelector(".scores").innerHTML = ScoreView.get(game);
 
                 if (data.type === "EndGame") {
@@ -109,6 +108,20 @@ class Home {
     static blunder(ip, data) {
         const {scorer, scorerTeam} = data,
             game = Game.getGame(ip);
+
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode !== "MONSTERBALL") {
+            game.settings.matchMode = "MONSTERBALL";
+            game.teamScore = {"BLUE": 0, "ORANGE": 0};
+            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+        }
 
         game.events.push(data);
         game.goals.push(data);
@@ -161,6 +174,20 @@ class Home {
     static ctf(ip, data) {
         const {event, scorer, scorerTeam} = data,
             game = Game.getGame(ip);
+
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode !== "CTF") {
+            game.settings.matchMode = "CTF";
+            game.teamScore = {"BLUE": 0, "ORANGE": 0};
+            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+        }
 
         game.events.push(data);
         game.flagStats.push(data);
@@ -271,6 +298,20 @@ class Home {
         const {scorer, scorerTeam, assisted, assistedTeam} = data,
             game = Game.getGame(ip);
 
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode !== "MONSTERBALL") {
+            game.settings.matchMode = "MONSTERBALL";
+            game.teamScore = {"BLUE": 0, "ORANGE": 0};
+            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+        }
+
         game.events.push(data);
         game.goals.push(data);
 
@@ -309,6 +350,19 @@ class Home {
     static kill(ip, data) {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data,
             game = Game.getGame(ip);
+
+        if (!game.settings) {
+            game.settings = {matchMode: "ANARCHY"};
+        }
+
+        if (!game.settings.matchMode) {
+            game.settings.matchMode = "ANARCHY";
+        }
+
+        if (game.settings.matchMode === "ANARCHY" && (attackerTeam || defenderTeam)) {
+            game.settings.matchMode = "TEAM ANARCHY";
+            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+        }
 
         game.events.push(data);
         game.kills.push(data);
@@ -375,7 +429,7 @@ class Home {
 
         game.server = data.server;
         game.settings = data;
-        game.players = data.players.map((player) => new Player({
+        game.players = data.players && data.players.map((player) => new Player({
             name: player,
             kills: 0,
             assists: 0,
@@ -384,7 +438,7 @@ class Home {
             goalAssists: 0,
             blunders: 0,
             connected: data.time
-        }));
+        })) || [];
         game.countdown = data.countdown;
         game.elapsed = data.elapsed;
 
