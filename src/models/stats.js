@@ -280,6 +280,9 @@ class Stats {
                 break;
         }
 
+        data.teamScore = game.teamScore;
+        data.players = game.players;
+
         await Db.add(ip, game);
 
         game.remove();

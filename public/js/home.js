@@ -250,7 +250,7 @@ class Home {
      * @returns {void}
      */
     static endGame(ip, data) {
-        const {start, end, damage, kills, goals, flagStats} = data,
+        const {start, end, damage, kills, goals, flagStats, players, teamScore} = data,
             game = Game.getGame(ip);
 
         game.start = new Date(start);
@@ -259,6 +259,8 @@ class Home {
         game.kills = kills;
         game.goals = goals;
         game.flagStats = flagStats;
+        game.players = players;
+        game.teamScore = teamScore;
 
         const gameEl = document.getElementById(`game-${ip}`);
         gameEl.parentNode.removeChild(gameEl);

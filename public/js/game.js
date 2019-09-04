@@ -226,7 +226,7 @@ class GameJs {
      * @returns {void}
      */
     static endGame(data) {
-        const {start, end, damage, kills, goals, flagStats} = data;
+        const {start, end, damage, kills, goals, flagStats, players, teamScore} = data;
 
         GameJs.game.start = new Date(start);
         GameJs.game.end = new Date(end);
@@ -234,6 +234,8 @@ class GameJs {
         GameJs.game.kills = kills;
         GameJs.game.goals = goals;
         GameJs.game.flagStats = flagStats;
+        GameJs.game.players = players;
+        GameJs.game.teamScore = teamScore;
 
         GameJs.ws.instance.close();
 
