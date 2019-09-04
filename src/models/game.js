@@ -156,9 +156,10 @@ class Game {
     /**
      * Retrieves a player from a game.
      * @param {string} name The name of the player.
+     * @param {string} [team] The team the player is on.
      * @returns {Player} The player.
      */
-    getPlayer(name) {
+    getPlayer(name, team) {
         if (!name) {
             return void 0;
         }
@@ -166,6 +167,7 @@ class Game {
         if (!this.players.find((p) => p.name === name)) {
             this.players.push(new Player({
                 name,
+                team,
                 kills: 0,
                 assists: 0,
                 deaths: 0,
