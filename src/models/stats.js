@@ -199,6 +199,7 @@ class Stats {
         game.goals = goals;
         game.flagStats = flagStats;
 
+        // Regenerate players and teamScore arrays in case our data is out of sync from the server due to dropped packets, restarted tracker, etc.
         game.players = [];
 
         game.kills.forEach((kill) => {
