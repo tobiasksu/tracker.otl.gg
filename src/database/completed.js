@@ -35,6 +35,27 @@ class CompletedDb {
         });
     }
 
+    //              #     ##   ##    ##    ###      #
+    //              #    #  #   #     #     #       #
+    //  ###   ##   ###   #  #   #     #     #     ###   ###
+    // #  #  # ##   #    ####   #     #     #    #  #  ##
+    //  ##   ##     #    #  #   #     #     #    #  #    ##
+    // #      ##     ##  #  #  ###   ###   ###    ###  ###
+    //  ###
+    /**
+     * Gets all IDs for completed games.
+     * @returns {Promise<number[]>} A promise that resolves with the list of completed IDs.
+     */
+    static async getAllIds() {
+        /**
+         * @type {{recordsets: [{CompletedId: number}[]]}}
+         */
+        const data = await db.query(/* sql */`
+            SELECT CompletedId FROM tblCompleted
+        `);
+        return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => row.CompletedId) || [];
+    }
+
     //              #    ###         ###      #
     //              #    #  #         #       #
     //  ###   ##   ###   ###   #  #   #     ###
@@ -86,6 +107,28 @@ class CompletedDb {
             data: row.Data,
             date: row.CrDate
         })) || [];
+    }
+
+    //                #         #
+    //                #         #
+    // #  #  ###    ###   ###  ###    ##
+    // #  #  #  #  #  #  #  #   #    # ##
+    // #  #  #  #  #  #  # ##   #    ##
+    //  ###  ###    ###   # #    ##   ##
+    //       #
+    /**
+     * Updates a completed game.
+     * @param {number} id The completed ID.
+     * @param {object} data The data to save.
+     * @returns {Promise} A promise that resolves when the update is complete.
+     */
+    static async update(id, data) {
+        await db.query(/* sql */`
+            UPDATE tblCompleted SET Data = @data WHERE CompletedId = @id
+        `, {
+            id: {type: Db.INT, value: id},
+            data: {type: Db.TEXT, value: JSON.stringify(data)}
+        });
     }
 }
 

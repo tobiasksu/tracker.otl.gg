@@ -52,6 +52,21 @@ const weapons = [
  * A class that represents completed games.
  */
 class Completed {
+    //              #     ##   ##    ##    ###      #
+    //              #    #  #   #     #     #       #
+    //  ###   ##   ###   #  #   #     #     #     ###   ###
+    // #  #  # ##   #    ####   #     #     #    #  #  ##
+    //  ##   ##     #    #  #   #     #     #    #  #    ##
+    // #      ##     ##  #  #  ###   ###   ###    ###  ###
+    //  ###
+    /**
+     * Gets all IDs for completed games.
+     * @returns {Promise<number[]>} A promise that resolves with the list of completed IDs.
+     */
+    static getAllIds() {
+        return Db.getAllIds();
+    }
+
     //              #    ###         ###      #
     //              #    #  #         #       #
     //  ###   ##   ###   ###   #  #   #     ###
@@ -94,10 +109,28 @@ class Completed {
                 teamScore: completedGame.data.teamScore
             });
 
-            game.events.sort((a, b) => a.time - b.time);
+            if (game.events) {
+                game.events.sort((a, b) => a.time - b.time);
+            }
         }
 
         return game;
+    }
+
+    //              #    ###               ###         ###      #
+    //              #    #  #              #  #         #       #
+    //  ###   ##   ###   #  #   ###  #  #  ###   #  #   #     ###
+    // #  #  # ##   #    ###   #  #  #  #  #  #  #  #   #    #  #
+    //  ##   ##     #    # #   # ##  ####  #  #   # #   #    #  #
+    // #      ##     ##  #  #   # #  ####  ###     #   ###    ###
+    //  ###                                       #
+    /**
+     * Gets a completed game's raw data by ID.
+     * @param {number} id The Game ID.
+     * @returns {Promise<object>} A promise that resolves with the raw game data.
+     */
+    static getRawById(id) {
+        return Db.getById(id);
     }
 
     //              #    ###                            #

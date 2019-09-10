@@ -185,7 +185,7 @@ class Stats {
     /**
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[]}} data The end game data.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], teamScore: object, players: object[]}} data The end game data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async endGame(ip, data) {
@@ -203,9 +203,9 @@ class Stats {
         game.players = [];
 
         game.kills.forEach((kill) => {
-            const attackerPlayer = game.getPlayer(kill.attacker),
-                defenderPlayer = game.getPlayer(kill.defender),
-                assistedPlayer = game.getPlayer(kill.assisted);
+            const attackerPlayer = game.getPlayer(kill.attacker, kill.attackerTeam),
+                defenderPlayer = game.getPlayer(kill.defender, kill.defenderTeam),
+                assistedPlayer = game.getPlayer(kill.assisted, kill.assistedTeam);
 
             if (kill.attacker === kill.defender) {
                 attackerPlayer.kills--;
@@ -238,8 +238,8 @@ class Stats {
                 };
 
                 game.goals.forEach((goal) => {
-                    const scorerPlayer = game.getPlayer(goal.scorer),
-                        assistedPlayer = game.getPlayer(goal.assisted);
+                    const scorerPlayer = game.getPlayer(goal.scorer, goal.scorerTeam),
+                        assistedPlayer = game.getPlayer(goal.assisted, goal.assistedTeam);
 
                     if (goal.blunder) {
                         scorerPlayer.blunders++;
@@ -260,7 +260,7 @@ class Stats {
                 };
 
                 game.flagStats.forEach((flag) => {
-                    const scorerPlayer = game.getPlayer(flag.scorer);
+                    const scorerPlayer = game.getPlayer(flag.scorer, flag.scorerTeam);
 
                     switch (flag.event) {
                         case "Capture":
