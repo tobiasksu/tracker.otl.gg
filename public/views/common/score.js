@@ -19,7 +19,7 @@ class ScoreView {
     /**
      * Gets the rendered score template.
      * @param {object} game The game with the scores to display.
-     * @returns {string} An HTML string of the score.
+     * @returns {string} An HTML string of the rendered score template.
      */
     static get(game) {
         let scores;

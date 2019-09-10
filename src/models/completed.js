@@ -8,7 +8,7 @@ const Db = require("../database/completed"),
 
 const weapons = [
     "none",
-    "missile_alien_pod",
+    "missile_alien_pod", // Not a multiplayer weapon
     "missile_creeper",
     "missile_devastator",
     "missile_devastator_mini",
@@ -19,23 +19,56 @@ const weapons = [
     "missile_smart_mini",
     "missile_timebomb",
     "missile_vortex",
-    "proj_alien_blaster",
-    "proj_alien_vulcan",
-    "proj_beam",
+    "proj_alien_blaster", // Not a multiplayer weapon
+    "proj_alien_vulcan", // Not a multiplayer weapon
+    "proj_beam", // Lancer
     "proj_driller",
-    "proj_driller_mini",
-    "proj_enemy_blaster",
-    "proj_enemy_core",
-    "proj_enemy_vulcan",
+    "proj_driller_mini", // Not a multiplayer weapon
+    "proj_enemy_blaster", // Not a multiplayer weapon
+    "proj_enemy_core", // Not a multiplayer weapon
+    "proj_enemy_vulcan", // Not a multiplayer weapon
     "proj_flak_cannon",
     "proj_flare",
-    "proj_flare_sticky",
+    "proj_flare_sticky", // Not a multiplayer weapon
     "proj_impulse",
-    "proj_melee",
+    "proj_melee", // Not a multiplayer weapon
     "proj_reflex",
-    "proj_shotgun",
+    "proj_shotgun", // Crusher
     "proj_thunderbolt",
-    "proj_vortex",
+    "proj_vortex", // Cyclone
+    "num"
+];
+
+const weaponNames = [
+    "Miscellaneous",
+    "Unknown", // Not a multiplayer weapon
+    "Creeper",
+    "Devastator",
+    "Devastator",
+    "Falcon",
+    "Hunter",
+    "Missile Pod",
+    "Nova",
+    "Nova",
+    "Time Bomb",
+    "Vortex",
+    "Unknown", // Not a multiplayer weapon
+    "Unknown", // Not a multiplayer weapon
+    "Lancer", // Lancer
+    "Driller",
+    "Unknown", // Not a multiplayer weapon
+    "Unknown", // Not a multiplayer weapon
+    "Unknown", // Not a multiplayer weapon
+    "Unknown", // Not a multiplayer weapon
+    "Flak",
+    "Flare",
+    "Unknown", // Not a multiplayer weapon
+    "Impulse",
+    "Unknown", // Not a multiplayer weapon
+    "Reflex",
+    "Crusher", // Crusher
+    "Thunderbolt",
+    "Cyclone", // Cyclone
     "num"
 ];
 
@@ -113,6 +146,29 @@ class Completed {
                 game.events.sort((a, b) => a.time - b.time);
             }
         }
+
+        game.damage.forEach((stat) => {
+            stat.weapon = weaponNames[weapons.indexOf(stat.weapon)];
+        });
+
+        const damage = [];
+
+        game.damage.forEach((dmg) => {
+            const stat = damage.find((d) => d.attacker === dmg.attacker && d.defender === dmg.defender && d.weapon === dmg.weapon);
+
+            if (stat) {
+                stat.damage += dmg.damage;
+            } else {
+                damage.push({
+                    attacker: dmg.attacker,
+                    defender: dmg.defender,
+                    weapon: dmg.weapon,
+                    damage: dmg.damage
+                });
+            }
+        });
+
+        game.damage = damage;
 
         return game;
     }

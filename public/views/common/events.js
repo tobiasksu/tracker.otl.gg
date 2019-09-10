@@ -17,9 +17,9 @@ class EventsView {
     // #      ##     ##
     //  ###
     /**
-     * Gets the rendered game page template.
+     * Gets the rendered events template.
      * @param {object} game The game to display.
-     * @returns {string} An HTML string of the game page.
+     * @returns {string} An HTML string of the rendered events template.
      */
     static get(game) {
         return /* html */`

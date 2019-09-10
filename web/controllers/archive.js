@@ -1,5 +1,6 @@
 const Common = require("../includes/common"),
     Completed = require("../../src/models/completed"),
+    ArchiveView = require("../../public/views/archive.js"),
     NotFoundView = require("../../public/views/404");
 
 /**
@@ -44,8 +45,16 @@ class Archive {
             return;
         }
 
-        res.status(200).send(game);
-        //res.status(200).send(Common.page("", DownloadView.get(), req));
+        res.status(200).json(game);        return;
+        res.status(200).send(Common.page(/* html */`
+            <link rel="stylesheet" href="/css/game.css" />
+            <script src="/js/common/timeago.min.js"></script>
+            <script src="/views/common/score.js"></script>
+            <script src="/views/common/completedDetails.js"></script>
+            <script src="/views/common/players.js"></script>
+            <script src="/views/common/events.js"></script>
+            <script src="/js/archive.js"></script>
+        `, ArchiveView.get(game), req));
     }
 }
 

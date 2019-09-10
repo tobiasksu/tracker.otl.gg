@@ -26,7 +26,7 @@ class Common {
         let ret = value.toString();
 
         while (ret.length < digits) {
-            ret = `0${ret}`;
+            ret = "0" + ret;
         }
 
         return ret;
@@ -44,7 +44,7 @@ class Common {
      * @returns {string} The formatted time.
      */
     static formatTime(time) {
-        return (time.getHours() === 0 ? "12" : time.getHours() > 12 ? (time.getHours() - 12).toString() : time.getHours().toString()) + ":" + (time.getMinutes() < 10 ? "0" : "") + time.getMinutes().toString() + " " + (time.getHours() < 12 ? "AM" : "PM");
+        return (time.getHours() === 0 ? "12" : time.getHours() > 12 ? (time.getHours() - 12).toString() : time.getHours().toString()) + ":" + Common.pad(time.getMinutes(), 2) + " " + (time.getHours() < 12 ? "AM" : "PM");
     }
 
     //   #                            #    ###    #                 ##
@@ -60,7 +60,8 @@ class Common {
      * @returns {string} The formatted time span.
      */
     static formatTimeSpan(seconds) {
-        return `${seconds > 3600 ? `${Math.floor(seconds / 3600)}:` : ""}${seconds > 60 ? `${Common.pad(Math.floor(seconds / 60) % 60, seconds >= 600 ? 2 : 1)}:` : ""}${Common.pad(Math.floor(seconds % 60), seconds >= 10 ? 2 : 1)}.${Common.pad(Math.floor(seconds * 1000) % 1000, 3)}`;
+        // return `${seconds > 3600 ? `${Math.floor(seconds / 3600)}:` : ""}${seconds > 60 ? `${Common.pad(Math.floor(seconds / 60) % 60, seconds >= 600 ? 2 : 1)}:` : ""}${Common.pad(Math.floor(seconds % 60), seconds >= 10 ? 2 : 1)}.${Common.pad(Math.floor(seconds * 1000) % 1000, 3)}`;
+        return (seconds > 3600 ? Math.floor(seconds / 3600).toString() + ":" : "") + (seconds > 60 ? Common.pad(Math.floor(seconds / 60) % 60, seconds >= 600 ? 2 : 1) + ":" : "") + Common.pad(Math.floor(seconds % 60), seconds >= 10 ? 2 : 1) + "." + Common.pad(Math.floor(seconds * 1000) % 1000, 3);
     }
 
     //   #                            #    ###          #
@@ -114,7 +115,7 @@ class Common {
      * @returns {string} The encoded string.
      */
     static htmlEncode(str) {
-        return str.replace(/[\u0080-\uFFFF<>&]/gim, (i) => `&#${i.charCodeAt(0)};`);
+        return str.replace(/[\u0080-\uFFFF<>&]/gim, (i) => "&#" + i.charCodeAt(0) + ";");
     }
 
     // ##                   #  ###          #          ###          #          ###                     ##           #

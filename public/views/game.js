@@ -19,13 +19,13 @@ class GameView {
     /**
      * Gets the rendered game page template.
      * @param {object} game The game to display.
-     * @returns {string} An HTML string of the game page.
+     * @returns {string} An HTML string of the rendered game template.
      */
     static get(game) {
         return /* html */`
             <div id="top">
                 <div id="game">
-                    ${GameView.DetailsView.get(game)}
+                    ${GameView.DetailsView.get(game, false)}
                 </div>
                 <div id="players">
                     ${GameView.PlayersView.get(game)}
@@ -42,11 +42,11 @@ class GameView {
 }
 
 // @ts-ignore
-GameView.DetailsView = typeof DetailsView === "undefined" ? require("./game/details") : DetailsView; // eslint-disable-line no-undef
+GameView.DetailsView = typeof DetailsView === "undefined" ? require("./common/details") : DetailsView; // eslint-disable-line no-undef
 // @ts-ignore
-GameView.PlayersView = typeof PlayersView === "undefined" ? require("./game/players") : PlayersView; // eslint-disable-line no-undef
+GameView.PlayersView = typeof PlayersView === "undefined" ? require("./common/players") : PlayersView; // eslint-disable-line no-undef
 // @ts-ignore
-GameView.EventsView = typeof EventsView === "undefined" ? require("./game/events") : EventsView; // eslint-disable-line no-undef
+GameView.EventsView = typeof EventsView === "undefined" ? require("./common/events") : EventsView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = GameView; // eslint-disable-line no-undef

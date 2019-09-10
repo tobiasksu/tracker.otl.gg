@@ -58,10 +58,10 @@ class Game {
         res.status(200).send(Common.page(/* html */`
             <link rel="stylesheet" href="/css/game.css" />
             <script src="/js/common/timeago.min.js"></script>
-            <script src="/views/game/score.js"></script>
-            <script src="/views/game/details.js"></script>
-            <script src="/views/game/players.js"></script>
-            <script src="/views/game/events.js"></script>
+            <script src="/views/common/score.js"></script>
+            <script src="/views/common/details.js"></script>
+            <script src="/views/common/players.js"></script>
+            <script src="/views/common/events.js"></script>
             <script src="/js/common/websocketclient.js"></script>
             <script src="/js/common/countdown.js"></script>
             <script src="/js/common/elapsed.js"></script>

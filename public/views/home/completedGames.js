@@ -19,15 +19,15 @@ class CompletedGamesView {
     // #      ##     ##
     //  ###
     /**
-     * Gets the rendered games template.
+     * Gets the rendered completed games template.
      * @param {object[]} games The games to display.
-     * @returns {string} An HTML string of the games.
+     * @returns {string} An HTML string of the rendered completed games template.
      */
     static get(games) {
         return /* html */`
             ${Object.keys(games).map((s) => /* html */`
                 <div class="game" id="completed-${games[s].id}">
-                    ${CompletedGamesView.CompletedGameView.get(games[s].data)}
+                    ${CompletedGamesView.CompletedDetailsView.get(games[s].data, true)}
                 </div>
             `).join("")}
         `;
@@ -35,7 +35,7 @@ class CompletedGamesView {
 }
 
 // @ts-ignore
-CompletedGamesView.CompletedGameView = typeof CompletedGameView === "undefined" ? require("./completedGame") : CompletedGameView; // eslint-disable-line no-undef
+CompletedGamesView.CompletedDetailsView = typeof CompletedDetailsView === "undefined" ? require("../common/completedDetails") : CompletedDetailsView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = CompletedGamesView; // eslint-disable-line no-undef

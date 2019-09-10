@@ -19,9 +19,9 @@ class PlayersView {
     // #      ##     ##
     //  ###
     /**
-     * Gets the rendered game page template.
+     * Gets the rendered players template.
      * @param {object} game The game to display.
-     * @returns {string} An HTML string of the game page.
+     * @returns {string} An HTML string of the rendered players template.
      */
     static get(game) {
         return /* html */`
