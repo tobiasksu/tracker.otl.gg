@@ -69,7 +69,29 @@ const weaponNames = [
     "Crusher", // Crusher
     "Thunderbolt",
     "Cyclone", // Cyclone
-    "num"
+    "Unknown"
+];
+
+const orderedWeapons = [
+    "Impulse",
+    "Cyclone",
+    "Reflex",
+    "Crusher",
+    "Driller",
+    "Flak",
+    "Thunderbolt",
+    "Lancer",
+    "Falcon",
+    "Missile Pod",
+    "Hunter",
+    "Creeper",
+    "Nova",
+    "Devastator",
+    "Time Bomb",
+    "Vortex",
+    "Flare",
+    "Miscellaneous",
+    "Unknown"
 ];
 
 //   ###                         ##            #                #
@@ -85,6 +107,21 @@ const weaponNames = [
  * A class that represents completed games.
  */
 class Completed {
+    //                #                       #  #  #
+    //                #                       #  #  #
+    //  ##   ###    ###   ##   ###    ##    ###  #  #   ##    ###  ###    ##   ###    ###
+    // #  #  #  #  #  #  # ##  #  #  # ##  #  #  ####  # ##  #  #  #  #  #  #  #  #  ##
+    // #  #  #     #  #  ##    #     ##    #  #  ####  ##    # ##  #  #  #  #  #  #    ##
+    //  ##   #      ###   ##   #      ##    ###  #  #   ##    # #  ###    ##   #  #  ###
+    //                                                             #
+    /**
+     * Returns the list of ordered weapons.
+     * @returns {string[]} The list of ordered weapons.
+     */
+    static get orderedWeapons() {
+        return orderedWeapons;
+    }
+
     //              #     ##   ##    ##    ###      #
     //              #    #  #   #     #     #       #
     //  ###   ##   ###   #  #   #     #     #     ###   ###

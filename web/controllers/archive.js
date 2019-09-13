@@ -45,7 +45,11 @@ class Archive {
             return;
         }
 
-        res.status(200).json(game);        return;
+        let weapons = [];
+        if (game.damage) {
+            weapons = game.damage.map((d) => d.weapon).filter((w, index, arr) => arr.indexOf(w) === index).sort((a, b) => Completed.orderedWeapons.indexOf(a) - Completed.orderedWeapons.indexOf(b));
+        }
+
         res.status(200).send(Common.page(/* html */`
             <link rel="stylesheet" href="/css/game.css" />
             <script src="/js/common/timeago.min.js"></script>
@@ -54,7 +58,7 @@ class Archive {
             <script src="/views/common/players.js"></script>
             <script src="/views/common/events.js"></script>
             <script src="/js/archive.js"></script>
-        `, ArchiveView.get(game), req));
+        `, ArchiveView.get(game, weapons), req));
     }
 }
 

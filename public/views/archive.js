@@ -19,9 +19,10 @@ class ArchiveView {
     /**
      * Gets the rendered archive template.
      * @param {object} game The game to display.
+     * @param {string[]} weapons The list of weapons used in the game.
      * @returns {string} An HTML string of the rendered archive template.
      */
-    static get(game) {
+    static get(game, weapons) {
         return /* html */`
             <div id="top">
                 <div id="game">
@@ -32,7 +33,11 @@ class ArchiveView {
                 </div>
             </div>
             <div id="damage">
-                
+                <div id="weapons">
+                    ${weapons.map((weapon) => /* html */`
+                        <a class="weapon" href="#" title="${weapon}"><img src="/images/${weapon.replace(/ /g, "").toLocaleLowerCase()}.png" width="28" height="41" alt="${weapon}" /></a>
+                    `).join("")}
+                </div>
             </div>
             <div id="events">
                 ${ArchiveView.EventsView.get(game)}
