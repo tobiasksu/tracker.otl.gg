@@ -214,6 +214,23 @@ class Completed {
 
         return games.filter((g) => g.data && g.data.events && g.data.events.length && g.data.events.length > 0);
     }
+
+    //                #         #
+    //                #         #
+    // #  #  ###    ###   ###  ###    ##
+    // #  #  #  #  #  #  #  #   #    # ##
+    // #  #  #  #  #  #  # ##   #    ##
+    //  ###  ###    ###   # #    ##   ##
+    //       #
+    /**
+     * Updates a completed game's raw data.
+     * @param {number} id The ID of the game to update.
+     * @param {object} data The data to update the game with.
+     * @returns {Promise} A promise that resolves when the game is updated.
+     */
+    static update(id, data) {
+        return Db.update(id, data);
+    }
 }
 
 module.exports = Completed;
