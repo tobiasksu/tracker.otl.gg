@@ -37,7 +37,7 @@ class CompletedDetailsView {
             <div class="table">
                 <div class="server">${addLink ? /* html */`
                     <a href="/archive/${game.id}">
-                        ` : ""}${CompletedDetailsView.Common.htmlEncode(game.server ? game.server.name : game.ip)}${addLink ? /* html */`
+                        ` : ""}${CompletedDetailsView.Common.htmlEncode((game.server ? game.server.name : game.ip) || "Unknown")}${addLink ? /* html */`
                     </a>
                 ` : ""}</div>
                 <div class="scores">
