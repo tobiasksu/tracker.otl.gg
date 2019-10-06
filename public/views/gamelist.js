@@ -33,9 +33,9 @@ class GameListView {
                     <div>
                         ${game.data && game.data.teamScore && Object.keys(game.data.teamScore).length > 0 && Object.keys(game.data.teamScore).sort((a, b) => game.data.teamScore[b] - game.data.teamScore[a]).map((team) => /* html */`
                             ${team} ${game.data.teamScore[team]}
-                        `.trim()).join(", ") || game.data && game.data.players && game.data.players.length > 0 && game.data.players.sort((a, b) => (b.kills * 3 + b.assists) - (a.kills * 3 + a.assists)).map((player) => /* html */`
-                            ${player.name} ${player.kills * 3 + player.assists}
-                        `.trim()).join(", ") || ""}
+                        `.trim()).join(", ") || game.data && game.data.players && game.data.players.length > 0 && game.data.players.sort((a, b) => (b.kills * (game.data.players.length > 2 ? 3 : 1) + b.assists) - (a.kills * (game.data.players.length > 2 ? 3 : 1) + a.assists)).map((player) => /* html */`
+                            ${player.name} ${player.kills * (game.data.players.length > 2 ? 3 : 1) + player.assists}
+                        `.trim()).join(", ") || ""}${game.data && game.data.teamScore && game.data.teamScore.length > 4 || game.data && (!game.data.teamScore || game.data.teamScore.length === 0) && game.data.players && game.data.players.length > 4 ? "..." : ""}
                     </div>
                 `).join("")}
             </div>
