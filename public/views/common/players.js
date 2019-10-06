@@ -44,7 +44,7 @@ class PlayersView {
                 <div class="kills header">Kills</div>
                 <div class="assists header">Assists</div>
                 <div class="deaths header">Deaths</div>
-                ${game.players.sort((a, b) => b.goals - a.goals || b.goalAssists - a.goalAssists || a.blunders - b.blunders || b.kills - a.kills || b.assists - a.assists || a.deaths - b.deaths || a.name.toString().localeCompare(b.name)).map((player) => /* html */`
+                ${game.players && game.players.sort((a, b) => b.goals - a.goals || b.goalAssists - a.goalAssists || a.blunders - b.blunders || b.kills - a.kills || b.assists - a.assists || a.deaths - b.deaths || a.name.toString().localeCompare(b.name)).map((player) => /* html */`
                     <div class="name">${PlayersView.Common.htmlEncode(player.name)}</div>
                     ${game.settings && game.settings.matchMode !== "ANARCHY" ? /* html */`
                         <div class="team">${player.team ? PlayersView.Common.htmlEncode(player.team) : ""}</div>
@@ -63,7 +63,7 @@ class PlayersView {
                     <div class="kills">${player.kills}</div>
                     <div class="assists">${player.assists}</div>
                     <div class="deaths">${player.deaths}</div>
-                `).join("")}
+                `).join("") || ""}
             </div>
         `;
     }

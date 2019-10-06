@@ -23,10 +23,10 @@ class EventsView {
      */
     static get(game) {
         return /* html */`
-            ${game.events.sort((a, b) => b.time - a.time).map((event) => /* html */`
+            ${game.events && game.events.sort((a, b) => b.time - a.time).map((event) => /* html */`
                 <div class="time">${EventsView.Common.formatTimeSpan(event.time)}</div>
                 <div class="event">${event.description}</div>
-            `).join("")}
+            `).join("") || ""}
         `;
     }
 }

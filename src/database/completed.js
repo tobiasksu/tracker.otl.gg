@@ -51,7 +51,7 @@ class CompletedDb {
          * @type {{recordsets: [{CompletedId: number}[]]}}
          */
         const data = await db.query(/* sql */`
-            SELECT CompletedId FROM tblCompleted
+            SELECT CompletedId FROM tblCompleted ORDER BY CompletedId
         `);
         return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => row.CompletedId) || [];
     }
@@ -81,6 +81,44 @@ class CompletedDb {
             data: data.recordsets[0][0].Data,
             date: data.recordsets[0][0].CrDate
         } || void 0;
+    }
+
+    //              #    #      #            #
+    //              #    #                   #
+    //  ###   ##   ###   #     ##     ###   ###
+    // #  #  # ##   #    #      #    ##      #
+    //  ##   ##     #    #      #      ##    #
+    // #      ##     ##  ####  ###   ###      ##
+    //  ###
+    /**
+     * Gets the paginated list of games.
+     * @param {number} page The page number.
+     * @param {number} pageSize The size of the page.
+     * @returns {Promise<{id: number, ip: string, data: object, date: Date}[]>} A promise that resolves with the recent games.
+     */
+    static async getList(page, pageSize) {
+        /**
+         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[]]}}
+         */
+        const data = await db.query(/* sql */`
+            WITH g AS (
+                SELECT ROW_NUMBER() OVER (ORDER BY CompletedId DESC) RowNum, CompletedId, IPAddress, Data, CrDate
+                FROM tblCompleted
+            )
+            SELECT CompletedId, IPAddress, Data, CrDate
+            FROM g
+            WHERE RowNum BETWEEN (@page - 1) * @pageSize + 1 AND @page * @pageSize
+            ORDER BY CompletedId DESC
+        `, {
+            page: {type: Db.INT, value: page},
+            pageSize: {type: Db.INT, value: pageSize}
+        });
+        return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => ({
+            id: row.CompletedId,
+            ip: row.IPAddress,
+            data: row.Data,
+            date: row.CrDate
+        })) || [];
     }
 
     //              #    ###                            #
@@ -120,14 +158,16 @@ class CompletedDb {
      * Updates a completed game.
      * @param {number} id The completed ID.
      * @param {object} data The data to save.
+     * @param {Date} start The start date of the match.
      * @returns {Promise} A promise that resolves when the update is complete.
      */
-    static async update(id, data) {
+    static async update(id, data, start) {
         await db.query(/* sql */`
-            UPDATE tblCompleted SET Data = @data WHERE CompletedId = @id
+            UPDATE tblCompleted SET Data = @data, CrDate = CASE WHEN @start IS NULL THEN CrDate ELSE @start END WHERE CompletedId = @id
         `, {
             id: {type: Db.INT, value: id},
-            data: {type: Db.TEXT, value: JSON.stringify(data)}
+            data: {type: Db.TEXT, value: JSON.stringify(data)},
+            start: {type: Db.DATETIME, value: start}
         });
     }
 }

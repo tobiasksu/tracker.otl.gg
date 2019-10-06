@@ -226,6 +226,33 @@ class Completed {
         return Db.getById(id);
     }
 
+    //              #    #      #            #
+    //              #    #                   #
+    //  ###   ##   ###   #     ##     ###   ###
+    // #  #  # ##   #    #      #    ##      #
+    //  ##   ##     #    #      #      ##    #
+    // #      ##     ##  ####  ###   ###      ##
+    //  ###
+    /**
+     * Gets the paginated list of games.
+     * @param {number} page The page number.
+     * @returns {Promise<{id: number, ip: string, data: object, date: Date}[]>} A promise that resolves with the recent games.
+     */
+    static async getList(page) {
+        /**
+         * @type {CompletedGame[]}
+         */
+        const games = await Db.getList(page, 25),
+            servers = {};
+
+        for (const game of games) {
+            game.data = JSON.parse(game.data);
+            game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
+        }
+
+        return games;
+    }
+
     //              #    ###                            #
     //              #    #  #                           #
     //  ###   ##   ###   #  #   ##    ##    ##   ###   ###
@@ -241,12 +268,13 @@ class Completed {
         /**
          * @type {CompletedGame[]}
          */
-        const games = await Db.getRecent();
+        const games = await Db.getRecent(),
+            servers = {};
 
         for (const game of games) {
             game.remaining = 3600000 + game.date.getTime() + new Date().getTime();
             game.data = JSON.parse(game.data);
-            game.server = await ServersDb.getByIp(game.ip);
+            game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
         }
 
         return games.filter((g) => g.data && g.data.events && g.data.events.length && g.data.events.length > 0);
@@ -266,7 +294,8 @@ class Completed {
      * @returns {Promise} A promise that resolves when the game is updated.
      */
     static update(id, data) {
-        return Db.update(id, data);
+        console.log(data.start);
+        return Db.update(id, data, data.start ? new Date(data.start) : void 0);
     }
 }
 

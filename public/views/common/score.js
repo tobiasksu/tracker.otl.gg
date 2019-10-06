@@ -24,19 +24,24 @@ class ScoreView {
     static get(game) {
         let scores;
 
-        if (game.settings.matchMode === "ANARCHY") {
+        if (!game.settings || game.settings.matchMode === "ANARCHY") {
             scores = {};
-            if (game.players.length > 2) {
-                game.players.forEach((player) => {
-                    scores[player.name] = 3 * player.kills + player.assists;
-                });
-            } else {
-                game.players.forEach((player) => {
-                    scores[player.name] = player.kills;
-                });
+            if (game.players) {
+                if (game.players.length > 2) {
+                    game.players.forEach((player) => {
+                        scores[player.name] = 3 * player.kills + player.assists;
+                    });
+                } else {
+                    game.players.forEach((player) => {
+                        scores[player.name] = player.kills;
+                    });
+                }
             }
         } else {
             scores = game.teamScore;
+            if (!scores) {
+                scores = {};
+            }
         }
 
         return /* html */`
