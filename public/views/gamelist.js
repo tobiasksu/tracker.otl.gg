@@ -23,25 +23,26 @@ class GameListView {
      */
     static get(games) {
         return /* html */`
-            <h1>Archived Games</h1>
-            <div id="games">
-                ${games.map((game) => /* html */`
-                    <div><a href="/archive/${game.id}">${game.date}</a></div>
-                    <div>${game.server && game.server.name || game.server && game.server.ip || game.ip || ""}</div>
-                    <div>${game.data && game.data.settings && game.data.settings.matchMode || ""}</div>
-                    <div>${game.data && game.data.settings && game.data.settings.level || ""}</div>
-                    <div>
-                        ${game.data && game.data.teamScore && Object.keys(game.data.teamScore).length > 0 && Object.keys(game.data.teamScore).sort((a, b) => game.data.teamScore[b] - game.data.teamScore[a]).map((team) => /* html */`
-                            ${team} ${game.data.teamScore[team]}
-                        `.trim()).join(", ") || game.data && game.data.players && game.data.players.length > 0 && game.data.players.sort((a, b) => (b.kills * (game.data.players.length > 2 ? 3 : 1) + b.assists) - (a.kills * (game.data.players.length > 2 ? 3 : 1) + a.assists)).map((player) => /* html */`
-                            ${player.name} ${player.kills * (game.data.players.length > 2 ? 3 : 1) + player.assists}
-                        `.trim()).join(", ") || ""}${game.data && game.data.teamScore && game.data.teamScore.length > 4 || game.data && (!game.data.teamScore || game.data.teamScore.length === 0) && game.data.players && game.data.players.length > 4 ? "..." : ""}
-                    </div>
-                `).join("")}
+            <h2 id="archive" class="header">Archived Games</h2>
+            <div id="pagination">
+                <a href="#" id="prev">&lt; Newer Games</a>
+                <a href="#" id="next">Older Games &gt;</a>
             </div>
+            <div id="games">
+                ${GameListView.GamesView.get(games)}
+            </div>
+            <script>
+                GameList.maxId = ${games.games[0].id};
+                GameList.minId = 1;
+                GameList.page = 1;
+                GameList.setup(${games.games[games.games.length - 1].id});
+            </script>
         `;
     }
 }
+
+// @ts-ignore
+GameListView.GamesView = typeof GamesView === "undefined" ? require("./gamelist/games") : GamesView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = GameListView; // eslint-disable-line no-undef

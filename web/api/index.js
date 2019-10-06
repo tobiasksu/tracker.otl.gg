@@ -37,7 +37,7 @@ class Index {
             servers[s.ip] = s;
         });
 
-        res.status(200).send(servers);
+        res.status(200).json(servers);
     }
 
     //                     #

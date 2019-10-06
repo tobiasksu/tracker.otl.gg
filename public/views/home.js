@@ -25,12 +25,21 @@ class HomeView {
      */
     static get(completed, games, servers) {
         return /* html */`
+            ${completed.length > 0 ? /* html */`
+                <h2>Recently Completed Games</h2>
+            ` : ""}
             <div id="completed">
                 ${HomeView.CompletedGamesView.get(completed)}
             </div>
+            ${games.length > 0 ? /* html */`
+                <h2>Games In Progress</h2>
+            ` : ""}
             <div id="games">
                 ${HomeView.GamesView.get(games)}
             </div>
+            ${servers.length > 0 ? /* html */`
+                <h2>Server Browser</h2>
+            ` : ""}
             <div id="browser">
                 ${HomeView.ServersView.get(servers)}
             </div>

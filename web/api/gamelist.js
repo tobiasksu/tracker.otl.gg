@@ -1,6 +1,4 @@
-const Common = require("../includes/common"),
-    Completed = require("../../src/models/completed"),
-    GameListView = require("../../public/views/gamelist");
+const Completed = require("../../src/models/completed");
 
 /**
  * @typedef {import("express").Request} express.Request
@@ -15,7 +13,7 @@ const Common = require("../includes/common"),
 //  #   #  #   #  # # #  #      #        #        #   #  #
 //   ###    ####  #   #   ###   #####   ###   ####     ##
 /**
- * A class that represents the game list page.
+ * A class that handles calls to the website's game list API.
  */
 class GameList {
     //              #
@@ -32,19 +30,25 @@ class GameList {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const games = await Completed.getList(1);
+        const page = Number.parseInt(req.query.page, 10);
+        if (isNaN(page)) {
+            res.status(400).send("400 - Bad Request - Invalid querystring.");
+            return;
+        }
 
-        res.status(200).send(Common.page(/* html */`
-            <link rel="stylesheet" href="/css/gamelist.css" />
-            <script src="/views/gamelist/game.js"></script>
-            <script src="/views/gamelist/games.js"></script>
-            <script src="/js/gamelist.js"></script>
-        `, GameListView.get({games}), req));
+        if (!page) {
+            res.status(400).send("400 - Bad Request - Invalid querystring.");
+            return;
+        }
+
+        const games = await Completed.getList(page);
+
+        res.status(200).json({games});
     }
 }
 
 GameList.route = {
-    path: "/gamelist"
+    path: "/api/gamelist"
 };
 
 module.exports = GameList;
