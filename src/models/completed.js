@@ -294,8 +294,7 @@ class Completed {
      * @returns {Promise} A promise that resolves when the game is updated.
      */
     static update(id, data) {
-        console.log(data.start);
-        return Db.update(id, data, data.start ? new Date(data.start) : void 0);
+        return Db.update(id, data, data.end ? new Date(data.end) : void 0);
     }
 }
 
