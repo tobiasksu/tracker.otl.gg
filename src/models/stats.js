@@ -1,6 +1,7 @@
 const Db = require("../database/completed"),
     Game = require("./game"),
     Player = require("./player"),
+    Weapon = require("./weapon"),
     Websocket = require("../websocket");
 
 //   ###    #             #
@@ -199,6 +200,10 @@ class Stats {
         game.goals = goals;
         game.flagStats = flagStats;
 
+        game.damage.forEach((stat) => {
+            stat.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(stat.weapon)];
+        });
+
         // Regenerate players and teamScore arrays in case our data is out of sync from the server due to dropped packets, restarted tracker, etc.
         game.players = [];
 
@@ -358,6 +363,8 @@ class Stats {
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async kill(ip, data) {
+        data.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(data.weapon)];
+
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam, weapon} = data,
             game = await Game.getGame(ip);
 
