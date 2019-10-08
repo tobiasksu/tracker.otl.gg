@@ -147,9 +147,10 @@ class Completed {
     /**
      * Gets a completed game by ID.
      * @param {number} id The Game ID.
+     * @param {boolean} [includeServer] Whether to include server information.  Defaults to true.
      * @returns {Promise<Game>} A promise that resolves with the game.
      */
-    static async getById(id) {
+    static async getById(id, includeServer = true) {
         /**
          * @type {CompletedGame}
          */
@@ -162,7 +163,9 @@ class Completed {
 
         if (completedGame) {
             completedGame.data = JSON.parse(completedGame.data);
-            completedGame.server = await ServersDb.getByIp(completedGame.ip);
+            if (includeServer) {
+                completedGame.server = await ServersDb.getByIp(completedGame.ip);
+            }
 
             game = new Game({
                 ip: completedGame.ip,
@@ -206,6 +209,10 @@ class Completed {
         });
 
         game.damage = damage;
+
+        if (!includeServer) {
+            delete game.server;
+        }
 
         return game;
     }
