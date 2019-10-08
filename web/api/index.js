@@ -51,17 +51,10 @@ class Index {
      * Processes the request.
      * @param {express.Request} req The request.
      * @param {express.Response} res The response.
-     * @returns {Promise} A promise that resolves when the request is complete.
+     * @returns {void}
      */
-    static async post(req, res) {
-        if (!req.body) {
-            res.status(400).send("400 - Bad Request - Invalid body.");
-            return;
-        }
-
-        await Servers.update((req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip, req.body, req.query.online === void 0 ? void 0 : req.query.online === "true");
-
-        res.status(204).send();
+    static post(req, res) {
+        res.status(410).json({error: "As of v1.2, this API no longer exists.  Upgrade both your olproxy and olmod on the server."});
     }
 }
 

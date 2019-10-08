@@ -31,7 +31,7 @@ class Servers {
             server.old = now.getTime() - new Date(server.lastSeen).getTime() > 60 * 60 * 1000;
         });
 
-        return servers.filter((s) => new Date().getTime() - new Date(s.lastSeen).getTime() < 30 * 24 * 60 * 60 * 1000);
+        return servers.filter((s) => s.keepListed && new Date().getTime() - new Date(s.lastSeen).getTime() < 30 * 24 * 60 * 60 * 1000 || new Date().getTime() - new Date(s.lastSeen).getTime() < 60 * 60 * 1000);
     }
 
     //                #         #

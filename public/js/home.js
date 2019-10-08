@@ -1,4 +1,4 @@
-/* global Common, CompletedGameView, Countdown, Elapsed, Game, GameView, Player, ScoreView, ServersView, timeago, WebSocketClient */
+/* global Common, CompletedGameView, Countdown, DetailsView, Elapsed, Game, Player, ScoreView, ServersView, timeago, WebSocketClient */
 
 //  #   #
 //  #   #
@@ -446,7 +446,7 @@ class Home {
 
         document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
             <div class="game" id="game-${ip}">
-                ${GameView.get(game)}
+                ${DetailsView.get(game)}
             </div>
         `);
 
