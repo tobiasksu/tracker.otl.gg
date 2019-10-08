@@ -284,7 +284,9 @@ class Stats {
         data.teamScore = game.teamScore;
         data.players = game.players;
 
-        await Db.add(ip, game);
+        if (game.events.length > 0) {
+            await Db.add(ip, game);
+        }
 
         game.remove();
     }
