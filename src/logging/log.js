@@ -134,9 +134,6 @@ class Log {
                         date: new Date().getTime()
                     },
                     json: true
-                }).catch((err) => {
-                    console.log("Error while writing log:", err);
-                    console.log("Error that failed to be written:", log.message, log.obj);
                 });
             } catch (err) {
                 console.log("Error while writing log:", err);
