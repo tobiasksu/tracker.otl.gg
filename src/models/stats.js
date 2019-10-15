@@ -173,8 +173,10 @@ class Stats {
     static async disconnect(ip, data) {
         const game = await Game.getGame(ip);
 
-        data.description = `${data.player} disconnected.`;
-        game.events.push(data);
+        if (!game.end) {
+            data.description = `${data.player} disconnected.`;
+            game.events.push(data);
+        }
     }
 
     //                #   ##
@@ -289,8 +291,8 @@ class Stats {
         data.teamScore = game.teamScore;
         data.players = game.players;
 
-        if (game.events.length > 0) {
-            await Db.add(ip, game);
+        if (game.events.length > 0 && game.players.length > 0) {
+            data.id = await Db.add(ip, game);
         }
 
         game.remove();
@@ -506,7 +508,7 @@ class Stats {
 
         game.settings = data;
 
-        game.players = data.player && data.players.map((player) => new Player({
+        game.players = data.players && data.players.map((player) => new Player({
             name: player,
             kills: 0,
             assists: 0,

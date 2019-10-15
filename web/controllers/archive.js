@@ -1,7 +1,8 @@
 const Common = require("../includes/common"),
     Completed = require("../../src/models/completed"),
     ArchiveView = require("../../public/views/archive.js"),
-    NotFoundView = require("../../public/views/404");
+    NotFoundView = require("../../public/views/404"),
+    Weapon = require("../../src/models/weapon");
 
 /**
  * @typedef {import("express").Request} express.Request
@@ -47,7 +48,7 @@ class Archive {
 
         let weapons = [];
         if (game.damage) {
-            weapons = game.damage.map((d) => d.weapon).filter((w, index, arr) => arr.indexOf(w) === index).sort((a, b) => Completed.orderedWeapons.indexOf(a) - Completed.orderedWeapons.indexOf(b));
+            weapons = game.damage.map((d) => d.weapon).filter((w, index, arr) => arr.indexOf(w) === index).sort((a, b) => Weapon.orderedWeapons.indexOf(a) - Weapon.orderedWeapons.indexOf(b));
         }
 
         res.status(200).send(Common.page(/* html */`

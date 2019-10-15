@@ -26,7 +26,7 @@ class ArchiveView {
         return /* html */`
             <div id="top">
                 <div id="game">
-                    ${ArchiveView.CompletedDetailsView.get(game, false)}
+                    ${ArchiveView.CompletedDetailsView.get(game)}
                 </div>
                 <div id="players">
                     ${ArchiveView.PlayersView.get(game)}

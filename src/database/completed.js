@@ -23,16 +23,23 @@ class CompletedDb {
     /**
      * Adds a completed game to the database.
      * @param {string} ip The IP address.
-     * @param {object} data The data to save.
-     * @returns {Promise} A promise that resolves when the completed game is added.
+     * @param {object} saveData The data to save.
+     * @returns {Promise<number>} A promise that resolves when the completed game is added.
      */
-    static async add(ip, data) {
-        await db.query(/* sql */`
+    static async add(ip, saveData) {
+        /**
+         * @type {{recordsets: [{CompletedId: number}[]]}}
+         */
+        const data = await db.query(/* sql */`
             INSERT INTO tblCompleted (IPAddress, Data) VALUES (@ip, @data)
+
+            SELECT SCOPE_IDENTITY() CompletedId
         `, {
             ip: {type: Db.VARCHAR(15), value: ip},
-            data: {type: Db.TEXT, value: JSON.stringify(data)}
+            data: {type: Db.TEXT, value: JSON.stringify(saveData)}
         });
+
+        return data && data.recordsets && data.recordsets[0] && data.recordsets[0][0] && data.recordsets[0][0].CompletedId || void 0;
     }
 
     //              #     ##   ##    ##    ###      #

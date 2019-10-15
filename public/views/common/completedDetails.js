@@ -23,10 +23,11 @@ class CompletedDetailsView {
     /**
      * Gets the rendered completed details template.
      * @param {object} game The game to display.
-     * @param {boolean} addLink Add a link to the game page.
+     * @param {boolean} [addLink] Add a link to the game page.
+     * @param {number} [id] The number of the game ID.
      * @returns {string} An HTML string of the rendered completed details template.
      */
-    static get(game, addLink) {
+    static get(game, addLink, id) {
         // @ts-ignore
         if (typeof window !== "undefined") {
             // @ts-ignore
@@ -36,8 +37,8 @@ class CompletedDetailsView {
         return /* html */`
             <div class="table">
                 <div class="server">${addLink ? /* html */`
-                    <a href="/archive/${game.id}">
-                        ` : ""}${CompletedDetailsView.Common.htmlEncode((game.server ? game.server.name : game.ip) || "Unknown")}${addLink ? /* html */`
+                    <a href="/archive/${id}">
+                        ` : ""}${CompletedDetailsView.Common.htmlEncode((game.server && game.server.name ? game.server.name : game.ip) || "Unknown")}${addLink ? /* html */`
                     </a>
                 ` : ""}</div>
                 <div class="scores">
@@ -45,11 +46,7 @@ class CompletedDetailsView {
                 </div>
                 <div class="info">
                     <div class="time">
-                        ${game.countdown ? /* html */`
-                            <script>new Countdown(${game.countdown});</script>
-                        ` : game.elapsed || game.elapsed === 0 ? /* html */`
-                            <script>new Elapsed(${game.elapsed});</script>
-                        ` : ""}
+                        Completed <time class="timeago" datetime="${new Date(game.end).toISOString()}">${new Date(game.end)}</time>
                     </div>
                     ${game.settings ? /* html */`
                         <div class="map">${game.settings.matchMode}${game.settings.level && ` - ${CompletedDetailsView.Common.htmlEncode(game.settings.level)}` || ""}</div>

@@ -35,7 +35,7 @@ class DetailsView {
             <div class="table">
                 <div class="server">${addLink ? /* html */`
                     <a href="/game/${game.ip}">
-                        ` : ""}${DetailsView.Common.htmlEncode(game.server ? game.server.name : game.ip)}${addLink ? /* html */`
+                        ` : ""}${DetailsView.Common.htmlEncode(game.server && game.server.name ? game.server.name : game.ip)}${addLink ? /* html */`
                     </a>
                 ` : ""}</div>
                 <div class="scores">

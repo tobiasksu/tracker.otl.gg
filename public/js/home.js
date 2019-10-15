@@ -1,4 +1,4 @@
-/* global Common, CompletedGameView, Countdown, DetailsView, Elapsed, Game, Player, ScoreView, ServersView, timeago, WebSocketClient */
+/* global Common, CompletedDetailsView, Countdown, DetailsView, Elapsed, Game, Player, ScoreView, ServersView, timeago, WebSocketClient */
 
 //  #   #
 //  #   #
@@ -234,7 +234,9 @@ class Home {
     static disconnect(ip, data) {
         const game = Game.getGame(ip);
 
-        game.events.push(data);
+        if (!game.end) {
+            game.events.push(data);
+        }
     }
 
     //                #   ##
@@ -250,7 +252,7 @@ class Home {
      * @returns {void}
      */
     static endGame(ip, data) {
-        const {start, end, damage, kills, goals, flagStats, players, teamScore} = data,
+        const {id, start, end, damage, kills, goals, flagStats, players, teamScore} = data,
             game = Game.getGame(ip);
 
         game.start = new Date(start);
@@ -269,7 +271,7 @@ class Home {
 
         document.getElementById("completed").insertAdjacentHTML("beforeend", /* html */`
             <div class="game" id="${gameId}">
-                ${CompletedGameView.get(game)}
+                ${CompletedDetailsView.get(game, true, id)}
             </div>
         `);
 
@@ -439,6 +441,10 @@ class Home {
             goals: 0,
             goalAssists: 0,
             blunders: 0,
+            returns: 0,
+            pickups: 0,
+            captures: 0,
+            carrierKills: 0,
             connected: data.time
         })) || [];
         game.countdown = data.countdown;
@@ -446,7 +452,7 @@ class Home {
 
         document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
             <div class="game" id="game-${ip}">
-                ${DetailsView.get(game)}
+                ${DetailsView.get(game, true)}
             </div>
         `);
 
