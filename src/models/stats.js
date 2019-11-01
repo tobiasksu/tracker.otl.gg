@@ -214,6 +214,10 @@ class Stats {
                 defenderPlayer = game.getPlayer(kill.defender, kill.defenderTeam),
                 assistedPlayer = game.getPlayer(kill.assisted, kill.assistedTeam);
 
+            if (!attackerPlayer || !defenderPlayer) {
+                return;
+            }
+
             if (kill.attacker === kill.defender) {
                 attackerPlayer.kills--;
                 defenderPlayer.deaths++;
