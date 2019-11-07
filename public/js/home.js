@@ -47,6 +47,7 @@ class Home {
             case "Stats":
                 switch (data.type) {
                     case "StartGame":
+                    case "LobbyStatus":
                         Home.startGame(ip, data);
                         break;
                     case "Kill":
@@ -73,6 +74,9 @@ class Home {
 
                 if (data.type === "EndGame") {
                     Home.endGame(ip, data);
+                }
+                if (data.type === "LobbyExit") {
+                    Home.exitGame(ip, data);
                 }
                 break;
             case "Server": {
@@ -285,6 +289,16 @@ class Home {
         }, 3600000);
     }
 
+    static exitGame(ip, data) {
+        const game = Game.getGame(ip);
+
+        const gameEl = document.getElementById(`game-${ip}`);
+        gameEl.parentNode.removeChild(gameEl);
+
+        game.remove();
+    }
+
+
     //                   ##
     //                    #
     //  ###   ##    ###   #
@@ -433,6 +447,7 @@ class Home {
 
         game.server = data.server;
         game.settings = data;
+        game.inLobby = data.type == 'LobbyStatus';
         game.players = data.players && data.players.map((player) => new Player({
             name: player,
             kills: 0,
@@ -450,18 +465,27 @@ class Home {
         game.countdown = data.countdown;
         game.elapsed = data.elapsed;
 
-        document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
-            <div class="game" id="game-${ip}">
-                ${DetailsView.get(game, true)}
-            </div>
-        `);
+        const details = DetailsView.get(game, true);
 
-        const el = document.getElementById(`game-${ip}`).querySelector(".time");
+        let gameEl = document.getElementById(`game-${ip}`);
 
-        if (game.countdown) {
-            new Countdown(game.countdown, el);
-        } else if (game.elapsed || game.elapsed === 0) {
-            new Elapsed(game.elapsed, el);
+        if (!gameEl) {
+            document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
+                <div class="game" id="game-${ip}">
+                    ${details}
+                </div>
+            `);
+            gameEl = document.getElementById(`game-${ip}`);
+        }
+
+        const el = gameEl.querySelector(".time");
+
+        if (!game.inLobby) {
+            if (game.countdown) {
+                new Countdown(game.countdown, el);
+            } else if (game.elapsed || game.elapsed === 0) {
+                new Elapsed(game.elapsed, el);
+            }
         }
     }
 }

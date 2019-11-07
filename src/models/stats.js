@@ -265,6 +265,7 @@ class Stats {
 
                 break;
             case "CTF":
+                game.flagStats = game.flagStats || [];
                 game.teamScore = {
                     "BLUE": game.flagStats.filter((f) => f.scorerTeam === "BLUE" && f.event === "Capture").length,
                     "ORANGE": game.flagStats.filter((f) => f.scorerTeam === "ORANGE" && f.event === "Capture").length
@@ -435,6 +436,11 @@ class Stats {
         game.events.push(data);
     }
 
+    static async exitGame(ip, data) {
+        const game = await Game.getGame(ip);
+        game.remove();
+    }
+
     //                                              ##    #           #
     //                                             #  #   #           #
     // ###   ###    ##    ##    ##    ###    ###    #    ###    ###  ###
@@ -449,7 +455,10 @@ class Stats {
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async processStat(ip, data) {
-        if (!Game.getByIp(ip) && data.type !== "StartGame") {
+        if (!Game.getByIp(ip) && data.type !== "StartGame" && data.type !== "LobbyStatus") {
+            if (data.type === "LobbyExit")
+                return;
+
             await Stats.startGame(ip, {matchMode: "ANARCHY"});
 
             Websocket.broadcast({ip, data: {
@@ -462,6 +471,7 @@ class Stats {
         if (data.name === "Stats") {
             switch (data.type) {
                 case "StartGame":
+                case "LobbyStatus":
                     await Stats.startGame(ip, data);
                     break;
                 case "Kill":
@@ -484,6 +494,9 @@ class Stats {
                     break;
                 case "EndGame":
                     await Stats.endGame(ip, data);
+                    break;
+                case "LobbyExit":
+                    await Stats.exitGame(ip, data);
                     break;
             }
 
@@ -511,6 +524,7 @@ class Stats {
         }
 
         game.settings = data;
+        game.inLobby = data.type == 'LobbyStatus';
 
         game.players = data.players && data.players.map((player) => new Player({
             name: player,
@@ -527,13 +541,15 @@ class Stats {
             connected: data.time
         })) || [];
 
-        if (game.settings.timeLimit) {
-            game.projectedEnd = new Date();
-            game.projectedEnd.setSeconds(game.projectedEnd.getSeconds() + game.settings.timeLimit);
-            game.countdown = game.settings.timeLimit * 1000;
-        } else {
-            game.startTime = new Date();
-            game.elapsed = 0;
+        if (!game.inLobby) {
+            if (game.settings.timeLimit) {
+                game.projectedEnd = new Date();
+                game.projectedEnd.setSeconds(game.projectedEnd.getSeconds() + game.settings.timeLimit);
+                game.countdown = game.settings.timeLimit * 1000;
+            } else {
+                game.startTime = new Date();
+                game.elapsed = 0;
+            }
         }
 
         data.server = game.server;
