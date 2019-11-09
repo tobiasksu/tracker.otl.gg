@@ -472,11 +472,11 @@ class Home {
         if (!gameEl) {
             document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
                 <div class="game" id="game-${ip}">
-                    ${details}
                 </div>
             `);
             gameEl = document.getElementById(`game-${ip}`);
         }
+        gameEl.innerHTML = details;
 
         const el = gameEl.querySelector(".time");
 
