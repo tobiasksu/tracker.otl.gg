@@ -456,7 +456,7 @@ class Stats {
      */
     static async processStat(ip, data) {
         if (!Game.getByIp(ip) && data.type !== "StartGame" && data.type !== "LobbyStatus") {
-            if (data.type === "LobbyExit")
+            if (data.type === "LobbyExit" || data.type === "Disconnect")
                 return;
 
             await Stats.startGame(ip, {matchMode: "ANARCHY"});
