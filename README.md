@@ -4,7 +4,15 @@ The source code for the website at http://olproxy.otl.gg.
 
 ## Version History
 
-### 1.1 - 6/30/2019
+### 2.0.0 - 11/14/2019
+
+* Stats are now tracked and displayed in real time using websockets.
+* Support for CTF and Monsterball.
+* New archived games list.
+* New completed game API.
+* Backend website improvements.
+
+### 1.1.0 - 6/30/2019
 
 * Save end game stats received from olproxy to the database.
 * Update appsettings.json with the "signOff" parameter.
