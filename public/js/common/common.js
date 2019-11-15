@@ -1,3 +1,5 @@
+/* globals timeago */
+
 //   ###
 //  #   #
 //  #       ###   ## #   ## #    ###   # ##
@@ -148,6 +150,25 @@ class Common {
                 el.innerHTML = template(data);
             }
         });
+    }
+
+    // ##                   #  ###    #                 ##
+    //  #                   #   #                      #  #
+    //  #     ##    ###   ###   #    ##    # #    ##   #  #   ###   ##
+    //  #    #  #  #  #  #  #   #     #    ####  # ##  ####  #  #  #  #
+    //  #    #  #  # ##  #  #   #     #    #  #  ##    #  #   ##   #  #
+    // ###    ##    # #   ###   #    ###   #  #   ##   #  #  #      ##
+    //                                                        ###
+    /**
+     * Loads the timeago elements on the page.
+     * @returns {void}
+     */
+    static loadTimeAgo() {
+        const els = document.querySelectorAll(".timeago");
+
+        if (els.length > 0) {
+            timeago.render(els);
+        }
     }
 
     //              #       #          #

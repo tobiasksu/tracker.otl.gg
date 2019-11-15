@@ -1,4 +1,4 @@
-/* global EventsView, PlayersView, ScoreView, timeago, WebSocketClient */
+/* global Common, EventsView, PlayersView, ScoreView, WebSocketClient */
 
 //   ###                          ###
 //  #   #                           #
@@ -22,7 +22,7 @@ class GameJs {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        timeago.render(document.querySelectorAll(".timeago"));
+        Common.loadTimeAgo();
 
         GameJs.ws = new WebSocketClient();
         GameJs.ws.onmessage = GameJs.onmessage;
@@ -244,7 +244,7 @@ class GameJs {
             Completed <time class="timeago" datetime="${new Date(GameJs.game.end).toISOString()}">${new Date(GameJs.game.end)}</time>
         `;
 
-        timeago.render(document.querySelectorAll(".timeago"));
+        Common.loadTimeAgo();
     }
 
     //                   ##
