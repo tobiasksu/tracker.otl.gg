@@ -62,7 +62,7 @@ const compression = require("compression"),
     const server = Websocket.start();
 
     // Startup webserver.
-    const port = +(process.env.PORT || settings.express.port);
+    const port = process.env.PORT || settings.express.port;
 
     server.on("request", app);
     server.listen(port, () => {
