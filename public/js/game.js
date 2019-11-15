@@ -22,7 +22,7 @@ class GameJs {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        timeago().render(document.querySelectorAll(".timeago"));
+        timeago.render(document.querySelectorAll(".timeago"));
 
         GameJs.ws = new WebSocketClient();
         GameJs.ws.onmessage = GameJs.onmessage;
@@ -244,7 +244,7 @@ class GameJs {
             Completed <time class="timeago" datetime="${new Date(GameJs.game.end).toISOString()}">${new Date(GameJs.game.end)}</time>
         `;
 
-        timeago().render(document.querySelectorAll(".timeago"));
+        timeago.render(document.querySelectorAll(".timeago"));
     }
 
     //                   ##

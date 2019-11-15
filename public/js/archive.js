@@ -22,7 +22,7 @@ class ArchiveJs {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        timeago().render(document.querySelectorAll(".timeago"));
+        timeago.render(document.querySelectorAll(".timeago"));
 
         document.querySelectorAll("a.weapon").forEach((a) => a.addEventListener("click", (ev) => {
             document.getElementById("weapon").innerText = a.title;

@@ -22,7 +22,7 @@ class Home {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        timeago().render(document.querySelectorAll(".timeago"));
+        timeago.render(document.querySelectorAll(".timeago"));
 
         Home.ws = new WebSocketClient();
         Home.ws.onmessage = Home.onmessage;
@@ -86,7 +86,7 @@ class Home {
                 }
 
                 document.getElementById("browser").innerHTML = ServersView.get(Home.servers);
-                timeago().render(document.querySelectorAll(".timeago"));
+                timeago.render(document.querySelectorAll(".timeago"));
 
                 break;
             }
@@ -275,7 +275,7 @@ class Home {
             </div>
         `);
 
-        timeago().render(document.querySelectorAll(".timeago"));
+        timeago.render(document.querySelectorAll(".timeago"));
 
         game.remove();
 
