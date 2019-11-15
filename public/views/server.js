@@ -29,28 +29,25 @@ class ServerView {
                     Running an private Overload server requires a few things:<br /><br />
                     1) Open UDP ports 7000 to 8001.  Note: this guide does not cover opening these ports.<br />
                     2) An installation of Overload<br />
-                    3) A compiled version of olproxy<br />
-                    4) A collection of custom maps (recommended)
+                    3) olmod v0.2.7 or later.  Use the instructions on the <a href="/download">download</a> page to download and configure your server.<br />
                 </div>
             </div>
             <div class="section">
-                <div class="header">Setup on Windows</div>
+                <div class="header">olmod on Windows with Steam or GoG</div>
                 <div>
-                    Windows setup is relatively simple.  With Overload installed and olproxy for Windows downloaded, simply run the file RunDedicatedServer.bat as well as olproxy.exe, and your server is ready to go.<br /><br />
-                    For custom maps, download maps from either <a target="_blank" href="https://overloadmaps.com">https://overloadmaps.com</a> or from <a target="_blank" href="https://github.com/roncli/overload-maps">https://github.com/roncli/overload-maps</a>, and copy the .zip files for each map into c:\\ProgramData\\Revival\\Overload, creating the directory if it doesn't exist.  You do not need to unzip the files.
+                    If you have Overload on Steam or GoG, you should just be able to launch olmod.exe from anywhere.  If it does not work for you, either uninstall and reinstall Overload, or follow the instructions for using olmod alongside Overload.
                 </div>
             </div>
             <div class="section">
-                <div class="header">Setup on Mac or Linux</div>
+                <div class="header">olmod alongside Overload</div>
                 <div>
-                    With Overload installed, use the instructions on the <a href="/download">download</a> page to install olproxy.<br /><br />
-                    For custom maps, download maps from either <a target="_blank" href="https://overloadmaps.com">https://overloadmaps.com</a> or from <a target="_blank" href="https://github.com/roncli/overload-maps">https://github.com/roncli/overload-maps</a>, and copy the .zip files for each map into /usr/share/Revival/Overload, creating the directory if it doesn't exist.  You do not need to unzip the files.
+                    Unzip the olmod package into the same directory as Overload.  This directory is the same directory that contains the Overload executable as well as the subdirectory Overload_Data.  You can then run olmod from within the same directory as Overload.<br /><br />
                 </div>
             </div>
             <div class="section">
                 <div class="header">Example: Ubuntu 18.04 with Overload download from gog.com</div>
                 <div>
-                    The file setup.sh is available from <a target="_blank" href="https://gist.github.com/roncli/602d747ce28a57b801f53f6a29438834">https://gist.github.com/roncli/602d747ce28a57b801f53f6a29438834</a>.  This is a simple, all-in-one script that downloads and installs everything necessary to get Overload and olproxy running as a service.  It does require some user input, just agree and accept defaults where necessary.  Don't forget to use the instructions on the <a href="/download">download</a> page to edit the appsettings.json file to ensure that your server appears on the tracker.
+                    The file setup.sh is available from <a target="_blank" href="https://gist.github.com/roncli/602d747ce28a57b801f53f6a29438834">https://gist.github.com/roncli/602d747ce28a57b801f53f6a29438834</a>.  This is a simple, all-in-one script that downloads and installs everything necessary to get Overload and olmod running as a service.  It does require some user input, just agree and accept defaults where necessary.  Don't forget to use the instructions on the <a href="/download">download</a> page to edit the olmodsettings.json file to ensure that your server appears on the tracker.
                 </div>
             </div>
             <div class="section">

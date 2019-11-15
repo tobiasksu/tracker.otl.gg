@@ -48,7 +48,7 @@ class IndexView {
                             <ol style="fon">
                                 <li><a href="/">Home</a></li>
                                 <li><a href="/gamelist">Archived Games</a></li>
-                                <li><a href="/download">Download olproxy</a></li>
+                                <li><a href="/download">Download olmod</a></li>
                                 <li><a href="/server">Server Setup</a></li>
                                 <li><a href="/links">Links</a></li>
                                 <li><a href="/about">About</a></li>
@@ -61,11 +61,11 @@ class IndexView {
                         <div id="copyright">
                             <div class="left">
                                 Website Version ${version}, &copy;${+year > 2019 ? "2019-" : ""}${year} roncli Productions<br />
-                                olproxy, &copy;${+year > 2019 ? "2019-" : ""}${year} Arne de Bruijn
+                                olmod, &copy;${+year > 2019 ? "2019-" : ""}${year} Arne de Bruijn
                             </div>
                             <div class="right">
                                 Bugs with the website?  <a href="https://github.com/roncli/olproxy.otl.gg/issues" target="_blank">Report on GitHub</a><br />
-                                Bugs with olproxy?  <a href="https://github.com/arbruijn/olproxy/issues" target="_blank">Report on GitHub</a><br />
+                                Bugs with olmod?  <a href="https://github.com/arbruijn/olmod/issues" target="_blank">Report on GitHub</a><br />
                             </div>
                         </div>
                     </div>
