@@ -158,6 +158,10 @@ class Common {
      * @returns {string} The encoded string.
      */
     static htmlEncode(str) {
+        if (!str) {
+            return "";
+        }
+
         return str.replace(/[\u0080-\uFFFF<>&]/gim, (i) => `&#${i.charCodeAt(0)};`);
     }
 
