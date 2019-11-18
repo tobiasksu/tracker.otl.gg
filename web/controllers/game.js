@@ -34,7 +34,15 @@ class Game {
      */
     static get(req, res) {
         const ip = req.params.ip,
-            game = JSON.parse(JSON.stringify(GameModel.getByIp(ip)));
+            gameModel = GameModel.getByIp(ip);
+
+        let game;
+        try {
+            game = JSON.parse(JSON.stringify(gameModel));
+        } catch (err) {
+            res.status(404).send(Common.page("", NotFoundView.get({message: "Game not found."}), req));
+            return;
+        }
 
         if (!game) {
             res.status(404).send(Common.page("", NotFoundView.get({message: "Game not found."}), req));
