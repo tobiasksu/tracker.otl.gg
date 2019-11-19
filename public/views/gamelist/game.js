@@ -23,7 +23,7 @@ class GameView {
      */
     static get(game) {
         return /* html */`
-            <div><a href="/archive/${game.id}">${GameView.Common.formatDate(new Date(game.date))}</a></div>
+            <div><a href="/archive/${game.id}"><time class="local" datetime="${game.date}"></time></a></div>
             <div>${GameView.Common.htmlEncode(game.server && game.server.name || game.server && game.server.ip || game.ip || "Unknown")}</div>
             <div>${game.data && game.data.settings && GameView.Common.htmlEncode(game.data.settings.matchMode) || ""}</div>
             <div>${game.data && game.data.settings && GameView.Common.htmlEncode(game.data.settings.level) || ""}</div>
