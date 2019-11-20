@@ -188,7 +188,7 @@ class Stats {
     /**
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], teamScore: object, players: object[]}} data The end game data.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], teamScore: object, players: object[], id: number?}} data The end game data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async endGame(ip, data) {
