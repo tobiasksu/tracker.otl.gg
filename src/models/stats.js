@@ -303,6 +303,22 @@ class Stats {
         game.remove();
     }
 
+    //              #     #     ##
+    //                    #    #  #
+    //  ##   #  #  ##    ###   #      ###  # #    ##
+    // # ##   ##    #     #    # ##  #  #  ####  # ##
+    // ##     ##    #     #    #  #  # ##  #  #  ##
+    //  ##   #  #  ###     ##   ###   # #  #  #   ##
+    /**
+     * Removes a game.
+     * @param {string} ip The IP address of the game to remove.
+     * @returns {Promise} A promise that resolves when the game has been removed.
+     */
+    static async exitGame(ip) {
+        const game = await Game.getGame(ip);
+        game.remove();
+    }
+
     //                   ##
     //                    #
     //  ###   ##    ###   #
@@ -434,22 +450,6 @@ class Stats {
         game.kills.push(data);
         data.description = `${attacker} killed ${defender} with ${weapon}.${assisted ? ` Assisted by ${assisted}.` : ""}`;
         game.events.push(data);
-    }
-
-    //              #     #     ##
-    //                    #    #  #
-    //  ##   #  #  ##    ###   #      ###  # #    ##
-    // # ##   ##    #     #    # ##  #  #  ####  # ##
-    // ##     ##    #     #    #  #  # ##  #  #  ##
-    //  ##   #  #  ###     ##   ###   # #  #  #   ##
-    /**
-     * Removes a game.
-     * @param {string} ip The IP address of the game to remove.
-     * @returns {Promise} A promise that resolves when the game has been removed.
-     */
-    static async exitGame(ip) {
-        const game = await Game.getGame(ip);
-        game.remove();
     }
 
     //                                              ##    #           #
