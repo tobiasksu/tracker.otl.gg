@@ -4,6 +4,17 @@ The source code for the website at http://olproxy.otl.gg.
 
 ## Version History
 
+### 2.0.1 - 11/19/2019
+
+* Active lobbys are now shown with number of players and max players.
+* Archive now displays the initial page in local time like the rest of the pages.
+* Players who took damage but did not record another start are removed from the damage grid.
+* Fixed timeago implementation.
+* Added more HTML encoding to server and map names.
+* Fixed non-existent game IDs crashing instead of 
+* Fixed bug with completed games linking to an invalid page.
+* Replaced original websocket implementation with express-ws.
+
 ### 2.0.0 - 11/14/2019
 
 * Stats are now tracked and displayed in real time using websockets.
