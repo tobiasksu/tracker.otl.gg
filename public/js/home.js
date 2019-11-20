@@ -476,8 +476,6 @@ class Home {
         game.countdown = data.countdown;
         game.elapsed = data.elapsed;
 
-        const details = DetailsView.get(game, true);
-
         let gameEl = document.getElementById(`game-${ip}`);
 
         if (!gameEl) {
@@ -487,7 +485,8 @@ class Home {
             `);
             gameEl = document.getElementById(`game-${ip}`);
         }
-        gameEl.innerHTML = details;
+
+        gameEl.innerHTML = DetailsView.get(game, true);
 
         const el = gameEl.querySelector(".time");
 

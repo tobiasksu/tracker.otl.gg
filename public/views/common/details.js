@@ -44,7 +44,7 @@ class DetailsView {
                 <div class="info">
                     <div class="time">
                         ${game.inLobby ? /* html */`
-                            LOBBY ${game.settings.players.length}/${game.settings.maxPlayers}
+                            In Lobby<br />${game.settings.players.length}/${game.settings.maxPlayers} Players
                         ` : game.countdown ? /* html */`
                             <script>new Countdown(${game.countdown});</script>
                         ` : game.elapsed || game.elapsed === 0 ? /* html */`
