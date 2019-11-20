@@ -436,7 +436,18 @@ class Stats {
         game.events.push(data);
     }
 
-    static async exitGame(ip, data) {
+    //              #     #     ##
+    //                    #    #  #
+    //  ##   #  #  ##    ###   #      ###  # #    ##
+    // # ##   ##    #     #    # ##  #  #  ####  # ##
+    // ##     ##    #     #    #  #  # ##  #  #  ##
+    //  ##   #  #  ###     ##   ###   # #  #  #   ##
+    /**
+     * Removes a game.
+     * @param {string} ip The IP address of the game to remove.
+     * @returns {Promise} A promise that resolves when the game has been removed.
+     */
+    static async exitGame(ip) {
         const game = await Game.getGame(ip);
         game.remove();
     }
@@ -456,8 +467,9 @@ class Stats {
      */
     static async processStat(ip, data) {
         if (!Game.getByIp(ip) && data.type !== "StartGame" && data.type !== "LobbyStatus") {
-            if (data.type === "LobbyExit" || data.type === "Disconnect")
+            if (data.type === "LobbyExit" || data.type === "Disconnect") {
                 return;
+            }
 
             await Stats.startGame(ip, {matchMode: "ANARCHY"});
 
@@ -496,7 +508,7 @@ class Stats {
                     await Stats.endGame(ip, data);
                     break;
                 case "LobbyExit":
-                    await Stats.exitGame(ip, data);
+                    await Stats.exitGame(ip);
                     break;
             }
 
@@ -524,7 +536,7 @@ class Stats {
         }
 
         game.settings = data;
-        game.inLobby = data.type == 'LobbyStatus';
+        game.inLobby = data.type === "LobbyStatus";
 
         game.players = data.players && data.players.map((player) => new Player({
             name: player,

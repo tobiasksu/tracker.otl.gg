@@ -76,7 +76,7 @@ class Home {
                     Home.endGame(ip, data);
                 }
                 if (data.type === "LobbyExit") {
-                    Home.exitGame(ip, data);
+                    Home.exitGame(ip);
                 }
                 break;
             case "Server": {
@@ -289,7 +289,18 @@ class Home {
         }, 3600000);
     }
 
-    static exitGame(ip, data) {
+    //              #     #     ##
+    //                    #    #  #
+    //  ##   #  #  ##    ###   #      ###  # #    ##
+    // # ##   ##    #     #    # ##  #  #  ####  # ##
+    // ##     ##    #     #    #  #  # ##  #  #  ##
+    //  ##   #  #  ###     ##   ###   # #  #  #   ##
+    /**
+     * Removes a game.
+     * @param {string} ip The IP address of the game to remove.
+     * @returns {void}
+     */
+    static exitGame(ip) {
         const game = Game.getGame(ip);
 
         const gameEl = document.getElementById(`game-${ip}`);
@@ -447,7 +458,7 @@ class Home {
 
         game.server = data.server;
         game.settings = data;
-        game.inLobby = data.type == 'LobbyStatus';
+        game.inLobby = data.type === "LobbyStatus";
         game.players = data.players && data.players.map((player) => new Player({
             name: player,
             kills: 0,

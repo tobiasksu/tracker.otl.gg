@@ -1,4 +1,4 @@
-/** global Common, GamesView */
+/* global Common, GamesView */
 
 //   ###                        #        #            #
 //  #   #                       #                     #
@@ -84,7 +84,7 @@ class GameList {
         ev.preventDefault();
         ev.stopPropagation();
         return false;
-}
+    }
 
     //                    #
     //                    #
