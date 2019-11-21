@@ -31,17 +31,26 @@ class Servers {
         servers.forEach((server) => {
             const game = Game.getByIp(server.ip);
 
-            if (game && game.inLobby && game.players && game.settings && game.settings.maxNumPlayers) {
-                server.numPlayers = game.players.length;
-                server.maxNumPlayers = game.settings.maxNumPlayers;
-
-                if (game.settings && game.settings.map) {
-                    server.map = game.settings.map;
+            if (game && game.inLobby && game.settings) {
+                if (game.settings.players && game.settings.maxPlayers) {
+                    server.numPlayers = game.settings.players.length;
+                    server.maxNumPlayers = game.settings.maxPlayers;
+                } else {
+                    server.numPlayers = 0;
+                    server.maxNumPlayers = 0;
                 }
-            } else {
-                delete server.numPlayers;
-                delete server.maxNumPlayers;
-                delete server.map;
+
+                if (game.settings.level) {
+                    server.map = `${game.settings.level}`;
+                } else {
+                    server.map = "";
+                }
+
+                if (game.settings.matchMode) {
+                    server.mode = `${game.settings.matchMode}`;
+                } else {
+                    server.mode = "";
+                }
             }
 
             server.old = now.getTime() - new Date(server.lastSeen).getTime() > 60 * 60 * 1000;
@@ -80,6 +89,11 @@ class Servers {
                 }
             }
         });
+
+        delete server.numPlayers;
+        delete server.maxNumPlayers;
+        delete server.map;
+        delete server.mode;
 
         server.lastSeen = new Date();
 
