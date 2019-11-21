@@ -1,4 +1,5 @@
 const Db = require("../database/servers"),
+    Game = require("./game"),
     Websocket = require("../websocket");
 
 //   ###
@@ -28,6 +29,21 @@ class Servers {
             now = new Date();
 
         servers.forEach((server) => {
+            const game = Game.getByIp(server.ip);
+
+            if (game && game.inLobby && game.players && game.settings && game.settings.maxNumPlayers) {
+                server.numPlayers = game.players.length;
+                server.maxNumPlayers = game.settings.maxNumPlayers;
+
+                if (game.settings && game.settings.map) {
+                    server.map = game.settings.map;
+                }
+            } else {
+                delete server.numPlayers;
+                delete server.maxNumPlayers;
+                delete server.map;
+            }
+
             server.old = now.getTime() - new Date(server.lastSeen).getTime() > 60 * 60 * 1000;
         });
 
