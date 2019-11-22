@@ -35,6 +35,10 @@ class Websocket {
         const str = JSON.stringify(message);
 
         clients.forEach((client) => {
+            if (client.readyState !== 1) {
+                return;
+            }
+
             if (client.url === "/") {
                 client.send(str);
             } else if (gameMatch.test(client.url)) {
