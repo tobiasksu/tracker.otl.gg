@@ -24,7 +24,7 @@
         "express-ws": "4.0.0",
         "html-minifier": "4.0.0",
         "morgan": "1.9.1",
-        "node-database": "roncli/node-database#v1.2.0",
+        "node-database": "roncli/node-database#v1.2.1",
         "request": "2.88.0",
         "request-promise-native": "1.0.8",
         "timeago.js": "4.0.1"
