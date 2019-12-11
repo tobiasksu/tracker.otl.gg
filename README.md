@@ -4,6 +4,12 @@ The source code for the website at http://olproxy.otl.gg.
 
 ## Version History
 
+### 2.0.2 - 12/10/2019
+
+* Update server list API to not draw from the database.
+* Other fixes to server list API.
+* Remove active API.
+
 ### 2.0.1 - 11/19/2019
 
 * Active lobbys are now shown with number of players and max players.
