@@ -37,9 +37,6 @@ class IndexView {
                     <meta name="og:url" content="${protocol}://${host}${originalUrl}" />
                     <meta name="twitter:card" content="summary" />
                     <meta name="twitter:creator" content="@roncli" />
-                    <link rel="stylesheet" href="/css/reset.css" />
-                    <link rel="stylesheet" href="/css/common.css" />
-                    <script src="/js/common/common.js"></script>
                     ${head}
                 </head>
                 <body>

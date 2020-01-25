@@ -1,7 +1,11 @@
+/**
+ * @typedef {express.Router} Express.Router
+ */
+
 const compression = require("compression"),
     express = require("express"),
     expressWs = require("express-ws"),
-    minify = require("express-minify"),
+    minify = require("./src/minify"),
     morgan = require("morgan"),
     morganExtensions = require("./src/extensions/morgan.extensions"),
 
@@ -36,6 +40,7 @@ const compression = require("compression"),
     expressWs(app);
 
     // Get the router.
+    /** @type {Express.Router} */
     let router;
     try {
         router = await Router.getRouter();
@@ -44,23 +49,52 @@ const compression = require("compression"),
         return;
     }
 
+    // Add morgan extensions.
+    morganExtensions(morgan);
+
     // Initialize middleware stack.
     app.use(express.json({
         limit: "10mb"
     }));
+    app.use(morgan(":colorstatus \x1b[30m\x1b[0m:method\x1b[0m :url\x1b[30m\x1b[0m:newline    Date :date[iso]    IP :ipaddr    Time :colorresponse ms"));
     app.use(compression());
-    morganExtensions(morgan);
-    app.use(morgan(":colorstatus \x1b[30m\x1b[0m:method\x1b[0m :url\x1b[30m\x1b[0m:newline    Date :date[iso]    IP :req[ip]    Time :colorresponse ms"));
-    app.use(minify());
 
-    // Web server routes.
+    // Setup public redirects.
     app.use(express.static("public"));
 
+    // Setup timeago handler.
     app.get("/js/common/timeago.min.js", (req, res) => {
         res.sendFile(`${__dirname}/node_modules/timeago.js/dist/timeago.min.js`);
     });
 
+    // Setup JS/CSS handlers.
+    app.get("/css", minify.cssHandler);
+    app.get("/js", minify.jsHandler);
+
+    // 500 is an internal route, 404 it if it's requested directly.
+    app.use("/500", (req, res, next) => {
+        req.method = "GET";
+        req.url = "/404";
+        router(req, res, next);
+    });
+
+    // Setup dynamic routing.
     app.use("/", router);
+
+    // 404 remaining pages.
+    app.use((req, res, next) => {
+        req.method = "GET";
+        req.url = "/404";
+        router(req, res, next);
+    });
+
+    // 500 errors.
+    app.use((err, req, res, next) => {
+        Log.exception("Unhandled error has occurred.", err);
+        req.method = "GET";
+        req.url = "/500";
+        router(req, res, next);
+    });
 
     // Startup webserver.
     const port = process.env.PORT || settings.express.port;
