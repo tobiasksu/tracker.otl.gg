@@ -243,6 +243,7 @@ class Stats {
 
                 break;
             } case "MONSTERBALL":
+                game.goals = game.goals || [];
                 game.teamScore = {
                     "BLUE": game.goals.filter((g) => g.scorerTeam === "BLUE" && !g.blunder || g.scorerTeam === "ORANGE" && g.blunder).length,
                     "ORANGE": game.goals.filter((g) => g.scorerTeam === "ORANGE" && !g.blunder || g.scorerTeam === "BLUE" && g.blunder).length
