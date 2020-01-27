@@ -79,7 +79,7 @@ class Home {
                     "/js/common/game.js",
                     "/js/home.js"
                 ],
-                css: ["/css/home/css"]
+                css: ["/css/home.css"]
             },
             HomeView.get(completed, games, servers),
             req

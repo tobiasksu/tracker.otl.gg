@@ -28,20 +28,19 @@ class ServerView {
                 <div>
                     Running an private Overload server requires a few things:<br /><br />
                     1) Open UDP ports 7000 to 8001.  Note: this guide does not cover opening these ports.<br />
-                    2) An installation of Overload<br />
-                    3) olmod v0.2.7 or later.  Use the instructions on the <a href="/download">download</a> page to download and configure your server.<br />
-                </div>
-            </div>
-            <div class="section">
-                <div class="header">olmod on Windows with Steam or GoG</div>
-                <div>
-                    If you have Overload on Steam or GoG, you should just be able to launch olmod.exe from anywhere.  If it does not work for you, either uninstall and reinstall Overload, or follow the instructions for using olmod alongside Overload.
-                </div>
-            </div>
-            <div class="section">
-                <div class="header">olmod alongside Overload</div>
-                <div>
-                    Unzip the olmod package into the same directory as Overload.  This directory is the same directory that contains the Overload executable as well as the subdirectory Overload_Data.  You can then run olmod from within the same directory as Overload.<br /><br />
+                    2) An installation of Overload.<br />
+                    3) olmod v0.2.7 or later.<br />
+                    4) Configure your server by modifying olmodsettings.json.<br />
+                    <div class="code">
+                        {<br />
+                        <pre>    </pre>"isServer": true,<br />
+                        <pre>    </pre>"trackerBaseUrl": "https://olproxy.otl.gg",<br />
+                        <pre>    </pre>"keepListed": false,<br />
+                        <pre>    </pre>"serverName": "roncli's Testing Server",<br />
+                        <pre>    </pre>"notes": "Contact roncli@roncli.com for details!"<br />
+                        }
+                    </div>
+                    You must set isServer to true and ensure the trackerBaseUrl is http://olproxy.otl.gg to get listed.  You should also set the serverName to name your server, and add any notes that you would like listed alongside your server within the Overload Game Browser.  If you wish for your server to remain listed even after it is offline, set keepListed to true.
                 </div>
             </div>
             <div class="section">

@@ -158,6 +158,7 @@ class Minify {
                     return obj;
                 }, Promise.resolve({}));
             } catch (err) {
+                console.log(err);
                 if (err.code === "ENOENT") {
                     return next();
                 }

@@ -147,7 +147,7 @@ class Common {
             files.css = [];
         }
 
-        files.js.unshift("/js/common.js");
+        files.js.unshift("/js/common/common.js");
         files.css.unshift("/css/common.css");
         files.css.unshift("/css/reset.css");
 
