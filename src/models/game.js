@@ -1,6 +1,6 @@
 /**
  * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players: Player[], kills: object[], goals: object[], flagStats: object[], events: object[], damage?: object[], teamScore: Object<string, number>, startTime?: Date, projectedEnd?: Date, countdown?: number, elapsed?: number, inLobby?: boolean}} GameData
+ * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players?: Player[], kills?: object[], goals?: object[], flagStats?: object[], events?: object[], damage?: object[], teamScore?: Object<string, number>, startTime?: Date, projectedEnd?: Date, countdown?: number, elapsed?: number, inLobby?: boolean}} GameData
  */
 
 const Player = require("./player"),
@@ -38,13 +38,13 @@ class Game {
         this.server = data.server;
         this.start = data.start;
         this.end = data.end;
-        this.players = data.players;
-        this.kills = data.kills;
-        this.goals = data.goals;
-        this.flagStats = data.flagStats;
-        this.events = data.events;
-        this.damage = data.damage;
-        this.teamScore = data.teamScore;
+        this.players = data.players || [];
+        this.kills = data.kills || [];
+        this.goals = data.goals || [];
+        this.flagStats = data.flagStats || [];
+        this.events = data.events || [];
+        this.damage = data.damage || [];
+        this.teamScore = data.teamScore || {};
         this.startTime = data.startTime;
         this.projectedEnd = data.projectedEnd;
         this.countdown = data.countdown;
@@ -100,16 +100,34 @@ class Game {
 
         if (!game) {
             games.push(game = new Game({
-                ip,
-                players: [],
-                kills: [],
-                goals: [],
-                flagStats: [],
-                events: [],
-                teamScore: {}
+                ip
             }));
 
             game.server = await ServersDb.getByIp(ip);
+        }
+
+        if (!game.players) {
+            game.players = [];
+        }
+
+        if (!game.kills) {
+            game.kills = [];
+        }
+
+        if (!game.goals) {
+            game.goals = [];
+        }
+
+        if (!game.flagStats) {
+            game.flagStats = [];
+        }
+
+        if (!game.events) {
+            game.events = [];
+        }
+
+        if (!game.teamScore) {
+            game.teamScore = {};
         }
 
         return game;

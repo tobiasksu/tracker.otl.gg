@@ -193,6 +193,12 @@ class Home {
             document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
         }
 
+        if (event === "Return" && !scorer) {
+            game.flagStats.push(data);
+            game.events.push(data);
+            return;
+        }
+
         game.events.push(data);
         game.flagStats.push(data);
 
@@ -252,7 +258,7 @@ class Home {
     /**
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[]}} data The end game data.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], players: object[], teamScore: object}} data The end game data.
      * @returns {void}
      */
     static endGame(ip, data) {

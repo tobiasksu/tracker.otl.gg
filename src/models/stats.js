@@ -111,6 +111,13 @@ class Stats {
             game.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
+        if (event === "Return" && !scorer) {
+            game.flagStats.push(data);
+            data.description = `The ${scorerTeam} flag has been automatically returned.`;
+            game.events.push(data);
+            return;
+        }
+
         const scorerPlayer = game.getPlayer(scorer);
 
         scorerPlayer.team = scorerTeam;
@@ -197,10 +204,10 @@ class Stats {
 
         game.start = start;
         game.end = end;
-        game.damage = damage;
-        game.kills = kills;
-        game.goals = goals;
-        game.flagStats = flagStats;
+        game.damage = damage || [];
+        game.kills = kills || [];
+        game.goals = goals || [];
+        game.flagStats = flagStats || [];
 
         game.damage.forEach((stat) => {
             stat.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(stat.weapon)];
@@ -243,7 +250,6 @@ class Stats {
 
                 break;
             } case "MONSTERBALL":
-                game.goals = game.goals || [];
                 game.teamScore = {
                     "BLUE": game.goals.filter((g) => g.scorerTeam === "BLUE" && !g.blunder || g.scorerTeam === "ORANGE" && g.blunder).length,
                     "ORANGE": game.goals.filter((g) => g.scorerTeam === "ORANGE" && !g.blunder || g.scorerTeam === "BLUE" && g.blunder).length
@@ -266,13 +272,16 @@ class Stats {
 
                 break;
             case "CTF":
-                game.flagStats = game.flagStats || [];
                 game.teamScore = {
                     "BLUE": game.flagStats.filter((f) => f.scorerTeam === "BLUE" && f.event === "Capture").length,
                     "ORANGE": game.flagStats.filter((f) => f.scorerTeam === "ORANGE" && f.event === "Capture").length
                 };
 
                 game.flagStats.forEach((flag) => {
+                    if (!flag.scorer) {
+                        return;
+                    }
+
                     const scorerPlayer = game.getPlayer(flag.scorer, flag.scorerTeam);
 
                     switch (flag.event) {
