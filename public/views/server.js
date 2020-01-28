@@ -34,13 +34,13 @@ class ServerView {
                     <div class="code">
                         {<br />
                         <pre>    </pre>"isServer": true,<br />
-                        <pre>    </pre>"trackerBaseUrl": "https://olproxy.otl.gg",<br />
+                        <pre>    </pre>"trackerBaseUrl": "https://tracker.otl.gg",<br />
                         <pre>    </pre>"keepListed": false,<br />
                         <pre>    </pre>"serverName": "roncli's Testing Server",<br />
                         <pre>    </pre>"notes": "Contact roncli@roncli.com for details!"<br />
                         }
                     </div>
-                    You must set isServer to true and ensure the trackerBaseUrl is http://olproxy.otl.gg to get listed.  You should also set the serverName to name your server, and add any notes that you would like listed alongside your server within the Overload Game Browser.  If you wish for your server to remain listed even after it is offline, set keepListed to true.
+                    You must set isServer to true and ensure the trackerBaseUrl is http://tracker.otl.gg to get listed.  You should also set the serverName to name your server, and add any notes that you would like listed alongside your server within the Overload Game Browser.  If you wish for your server to remain listed even after it is offline, set keepListed to true.
                 </div>
             </div>
             <div class="section">
@@ -52,7 +52,7 @@ class ServerView {
             <div class="section">
                 <div class="header">Adding Examples</div>
                 <div>
-                    If you'd like to add an example script for your operating system, please issue a pull request to the repository for this website at <a target="_blank" href="https://github.com/roncli/olproxy.otl.gg">https://github.com/roncli/olproxy.otl.gg</a>, adding your example to /web/views/server.js.
+                    If you'd like to add an example script for your operating system, please issue a pull request to the repository for this website at <a target="_blank" href="https://github.com/overload-development-community/olproxy.otl.gg">https://github.com/overload-development-community/olproxy.otl.gg</a>, adding your example to /web/views/server.js.
                 </div>
             </div>
         `;

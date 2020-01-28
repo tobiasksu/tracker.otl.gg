@@ -1,6 +1,6 @@
 # olproxy.otl.gg
 
-The source code for the website at http://olproxy.otl.gg.
+The source code for the website at http://tracker.otl.gg.
 
 ## Version History
 
