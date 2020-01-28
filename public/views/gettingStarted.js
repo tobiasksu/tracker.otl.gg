@@ -62,7 +62,7 @@ class GettingStartedView {
                     1) Select a server to play on from the Server Browser on the <a href="/">Home</a> page.  Be sure a game is not currently running on it!<br />
                     2) Click "Play Multiplayer".<br />
                     3) Click "Internet Match".<br />
-                    4) Click "Create Match".<br />
+                    4) Click "Create Open Match" for a match where players can join the match at any time, or click "Create Match" for a closed match where no one else can join once the game starts.<br />
                     5) Adjust the game settings to your liking.<br />
                     6) Click "Create Match" again.<br />
                     7) Enter the IP address of the server.<br />
