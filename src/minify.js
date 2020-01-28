@@ -143,6 +143,9 @@ class Minify {
                         case "/js/common/timeago.min.js":
                             filePath = path.join(__dirname, "..", "node_modules/timeago.js/dist/timeago.min.js");
                             break;
+                        case "/js/common/clipboard.min.js":
+                            filePath = path.join(__dirname, "..", "node_modules/clipboard/dist/clipboard.min.js");
+                            break;
                         default: {
                             const dir = path.join(__dirname, "..", "public");
 

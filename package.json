@@ -18,6 +18,7 @@
         "url": "https://github.com/overload-development-community/olproxy.otl.gg.git"
     },
     "dependencies": {
+        "clipboard": "2.0.4",
         "compression": "1.7.4",
         "csso": "4.0.2",
         "express": "4.17.1",

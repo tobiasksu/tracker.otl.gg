@@ -65,6 +65,8 @@ class Home {
             {
                 js: [
                     "/js/common/timeago.min.js",
+                    "/js/common/clipboard.min.js",
+                    "/js/common/clipboard.js",
                     "/views/common/score.js",
                     "/views/common/details.js",
                     "/views/home/games.js",

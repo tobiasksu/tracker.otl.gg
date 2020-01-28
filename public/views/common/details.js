@@ -36,7 +36,7 @@ class DetailsView {
                 <div class="server">${addLink ? /* html */`
                     <a href="/game/${game.ip}">
                         ` : ""}${DetailsView.Common.htmlEncode(game.server && game.server.name || game.server && game.server.ip || game.ip || "Unknown")}${addLink ? /* html */`
-                    </a>
+                    </a>${game.inLobby || game.settings && game.settings.joinInProgress ? /* html */`Join at ${game.ip} <button class="copy" data-clipboard-text="${game.ip}">&#1F4CB;</button>` : ""}
                 ` : ""}</div>
                 <div class="scores">
                     ${DetailsView.ScoreView.get(game)}

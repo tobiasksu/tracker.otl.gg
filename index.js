@@ -62,9 +62,13 @@ const compression = require("compression"),
     // Setup public redirects.
     app.use(express.static("public"));
 
-    // Setup timeago handler.
+    // Setup library handlers.
     app.get("/js/common/timeago.min.js", (req, res) => {
         res.sendFile(`${__dirname}/node_modules/timeago.js/dist/timeago.min.js`);
+    });
+
+    app.get("/js/common/clipboard.min.js", (req, res) => {
+        res.sendFile(`${__dirname}/node_modules/clipboard/dist/clipboard.min.js`);
     });
 
     // Setup JS/CSS handlers.
