@@ -99,35 +99,9 @@ class Game {
         let game = games.find((g) => g.ip === ip);
 
         if (!game) {
-            games.push(game = new Game({
-                ip
-            }));
+            games.push(game = new Game({ip}));
 
             game.server = await ServersDb.getByIp(ip);
-        }
-
-        if (!game.players) {
-            game.players = [];
-        }
-
-        if (!game.kills) {
-            game.kills = [];
-        }
-
-        if (!game.goals) {
-            game.goals = [];
-        }
-
-        if (!game.flagStats) {
-            game.flagStats = [];
-        }
-
-        if (!game.events) {
-            game.events = [];
-        }
-
-        if (!game.teamScore) {
-            game.teamScore = {};
         }
 
         return game;

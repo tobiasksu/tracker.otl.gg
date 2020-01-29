@@ -57,15 +57,7 @@ class Game {
     static getGame(ip) {
         let game = Game.games.find((g) => g.ip === ip);
         if (!game) {
-            Game.games.push(game = new Game({
-                ip,
-                players: [],
-                kills: [],
-                goals: [],
-                flagStats: [],
-                events: [],
-                teamScore: {}
-            }));
+            Game.games.push(game = new Game({ip}));
         }
 
         return game;

@@ -75,6 +75,7 @@ class Minify {
                     str = `${str}${await fs.readFile(filePath, "utf8")}`;
                 }
             } catch (err) {
+                console.log(err);
                 if (err.code === "ENOENT") {
                     return next();
                 }
