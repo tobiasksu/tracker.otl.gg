@@ -95,7 +95,7 @@ class Game {
                     "/js/common/game.js",
                     "/js/game.js"
                 ],
-                css: ["/css/game/css"]
+                css: ["/css/game.css"]
             },
             GameView.get(game),
             req
