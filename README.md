@@ -4,6 +4,13 @@ The source code for the website at http://tracker.otl.gg.
 
 ## Version History
 
+### 2.0.3 - 1/28/2020
+
+* Onboarding update with current information about olmod and how to play.
+* Added IP address and copy button to games where joining is possible.
+* Fixed bugs with unofficial game modes.
+* Add minification and combination of CSS & JS files.
+
 ### 2.0.2 - 12/10/2019
 
 * Update server list API to not draw from the database.
