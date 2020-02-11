@@ -56,7 +56,7 @@ class Elapsed {
         const difference = new Date().getTime() - this.start.getTime(),
             days = Math.floor(Math.abs(difference) / (24 * 60 * 60 * 1000));
 
-        elapsed.innerText = `${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(difference).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: false})}`;
+        elapsed.innerText = `${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(difference).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"})}`;
 
         setTimeout(() => {
             this.update();
