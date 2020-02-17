@@ -36,7 +36,7 @@ class CompletedDb {
             SELECT SCOPE_IDENTITY() CompletedId
         `, {
             ip: {type: Db.VARCHAR(15), value: ip},
-            data: {type: Db.TEXT, value: JSON.stringify(saveData)}
+            data: {type: Db.NTEXT, value: JSON.stringify(saveData)}
         });
 
         return data && data.recordsets && data.recordsets[0] && data.recordsets[0][0] && data.recordsets[0][0].CompletedId || void 0;
@@ -173,7 +173,7 @@ class CompletedDb {
             UPDATE tblCompleted SET Data = @data, CrDate = CASE WHEN @start IS NULL THEN CrDate ELSE @start END WHERE CompletedId = @id
         `, {
             id: {type: Db.INT, value: id},
-            data: {type: Db.TEXT, value: JSON.stringify(data)},
+            data: {type: Db.NTEXT, value: JSON.stringify(data)},
             start: {type: Db.DATETIME, value: start}
         });
     }
