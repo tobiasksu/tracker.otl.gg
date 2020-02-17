@@ -34,7 +34,7 @@ class IndexView {
                     <title>Overload Game Browser</title>
                     <meta name="og:title" content="Overload Game Browser" />
                     <meta name="og:type" content="website" />
-                    <meta name="og:url" content="${protocol}://${host}${originalUrl}" />
+                    <meta name="og:url" content="${protocol}://${host}${encodeURI(originalUrl)}" />
                     <meta name="twitter:card" content="summary" />
                     <meta name="twitter:creator" content="@roncli" />
                     ${head}
