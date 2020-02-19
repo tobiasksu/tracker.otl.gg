@@ -101,11 +101,11 @@ class CompletedDb {
      * Gets the paginated list of games.
      * @param {number} page The page number.
      * @param {number} pageSize The size of the page.
-     * @returns {Promise<{id: number, ip: string, data: object, date: Date}[]>} A promise that resolves with the recent games.
+     * @returns {Promise<{games: {id: number, ip: string, data: object, date: Date}[], count: number}>} A promise that resolves with the recent games.
      */
     static async getList(page, pageSize) {
         /**
-         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[]]}}
+         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[], {Games: number}[]]}}
          */
         const data = await db.query(/* sql */`
             WITH g AS (
@@ -116,16 +116,21 @@ class CompletedDb {
             FROM g
             WHERE RowNum BETWEEN (@page - 1) * @pageSize + 1 AND @page * @pageSize
             ORDER BY CompletedId DESC
+
+            SELECT COUNT(CompletedId) Games FROM tblCompleted
         `, {
             page: {type: Db.INT, value: page},
             pageSize: {type: Db.INT, value: pageSize}
         });
-        return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => ({
-            id: row.CompletedId,
-            ip: row.IPAddress,
-            data: row.Data,
-            date: row.CrDate
-        })) || [];
+        return data && data.recordsets && data.recordsets.length === 2 && {
+            games: data.recordsets[0].map((row) => ({
+                id: row.CompletedId,
+                ip: row.IPAddress,
+                data: row.Data,
+                date: row.CrDate
+            })),
+            count: data.recordsets[1][0].Games
+        } || {games: [], count: 0};
     }
 
     //              #    ###                            #

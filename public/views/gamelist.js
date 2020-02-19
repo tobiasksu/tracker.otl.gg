@@ -18,25 +18,22 @@ class GameListView {
     //  ###
     /**
      * Gets the rendered game list page template.
-     * @param {object} games The games to display.
+     * @param {{games: {id: number, ip: string, data: object, date: Date}[], count: number}} gameList The games to display.
      * @returns {string} An HTML string of the rendered game list template.
      */
-    static get(games) {
+    static get(gameList) {
         return /* html */`
             <h2 id="archive" class="header">Archived Games</h2>
             <div id="pagination">
-                <a href="#" id="prev">&lt; Newer Games</a>
-                <a href="#" id="next">Older Games &gt;</a>
+                Go To Page: <select id="paginator">
+                    ${Array(...Array(Math.ceil(gameList.count / 25))).map((value, index) => /* html */`
+                        <option value="${index + 1}"${index === 0 ? " selected" : ""}>${index + 1}</option>
+                    `).join("")}
+                </select>
             </div>
             <div id="games">
-                ${GameListView.GamesView.get(games)}
+                ${GameListView.GamesView.get(gameList)}
             </div>
-            <script>
-                GameList.maxId = ${games.games[0].id};
-                GameList.minId = 1;
-                GameList.page = 1;
-                GameList.setup(${games.games[games.games.length - 1].id});
-            </script>
         `;
     }
 }

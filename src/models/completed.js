@@ -136,13 +136,15 @@ class Completed {
     /**
      * Gets the paginated list of games.
      * @param {number} page The page number.
-     * @returns {Promise<{id: number, ip: string, data: object, date: Date}[]>} A promise that resolves with the recent games.
+     * @returns {Promise<{games: {id: number, ip: string, data: object, date: Date}[], count: number}>} A promise that resolves with the recent games.
      */
     static async getList(page) {
-        /**
-         * @type {CompletedGame[]}
-         */
-        const games = await Db.getList(page, 25),
+        const gamesList = await Db.getList(page, 25);
+
+        /** @type {CompletedGame[]} */
+        const games = gamesList.games;
+
+        const count = gamesList.count,
             servers = {};
 
         for (const game of games) {
@@ -150,7 +152,7 @@ class Completed {
             game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
         }
 
-        return games;
+        return {games, count};
     }
 
     //              #    ###                            #

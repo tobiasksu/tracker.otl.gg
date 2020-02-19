@@ -32,7 +32,7 @@ class GameList {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const games = await Completed.getList(1);
+        const {games, count} = await Completed.getList(1);
 
         res.status(200).send(Common.page(
             "",
@@ -44,7 +44,7 @@ class GameList {
                 ],
                 css: ["/css/gamelist.css"]
             },
-            GameListView.get({games}),
+            GameListView.get({games, count}),
             req
         ));
     }

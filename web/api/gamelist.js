@@ -41,7 +41,7 @@ class GameList {
             return;
         }
 
-        const games = await Completed.getList(page);
+        const games = (await Completed.getList(page)).games;
 
         res.status(200).json({games});
     }
