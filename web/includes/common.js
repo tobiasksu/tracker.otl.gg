@@ -3,7 +3,9 @@
  * @typedef {{js?: string[], css?: string[]}} Files
  */
 
-const HtmlMinifier = require("html-minifier"),
+const url = require("url"),
+
+    HtmlMinifier = require("html-minifier"),
     Minify = require("../../src/minify"),
     pjson = require("../../package.json"),
     settings = require("../../settings");
@@ -151,7 +153,18 @@ class Common {
         files.css.unshift("/css/common.css");
         files.css.unshift("/css/reset.css");
 
-        head = `${head}${Minify.combine(files.js, "js")}${Minify.combine(files.css, "css")}`;
+        let live = req.query.live;
+
+        if (!live) {
+            if (req.get("Referrer")) {
+                live = url.parse(req.get("Referrer"), true).query.live;
+            }
+        }
+
+        head = /* html */`
+            <script>window.live=${live !== "off"};${live === "off" ? "if(window.location.href.indexOf(\"?live=off\")===-1)history.replaceState(null,\"\",window.location.href+(window.location.href.indexOf(\"?\")===-1?\"?\":\"&\")+\"live=off\");" : ""}</script>
+            ${head}${Minify.combine(files.js, "js")}${Minify.combine(files.css, "css")}
+        `;
 
         return HtmlMinifier.minify(
             IndexView.get({

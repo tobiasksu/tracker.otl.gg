@@ -23,6 +23,9 @@ class GameView {
      */
     static get(game) {
         return /* html */`
+            <div class="live-updates">
+                <a href="#" id="live-updates"></a>
+            </div>
             <div id="top">
                 <div id="game">
                     ${GameView.DetailsView.get(game, false)}

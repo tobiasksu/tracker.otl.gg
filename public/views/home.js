@@ -25,6 +25,9 @@ class HomeView {
      */
     static get(completed, games, servers) {
         return /* html */`
+            <div class="live-updates">
+                <a href="#" id="live-updates"></a>
+            </div>
             <h2>Recently Completed Games</h2>
             <div id="completed">
                 ${HomeView.CompletedGamesView.get(completed)}
