@@ -138,3 +138,9 @@
     text-align: right;
     font-variant-numeric: tabular-nums;
 }
+
+.live-updates {
+    float: right;
+    color: #ff6600;
+    padding-right: 10px;
+}

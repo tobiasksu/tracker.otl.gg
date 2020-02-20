@@ -24,9 +24,18 @@ class GameJs {
     static DOMContentLoaded() {
         Common.loadTimeAgo();
 
-        GameJs.ws = new WebSocketClient();
-        GameJs.ws.onmessage = GameJs.onmessage;
-        GameJs.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host + "/game/" + GameJs.game.ip);
+        const el = document.getElementById("live-updates");
+
+        if (window.live) {
+            el.innerText = "Disable Live Updates";
+            el.href = `${window.location.href}${window.location.href.indexOf("?") === -1 ? "?" : "&"}live=off`;
+        } else {
+            GameJs.ws = new WebSocketClient();
+            GameJs.ws.onmessage = GameJs.onmessage;
+            GameJs.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host + "/game/" + GameJs.game.ip);
+            el.innerText = "Enable Live Updates";
+            el.href = `${window.location.href.replace(/[?&]live=off/, "")}${window.location.href.replace(/[?&]live=off/, "").indexOf("?") === -1 ? "?" : "&"}live=on`;
+        }
     }
 
     //  ##   ###   # #    ##    ###    ###    ###   ###   ##

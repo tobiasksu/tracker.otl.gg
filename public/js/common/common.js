@@ -171,7 +171,14 @@ class Common {
         const els = document.querySelectorAll(".timeago");
 
         if (els.length > 0) {
-            timeago.render(els);
+            if (window.live) {
+                timeago.render(els);
+            } else {
+                els.forEach((el) => {
+                    el.innerText = timeago.format(el.attributes.datetime.value);
+                    el.classList.remove("timeago");
+                });
+            }
         }
     }
 
