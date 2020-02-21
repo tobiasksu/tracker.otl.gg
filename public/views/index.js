@@ -44,6 +44,7 @@ class IndexView {
                         <div id="menu">
                             <ol style="fon">
                                 <li><a href="/">Home</a></li>
+                                <li><a href="/summary">Summary</a></li>
                                 <li><a href="/gamelist">Archived Games</a></li>
                                 <li><a href="/getting-started">Getting Started with olmod</a></li>
                                 <li><a href="/server">Server Setup</a></li>

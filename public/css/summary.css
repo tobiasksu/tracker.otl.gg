@@ -1,0 +1,34 @@
+h2 {
+    font-size: 18px;
+}
+
+#completed {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    font-size: 12px;
+}
+
+#completed > div {
+    border: solid 1px #999999;
+}
+
+#games {
+    display: grid;
+    grid-template-columns: repeat(5, auto);
+    font-size: 12px;
+}
+
+#games > div {
+    border: solid 1px #999999;
+}
+
+#browser {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    font-size: 12px;
+}
+
+#browser > div {
+    border: solid 1px #999999;
+}
+

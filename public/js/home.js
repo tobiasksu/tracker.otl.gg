@@ -27,12 +27,12 @@ class Home {
         const el = document.getElementById("live-updates");
 
         if (window.live) {
-            el.innerText = "Disable Live Updates";
-            el.href = `${window.location.href}${window.location.href.indexOf("?") === -1 ? "?" : "&"}live=off`;
-        } else {
             Home.ws = new WebSocketClient();
             Home.ws.onmessage = Home.onmessage;
             Home.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host);
+            el.innerText = "Disable Live Updates";
+            el.href = `${window.location.href}${window.location.href.indexOf("?") === -1 ? "?" : "&"}live=off`;
+        } else {
             el.innerText = "Enable Live Updates";
             el.href = `${window.location.href.replace(/[?&]live=off/, "")}${window.location.href.replace(/[?&]live=off/, "").indexOf("?") === -1 ? "?" : "&"}live=on`;
         }
