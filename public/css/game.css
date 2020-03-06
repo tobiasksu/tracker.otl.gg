@@ -121,6 +121,10 @@
     color: red;
 }
 
+#damage #grid .table .empty {
+    border: none;
+}
+
 #events {
     padding: 10px;
     display: grid;
