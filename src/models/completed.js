@@ -182,6 +182,35 @@ class Completed {
         return games.filter((g) => g.data && g.data.events && g.data.events.length && g.data.events.length > 0);
     }
 
+    //                                #
+    //                                #
+    //  ###    ##    ###  ###    ##   ###
+    // ##     # ##  #  #  #  #  #     #  #
+    //   ##   ##    # ##  #     #     #  #
+    // ###     ##    # #  #      ##   #  #
+    /**
+     * Gets the paginated list of games by user search.
+     * @param {string} query The query.
+     * @param {number} page The page number.
+     * @returns {Promise<{games: {id: number, ip: string, data: object, date: Date}[], count: number}>} A promise that resolves with the recent games.
+     */
+    static async search(query, page) {
+        const gamesList = await Db.search(query, page, 25);
+
+        /** @type {CompletedGame[]} */
+        const games = gamesList.games;
+
+        const count = gamesList.count,
+            servers = {};
+
+        for (const game of games) {
+            game.data = JSON.parse(game.data);
+            game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
+        }
+
+        return {games, count};
+    }
+
     //                #         #
     //                #         #
     // #  #  ###    ###   ###  ###    ##

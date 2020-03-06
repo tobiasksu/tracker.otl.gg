@@ -1,5 +1,7 @@
 const Db = require("node-database"),
-    db = require("./index");
+    db = require("./index"),
+    FtsQuery = require("full-text-search-query"),
+    ftsQuery = new FtsQuery(true);
 
 //   ###                         ##            #                #  ####   #
 //  #   #                         #            #                #   #  #  #
@@ -157,6 +159,51 @@ class CompletedDb {
             data: row.Data,
             date: row.CrDate
         })) || [];
+    }
+
+    //                                #
+    //                                #
+    //  ###    ##    ###  ###    ##   ###
+    // ##     # ##  #  #  #  #  #     #  #
+    //   ##   ##    # ##  #     #     #  #
+    // ###     ##    # #  #      ##   #  #
+    /**
+     * Gets the paginated list of games by user search.
+     * @param {string} query The query.
+     * @param {number} page The page number.
+     * @param {number} pageSize The size of the page.
+     * @returns {Promise<{games: {id: number, ip: string, data: object, date: Date}[], count: number}>} A promise that resolves with the recent games.
+     */
+    static async search(query, page, pageSize) {
+        /**
+         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[], {Games: number}[]]}}
+         */
+        const data = await db.query(/* sql */`
+            WITH g AS (
+                SELECT ROW_NUMBER() OVER (ORDER BY CompletedId DESC) RowNum, CompletedId, IPAddress, Data, CrDate
+                FROM tblCompleted
+                WHERE CONTAINS(tblCompleted.Data, @query)
+            )
+            SELECT CompletedId, IPAddress, Data, CrDate
+            FROM g
+            WHERE RowNum BETWEEN (@page - 1) * @pageSize + 1 AND @page * @pageSize
+            ORDER BY CompletedId DESC
+
+            SELECT COUNT(CompletedId) Games FROM tblCompleted WHERE CONTAINS(tblCompleted.Data, @query)
+        `, {
+            query: {type: Db.VARCHAR(8000), value: ftsQuery.transform(query)}
+            page: {type: Db.INT, value: page},
+            pageSize: {type: Db.INT, value: pageSize}
+        });
+        return data && data.recordsets && data.recordsets.length === 2 && {
+            games: data.recordsets[0].map((row) => ({
+                id: row.CompletedId,
+                ip: row.IPAddress,
+                data: row.Data,
+                date: row.CrDate
+            })),
+            count: data.recordsets[1][0].Games
+        } || {games: [], count: 0};
     }
 
     //                #         #
