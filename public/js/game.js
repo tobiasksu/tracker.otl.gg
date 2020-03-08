@@ -1,4 +1,4 @@
-/* global Common, EventsView, PlayersView, ScoreView, WebSocketClient */
+/* global Common, Countdown, DetailsView, Elapsed, EventsView, Player, PlayersView, ScoreView, WebSocketClient */
 
 //   ###                          ###
 //  #   #                           #
@@ -54,6 +54,10 @@ class GameJs {
         switch (data.name) {
             case "Stats": {
                 switch (data.type) {
+                    case "StartGame":
+                    case "LobbyStatus":
+                        GameJs.startGame(data);
+                        break;
                     case "Kill":
                         GameJs.kill(data);
                         break;
@@ -391,6 +395,61 @@ class GameJs {
         }
 
         document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+    }
+
+    //         #                 #     ##
+    //         #                 #    #  #
+    //  ###   ###    ###  ###   ###   #      ###  # #    ##
+    // ##      #    #  #  #  #   #    # ##  #  #  ####  # ##
+    //   ##    #    # ##  #      #    #  #  # ##  #  #  ##
+    // ###      ##   # #  #       ##   ###   # #  #  #   ##
+    /**
+     * Processes the start game stat.
+     * @param {object} data The start game data.
+     * @returns {void}
+     */
+    static startGame(data) {
+        GameJs.game.server = data.server;
+        GameJs.game.settings = data;
+        GameJs.game.inLobby = data.type === "LobbyStatus";
+        GameJs.game.players = data.players && data.players.map((player) => new Player({
+            name: player,
+            kills: 0,
+            assists: 0,
+            deaths: 0,
+            goals: 0,
+            goalAssists: 0,
+            blunders: 0,
+            returns: 0,
+            pickups: 0,
+            captures: 0,
+            carrierKills: 0,
+            connected: data.time
+        })) || [];
+        GameJs.game.countdown = data.countdown;
+        GameJs.game.elapsed = data.elapsed;
+
+        let gameEl = document.getElementById(`game-${GameJs.game.ip}`);
+
+        if (!gameEl) {
+            document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
+                <div class="game" id="game-${GameJs.game.ip}">
+                </div>
+            `);
+            gameEl = document.getElementById(`game-${GameJs.game.ip}`);
+        }
+
+        gameEl.innerHTML = DetailsView.get(GameJs.game, true);
+
+        const el = gameEl.querySelector(".time");
+
+        if (!GameJs.game.inLobby) {
+            if (GameJs.game.countdown) {
+                new Countdown(GameJs.game.countdown, el);
+            } else if (GameJs.game.elapsed || GameJs.game.elapsed === 0) {
+                new Elapsed(GameJs.game.elapsed, el);
+            }
+        }
     }
 }
 
