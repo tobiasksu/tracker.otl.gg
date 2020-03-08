@@ -51,9 +51,7 @@ module.exports = function(morgan) {
     });
 
     // ipaddr - Returns the correct IP address.
-    morgan.token("ipaddr", (req) => {
-        return (req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip;
-    });
+    morgan.token("ipaddr", (req) => (req.headers["x-forwarded-for"] ? `${req.headers["x-forwarded-for"]}` : void 0) || req.ip);
 
     // newline - Simple newline.
     morgan.token("newline", () => "\n");

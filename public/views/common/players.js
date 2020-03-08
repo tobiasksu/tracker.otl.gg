@@ -25,7 +25,7 @@ class PlayersView {
      */
     static get(game) {
         return /* html */`
-            <div class="table" style="grid-template-columns: repeat(${4 + (game.settings && game.settings.matchMode !== "ANARCHY" ? 1 : 0) + (game.settings && game.settings.matchMode === "MONSTERBALL" ? 3 : 0) + (game.settings && game.settings.matchMode === "CTF" ? 4 : 0)}, auto);">
+            <div class="table" style="grid-template-columns: repeat(${5 + (game.settings && game.settings.matchMode !== "ANARCHY" ? 1 : 0) + (game.settings && game.settings.matchMode === "MONSTERBALL" ? 3 : 0) + (game.settings && game.settings.matchMode === "CTF" ? 4 : 0)}, auto);">
                 <div class="name header">Player</div>
                 ${game.settings && game.settings.matchMode !== "ANARCHY" ? /* html */`
                     <div class="team header">Team</div>
@@ -44,6 +44,7 @@ class PlayersView {
                 <div class="kills header">Kills</div>
                 <div class="assists header">Assists</div>
                 <div class="deaths header">Deaths</div>
+                <div class="timeInGame header">Time In Game</div>
                 ${game.players && game.players.sort((a, b) => b.goals - a.goals || b.goalAssists - a.goalAssists || a.blunders - b.blunders || b.captures - a.captures || b.kills - a.kills || b.assists - a.assists || a.deaths - b.deaths || a.name.toString().localeCompare(b.name)).map((player) => /* html */`
                     <div class="name">${PlayersView.Common.htmlEncode(player.name)}</div>
                     ${game.settings && game.settings.matchMode !== "ANARCHY" ? /* html */`
@@ -63,6 +64,7 @@ class PlayersView {
                     <div class="kills">${player.kills}</div>
                     <div class="assists">${player.assists}</div>
                     <div class="deaths">${player.deaths}</div>
+                    <div class="timeInGame">${PlayersView.Common.formatTimeSpan(player.timeInGame, 0)}</div>
                 `).join("") || ""}
             </div>
         `;

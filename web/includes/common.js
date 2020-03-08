@@ -90,10 +90,14 @@ class Common {
     /**
      * Formats a time span.
      * @param {number} seconds The number of seconds.
+     * @param {number} [decimals] The number of decimal places to display for seconds.  Defaults to 3.
      * @returns {string} The formatted time span.
      */
-    static formatTimeSpan(seconds) {
-        return `${seconds > 3600 ? `${Math.floor(seconds / 3600)}:` : ""}${seconds > 60 ? `${Common.pad(Math.floor(seconds / 60) % 60, seconds >= 600 ? 2 : 1)}:` : ""}${Common.pad(Math.floor(seconds % 60), seconds >= 10 ? 2 : 1)}.${Common.pad(Math.floor(seconds * 1000) % 1000, 3)}`;
+    static formatTimeSpan(seconds, decimals) {
+        if (decimals === void 0) {
+            decimals = 3;
+        }
+        return `${seconds > 3600 ? `${Math.floor(seconds / 3600)}:` : ""}${seconds > 60 ? `${Common.pad(Math.floor(seconds / 60) % 60, seconds >= 600 ? 2 : 1)}:` : ""}${Common.pad(Math.floor(seconds % 60), seconds >= 10 ? 2 : 1)}${decimals > 0 ? `.${Common.pad(Math.floor(seconds * 1000) % 1000, decimals)}` : ""}`;
     }
 
     //                #

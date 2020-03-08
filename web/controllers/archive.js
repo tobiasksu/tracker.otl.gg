@@ -65,10 +65,10 @@ class Archive {
             weapons = game.damage.map((d) => d.weapon).filter((w, index, arr) => arr.indexOf(w) === index).sort((a, b) => Weapon.orderedWeapons.indexOf(a) - Weapon.orderedWeapons.indexOf(b));
         }
 
-        let gameLength = game.settings && game.settings.timeLimit && game.settings.timeLimit * 1000 || 0;
+        let gameLength = game.settings && game.settings.timeLimit && game.settings.timeLimit || 0;
 
         if (game.end && game.start) {
-            gameLength = gameLength === 0 ? new Date(game.end).getTime() - new Date(game.start).getTime() : Math.min(new Date(game.end).getTime() - new Date(game.start).getTime(), gameLength);
+            gameLength = gameLength === 0 ? (new Date(game.end).getTime() - new Date(game.start).getTime()) / 1000 : Math.min((new Date(game.end).getTime() - new Date(game.start).getTime()) / 1000, gameLength);
         }
 
         for (const player of game.players) {
@@ -84,7 +84,7 @@ class Archive {
                 time = 0;
 
             if (events[0].type === "Connect") {
-                time = events[0].time * 1000;
+                time = events[0].time;
 
                 events.shift();
             }
@@ -92,7 +92,7 @@ class Archive {
             player.timeInGame = 0;
 
             while (events.length > 0) {
-                if (events[0].type === status || events[0].time * 1000 > gameLength) {
+                if (events[0].type === status || events[0].time > gameLength) {
                     events.shift();
                     continue;
                 }
@@ -100,11 +100,11 @@ class Archive {
                 switch (events[0].type) {
                     case "Connect":
                         status = "Connect";
-                        time = events[0].time * 1000;
+                        time = events[0].time;
                         break;
                     case "Disconnect":
                         status = "Disconnect";
-                        player.timeInGame += (events[0].time * 1000 - time);
+                        player.timeInGame += events[0].time - time;
                         break;
                 }
 
@@ -112,7 +112,7 @@ class Archive {
             }
 
             if (status === "Connect") {
-                player.timeInGame += (gameLength - time);
+                player.timeInGame += gameLength - time;
             }
         }
 
