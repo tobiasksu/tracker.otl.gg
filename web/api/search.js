@@ -49,4 +49,8 @@ class Search {
     }
 }
 
+Search.route = {
+    path: "/api/search"
+};
+
 module.exports = Search;

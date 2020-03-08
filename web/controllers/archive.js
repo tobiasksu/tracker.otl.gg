@@ -65,6 +65,57 @@ class Archive {
             weapons = game.damage.map((d) => d.weapon).filter((w, index, arr) => arr.indexOf(w) === index).sort((a, b) => Weapon.orderedWeapons.indexOf(a) - Weapon.orderedWeapons.indexOf(b));
         }
 
+        let gameLength = game.settings && game.settings.timeLimit && game.settings.timeLimit * 1000 || 0;
+
+        if (game.end && game.start) {
+            gameLength = gameLength === 0 ? new Date(game.end).getTime() - new Date(game.start).getTime() : Math.min(new Date(game.end).getTime() - new Date(game.start).getTime(), gameLength);
+        }
+
+        for (const player of game.players) {
+            player.timeInGame = gameLength;
+
+            const events = game.events.filter((e) => ["Connect", "Disconnect"].indexOf(e.type) !== -1 && e.player === player.name).sort((a, b) => a.time - b.time);
+
+            if (events.length === 0) {
+                continue;
+            }
+
+            let status = "Connect",
+                time = 0;
+
+            if (events[0].type === "Connect") {
+                time = events[0].time * 1000;
+
+                events.shift();
+            }
+
+            player.timeInGame = 0;
+
+            while (events.length > 0) {
+                if (events[0].type === status || events[0].time * 1000 > gameLength) {
+                    events.shift();
+                    continue;
+                }
+
+                switch (events[0].type) {
+                    case "Connect":
+                        status = "Connect";
+                        time = events[0].time * 1000;
+                        break;
+                    case "Disconnect":
+                        status = "Disconnect";
+                        player.timeInGame += (events[0].time * 1000 - time);
+                        break;
+                }
+
+                events.shift();
+            }
+
+            if (status === "Connect") {
+                player.timeInGame += (gameLength - time);
+            }
+        }
+
         res.status(200).send(Common.page(
             "",
             {
