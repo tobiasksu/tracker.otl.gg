@@ -76,8 +76,11 @@ class Stats {
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async connect(ip, data) {
-        const game = await Game.getGame(ip);
+        const game = await Game.getGame(ip),
+            player = game.getPlayer(data.player);
 
+        player.disconnected = false;
+        player.connected = true;
         data.description = `${data.player} connected.`;
         game.events.push(data);
     }
@@ -178,9 +181,12 @@ class Stats {
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async disconnect(ip, data) {
-        const game = await Game.getGame(ip);
+        const game = await Game.getGame(ip),
+            player = game.getPlayer(data.player);
 
         if (!game.end) {
+            player.disconnected = true;
+            player.connected = false;
             data.description = `${data.player} disconnected.`;
             game.events.push(data);
         }
@@ -559,8 +565,7 @@ class Stats {
             returns: 0,
             pickups: 0,
             captures: 0,
-            carrierKills: 0,
-            connected: data.time
+            carrierKills: 0
         })) || [];
 
         if (!game.inLobby) {

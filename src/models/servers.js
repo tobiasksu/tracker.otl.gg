@@ -60,7 +60,7 @@ class Servers {
                 }
             }
 
-            server.old = now.getTime() - new Date(server.lastSeen).getTime() > 60 * 60 * 1000;
+            server.old = now.getTime() - new Date(server.lastSeen).getTime() > 5 * 60 * 1000;
         });
 
         return serverInfo.filter((s) => s.keepListed && new Date().getTime() - new Date(s.lastSeen).getTime() < 30 * 24 * 60 * 60 * 1000 || new Date().getTime() - new Date(s.lastSeen).getTime() < 60 * 60 * 1000);
