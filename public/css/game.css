@@ -1,4 +1,4 @@
-#top {
+#top, #bottom {
     display: grid;
     grid-template-columns: max-content max-content;
 }
@@ -136,6 +136,14 @@
 #events .time {
     text-align: right;
     font-variant-numeric: tabular-nums;
+}
+
+#settings {
+    padding: 10px;
+    display: grid;
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 10px;
+    column-gap: 10px;
 }
 
 .right {

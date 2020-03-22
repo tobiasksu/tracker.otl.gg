@@ -64,7 +64,7 @@ typings/
 IndustryMedium.*
 
 # Settings
-settings.js
+/settings.js
 
 
 test.js

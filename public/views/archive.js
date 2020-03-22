@@ -73,8 +73,13 @@ class ArchiveView {
                     </div>
                 ` || ""}
             </div>
-            <div id="events">
-                ${ArchiveView.EventsView.get(game)}
+            <div id="bottom">
+                <div id="events">
+                    ${ArchiveView.EventsView.get(game)}
+                </div>
+                <div id="settings">
+                    ${ArchiveView.SettingsView.get(game)}
+                </div>
             </div>
             <script>
                 ArchiveJs.players = ${JSON.stringify(game.players && game.players.map((p) => p.name) || [])}
@@ -92,6 +97,8 @@ ArchiveView.CompletedDetailsView = typeof CompletedDetailsView === "undefined" ?
 ArchiveView.PlayersView = typeof PlayersView === "undefined" ? require("./common/players") : PlayersView; // eslint-disable-line no-undef
 // @ts-ignore
 ArchiveView.EventsView = typeof EventsView === "undefined" ? require("./common/events") : EventsView; // eslint-disable-line no-undef
+// @ts-ignore
+ArchiveView.SettingsView = typeof SettingsView === "undefined" ? require("./common/settings") : SettingsView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = ArchiveView; // eslint-disable-line no-undef

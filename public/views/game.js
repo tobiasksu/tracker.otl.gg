@@ -34,8 +34,13 @@ class GameView {
                     ${GameView.PlayersView.get(game)}
                 </div>
             </div>
-            <div id="events">
-                ${GameView.EventsView.get(game)}
+            <div id="bottom">
+                <div id="events">
+                    ${GameView.EventsView.get(game)}
+                </div>
+                <div id="settings">
+                    ${GameView.SettingsView.get(game)}
+                </div>
             </div>
             <script>
                 GameJs.game = new Game(${JSON.stringify(game)});
@@ -50,6 +55,8 @@ GameView.DetailsView = typeof DetailsView === "undefined" ? require("./common/de
 GameView.PlayersView = typeof PlayersView === "undefined" ? require("./common/players") : PlayersView; // eslint-disable-line no-undef
 // @ts-ignore
 GameView.EventsView = typeof EventsView === "undefined" ? require("./common/events") : EventsView; // eslint-disable-line no-undef
+// @ts-ignore
+GameView.SettingsView = typeof SettingsView === "undefined" ? require("./common/settings") : SettingsView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = GameView; // eslint-disable-line no-undef
