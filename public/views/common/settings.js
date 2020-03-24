@@ -87,6 +87,8 @@ class SettingsView {
                 <div class="header">Creator</div>
                 <div>${game.settings.creator}</div>
             ` : ""}
+            <div class="header">Join in Progress</div>
+            <div>${game.settings.joinInProgress ? "YES" : "NO"}</div>
             ${game.settings.forceLoadout === "OFF" ? "" : /* html */`
                 <div class="header">Forced Weapon 1</div>
                 <div>${game.settings.forceWeapon1}</div>
@@ -132,7 +134,7 @@ class SettingsView {
             <div class="header">Friendly Fire</div>
             <div>${game.settings.friendlyFire ? "ON" : "OFF"}</div>
             ${game.settings.showEnemyNames ? /* html */`
-                <div class="header">Friendly Fire</div>
+                <div class="header">Show Enemy Names</div>
                 <div>${game.settings.showEnemyNames}</div>
             ` : ""}
             ${game.settings.respawnTimeSeconds ? /* html */`

@@ -41,7 +41,7 @@ class Browser {
                     ip: s.ip,
                     name: s.name,
                     serverNotes: s.notes,
-                    lastSeen: s.lastseen,
+                    lastSeen: s.lastSeen,
                     online: !s.old
                 }
             };

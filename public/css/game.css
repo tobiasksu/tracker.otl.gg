@@ -3,6 +3,10 @@
     grid-template-columns: max-content max-content;
 }
 
+#bottom > div {
+    align-content: start;
+}
+
 #game .table {
     padding: 10px;
     display: grid;
@@ -75,7 +79,8 @@
 #players .table .returns:not(.header),
 #players .table .kills:not(.header),
 #players .table .assists:not(.header),
-#players .table .deaths:not(.header) {
+#players .table .deaths:not(.header),
+#players .table .timeInGame:not(.header) {
     text-align: right;
     font-variant-numeric: tabular-nums;
 }

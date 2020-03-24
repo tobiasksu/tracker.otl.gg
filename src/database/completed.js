@@ -191,7 +191,7 @@ class CompletedDb {
 
             SELECT COUNT(CompletedId) Games FROM tblCompleted WHERE CONTAINS(tblCompleted.Data, @query)
         `, {
-            query: {type: Db.VARCHAR(8000), value: ftsQuery.transform(query)},
+            query: {type: Db.NVARCHAR(4000), value: ftsQuery.transform(query)},
             page: {type: Db.INT, value: page},
             pageSize: {type: Db.INT, value: pageSize}
         });
