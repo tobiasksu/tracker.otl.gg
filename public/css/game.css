@@ -161,3 +161,7 @@
     color: #ff6600;
     padding-right: 10px;
 }
+
+.game .timeInGame {
+    visibility: hidden;
+}

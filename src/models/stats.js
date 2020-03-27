@@ -573,6 +573,10 @@ class Stats {
                 game.projectedEnd = new Date();
                 game.projectedEnd.setSeconds(game.projectedEnd.getSeconds() + game.settings.timeLimit);
                 game.countdown = game.settings.timeLimit * 1000;
+
+                if (["CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) !== -1) {
+                    game.teamScore = {"BLUE": 0, "ORANGE": 0};
+                }
             } else {
                 game.startTime = new Date();
                 game.elapsed = 0;

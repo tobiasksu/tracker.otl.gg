@@ -58,7 +58,8 @@ class Browser {
                     mode: game.settings && game.settings.matchMode || "",
                     jip: game.settings && game.settings.joinInProgress || false,
                     hasPassword: game.settings && game.settings.hasPassword || false,
-                    matchNotes: game.settings && game.settings.matchNotes || ""
+                    matchNotes: game.settings && game.settings.matchNotes || "",
+                    inLobby: game.inLobby
                 };
             }
 

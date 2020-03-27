@@ -30,16 +30,16 @@ class CompletedGamesView {
                     <a href="/archive/${games[s].id}">${CompletedGamesView.Common.htmlEncode(games[s].server && games[s].server.name || games[s].server && games[s].server.ip || games[s].ip || "Unknown")}</a>
                 </div>
                 <div class="time">
-                    Completed <time class="timeago" datetime="${new Date(games[s].end).toISOString()}">${new Date(games[s].end)}</time>
+                    Completed&nbsp;<time class="timeago" datetime="${new Date(games[s].data.end).toISOString()}">${new Date(games[s].data.end)}</time></span>
                 </div>
                 <div class="map">
-                    ${games[s].settings ? /* html */`
-                        ${CompletedGamesView.Common.htmlEncode(games[s].settings.matchMode)}${games[s].settings.level && ` - ${CompletedGamesView.Common.htmlEncode(games[s].settings.level)}` || ""}
+                    ${games[s].data.settings ? /* html */`
+                        ${CompletedGamesView.Common.htmlEncode(games[s].data.settings.matchMode)}${games[s].data.settings.level && ` - ${CompletedGamesView.Common.htmlEncode(games[s].data.settings.level)}` || ""}
                     ` : ""}
                 </div>
                 <div class="condition">
-                    ${games[s].settings && games[s].settings.condition ? /* html */`
-                        ${games[s].settings.condition}
+                    ${games[s].data.settings && games[s].data.settings.condition ? /* html */`
+                        ${games[s].data.settings.condition}
                     ` : ""}
                 </div>
                 <div class="scores">
@@ -47,7 +47,7 @@ class CompletedGamesView {
                         ${CompletedGamesView.Common.htmlEncode(team)} ${games[s].data.teamScore[team]}
                     `.trim()).join(", ") || games[s].data && games[s].data.players && games[s].data.players.length > 0 && games[s].data.players.sort((a, b) => b.kills * (games[s].data.players.length > 2 ? 3 : 1) + b.assists - (a.kills * (games[s].data.players.length > 2 ? 3 : 1) + a.assists)).slice(0, 4).map((player) => /* html */`
                         ${CompletedGamesView.Common.htmlEncode(player.name)} ${player.kills * (games[s].data.players.length > 2 ? 3 : 1) + player.assists}
-                    `.trim()).join(", ") || ""}${games[s].data && games[s].data.teamScore && games[s].data.teamScore.length > 4 || games[s].data && (!games[s].data.teamScore || games[s].data.teamScore.length === 0) && games[s].data.players && games[s].data.players.length > 4 ? ", ..." : ""}
+                    `.trim()).join(", ") || ""}${games[s].data && games[s].data.teamScore && Object.keys(games[s].data.teamScore).length > 4 || games[s].data && (!games[s].data.teamScore || games[s].data.teamScore.length === 0) && games[s].data.players && games[s].data.players.length > 4 ? ", ..." : ""}
                 </div>
             `).join("")}
         `;

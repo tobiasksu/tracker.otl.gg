@@ -75,11 +75,19 @@ class Countdown {
         if (difference > 0) {
             countdown.innerText = `${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(difference).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"})}`;
 
-            setTimeout(() => {
-                this.update();
-            }, difference % 1000 + 1);
+            if (window.live) {
+                setTimeout(() => {
+                    this.update();
+                }, difference % 1000 + 1);
+            }
         } else {
-            countdown.innerText = "Match ending...";
+            countdown.innerText = `+${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(Math.abs(difference)).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"})}`;
+
+            if (window.live) {
+                setTimeout(() => {
+                    this.update();
+                }, 1000 - Math.abs(difference) % 1000 + 1);
+            }
         }
     }
 }

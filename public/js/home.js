@@ -31,7 +31,7 @@ class Home {
             Home.ws.onmessage = Home.onmessage;
             Home.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host);
             el.innerText = "Disable Live Updates";
-            el.href = `${window.location.href}${window.location.href.indexOf("?") === -1 ? "?" : "&"}live=off`;
+            el.href = `${window.location.href.replace(/[?&]live=on/, "")}${window.location.href.replace(/[?&]live=on/, "").indexOf("?") === -1 ? "?" : "&"}live=off`;
         } else {
             el.innerText = "Enable Live Updates";
             el.href = `${window.location.href.replace(/[?&]live=off/, "")}${window.location.href.replace(/[?&]live=off/, "").indexOf("?") === -1 ? "?" : "&"}live=on`;

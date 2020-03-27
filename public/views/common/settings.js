@@ -145,7 +145,7 @@ class SettingsView {
                 <div class="header">Respawn Shield Time</div>
                 <div>${game.settings.respawnShieldTimeSeconds} SECONDS</div>
             ` : ""}
-            <div class="header">Rear View Allowed</div>
+            <div class="header">Rear View Window Allowed</div>
             <div>${game.settings.rearViewAllowed || game.settings.rearViewAllowed === void 0 ? "YES" : "NO"}</div>
         `;
     }

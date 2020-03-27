@@ -58,9 +58,11 @@ class Elapsed {
 
         elapsed.innerText = `${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(difference).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"})}`;
 
-        setTimeout(() => {
-            this.update();
-        }, 1001 - difference % 1000);
+        if (window.live) {
+            setTimeout(() => {
+                this.update();
+            }, 1001 - difference % 1000);
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-/* global Common, Countdown, DetailsView, Elapsed, EventsView, Player, PlayersView, ScoreView, WebSocketClient */
+/* global Common, Countdown, Elapsed, EventsView, Player, PlayersView, ScoreView, WebSocketClient */
 
 //   ###                          ###
 //  #   #                           #
@@ -31,7 +31,7 @@ class GameJs {
             GameJs.ws.onmessage = GameJs.onmessage;
             GameJs.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host + "/game/" + GameJs.game.ip);
             el.innerText = "Disable Live Updates";
-            el.href = `${window.location.href}${window.location.href.indexOf("?") === -1 ? "?" : "&"}live=off`;
+            el.href = `${window.location.href.replace(/[?&]live=on/, "")}${window.location.href.replace(/[?&]live=on/, "").indexOf("?") === -1 ? "?" : "&"}live=off`;
         } else {
             el.innerText = "Enable Live Updates";
             el.href = `${window.location.href.replace(/[?&]live=off/, "")}${window.location.href.replace(/[?&]live=off/, "").indexOf("?") === -1 ? "?" : "&"}live=on`;
@@ -429,19 +429,7 @@ class GameJs {
         GameJs.game.countdown = data.countdown;
         GameJs.game.elapsed = data.elapsed;
 
-        let gameEl = document.getElementById(`game-${GameJs.game.ip}`);
-
-        if (!gameEl) {
-            document.getElementById("games").insertAdjacentHTML("beforeend", /* html */`
-                <div class="game" id="game-${GameJs.game.ip}">
-                </div>
-            `);
-            gameEl = document.getElementById(`game-${GameJs.game.ip}`);
-        }
-
-        gameEl.innerHTML = DetailsView.get(GameJs.game, true);
-
-        const el = gameEl.querySelector(".time");
+        const el = document.querySelector(".time");
 
         if (!GameJs.game.inLobby) {
             if (GameJs.game.countdown) {

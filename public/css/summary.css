@@ -6,29 +6,50 @@ h2 {
     display: grid;
     grid-template-columns: repeat(5, auto);
     font-size: 12px;
+    padding: 10px;
+    align-items: stretch;
+    justify-items: stretch;
 }
 
 #completed > div {
     border: solid 1px #999999;
+    margin: 0 0 -1px -1px;
+    padding: 1px 3px;
+    display: flex;
+    align-items: center;
 }
 
 #games {
     display: grid;
     grid-template-columns: repeat(5, auto);
     font-size: 12px;
+    padding: 10px;
+    align-items: stretch;
+    justify-items: stretch;
 }
 
 #games > div {
     border: solid 1px #999999;
+    margin: 0 0 -1px -1px;
+    padding: 1px 3px;
+    display: flex;
+    align-items: center;
 }
 
 #browser {
     display: grid;
-    grid-template-columns: repeat(4, auto);
+    grid-template-columns: repeat(4, minmax(0, auto));
+    grid-template-rows: minmax(0, auto);
     font-size: 12px;
+    padding: 10px;
+    align-items: stretch;
+    justify-items: stretch;
 }
 
 #browser > div {
     border: solid 1px #999999;
+    margin: 0 0 -1px -1px;
+    padding: 1px 3px;
+    display: flex;
+    align-items: center;
 }
-

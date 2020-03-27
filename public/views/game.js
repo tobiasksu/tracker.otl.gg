@@ -30,7 +30,7 @@ class GameView {
                 <div id="game">
                     ${GameView.DetailsView.get(game, false)}
                 </div>
-                <div id="players">
+                <div id="players" class="game">
                     ${GameView.PlayersView.get(game)}
                 </div>
             </div>
