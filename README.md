@@ -4,6 +4,21 @@ The source code for the website at http://tracker.otl.gg.
 
 ## Version History
 
+### 2.1.0 - 3/26/2020
+
+* Updated archive list with better pagination.
+* Added search to archive list.
+* Archived games now show damage taken totals and time in game.
+* Game settings now appear on the game page.
+* Live updates can be disabled.
+* New summary page that shows all games and servers in a simple table.
+* Copy button extended to the server list.
+* New game browser API for future olmod usage.
+* Servers seen more than 5 minutes ago are now considered "old", instead of 1 hour ago.
+* Fixed bug causing games in lobby to not update when they have been started.
+* Fixed bug causing games to appear like they had 24 hours remaining in recent versions of Chrome.
+* Fixed bug with some meta tags.
+
 ### 2.0.3 - 1/28/2020
 
 * Onboarding update with current information about olmod and how to play.
