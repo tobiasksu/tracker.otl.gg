@@ -89,7 +89,7 @@ class SettingsView {
             ` : ""}
             <div class="header">Join in Progress</div>
             <div>${game.settings.joinInProgress ? "YES" : "NO"}</div>
-            ${game.settings.forceLoadout === "OFF" ? "" : /* html */`
+            ${!game.settings.forceLoadout || game.settings.forceLoadout === "OFF" ? "" : /* html */`
                 <div class="header">Forced Weapon 1</div>
                 <div>${game.settings.forceWeapon1}</div>
                 ${game.settings.forceWeapon2 === "NONE" ? "" : /* html */`
@@ -103,11 +103,11 @@ class SettingsView {
                     <div>${game.settings.forceMissile2}</div>
                 `}
             `}
-            ${game.settings.forceModifier1 === "OFF" ? "" : /* html */`
+            ${!game.settings.forceModifier1 || game.settings.forceModifier1 === "OFF" ? "" : /* html */`
                 <div class="header">Forced Modifier 1</div>
                 <div>${game.settings.forceModifier1}</div>
             `}
-            ${game.settings.forceModifier2 === "OFF" ? "" : /* html */`
+            ${!game.settings.forceModifier2 || game.settings.forceModifier2 === "OFF" ? "" : /* html */`
                 <div class="header">Forced Modifier 2</div>
                 <div>${game.settings.forceModifier2}</div>
             `}
@@ -146,7 +146,7 @@ class SettingsView {
                 <div>${game.settings.respawnShieldTimeSeconds} SECONDS</div>
             ` : ""}
             <div class="header">Rear View Window Allowed</div>
-            <div>${game.settings.rearViewAllowed || game.settings.rearViewAllowed === void 0 ? "YES" : "NO"}</div>
+            <div>${game.settings.rearViewAllowed ? "YES" : "NO"}</div>
         `;
     }
 }
