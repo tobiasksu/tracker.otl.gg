@@ -43,7 +43,12 @@ class Search {
             return;
         }
 
-        const games = (await Completed.search(q, page)).games;
+        let games;
+        if (!q || q.trim().length === 0) {
+            games = (await Completed.getList(page)).games;
+        } else {
+            games = (await Completed.search(q, page)).games;
+        }
 
         res.status(200).json({games});
     }
