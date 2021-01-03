@@ -1,3 +1,8 @@
+/**
+ * @typedef {import("express").Request} Express.Request
+ * @typedef {import("express").Response} Express.Response
+ */
+
 const csso = require("csso"),
     fs = require("fs").promises,
     path = require("path"),
@@ -8,11 +13,6 @@ const csso = require("csso"),
     settings = require("../settings");
 
 const nameCache = {};
-
-/**
- * @typedef {import("express").Request} Express.Request
- * @typedef {import("express").Response} Express.Response
- */
 
 //  #   #    #             #      ##
 //  #   #                        #  #
@@ -57,8 +57,7 @@ class Minify {
             }
         }
 
-        /** @type {string[]} */
-        const files = req.query.files.split(",");
+        const files = /** @type {string} */(req.query.files).split(","); // eslint-disable-line no-extra-parens
 
         try {
             let str = "";
@@ -75,7 +74,6 @@ class Minify {
                     str = `${str}${await fs.readFile(filePath, "utf8")}`;
                 }
             } catch (err) {
-                console.log(err);
                 if (err.code === "ENOENT") {
                     return next();
                 }
@@ -89,7 +87,7 @@ class Minify {
                 Cache.add(key, output.css, new Date(new Date().getTime() + 86400000));
             }
 
-            res.status(200).send(output.css);
+            res.status(200).type(".css").send(output.css);
             return void 0;
         } catch (err) {
             return next(err);
@@ -127,8 +125,7 @@ class Minify {
             }
         }
 
-        /** @type {string[]} */
-        const files = req.query.files.split(",");
+        const files = /** @type {string} */(req.query.files).split(","); // eslint-disable-line no-extra-parens
 
         try {
             /** @type {Object<string, string>} */
@@ -162,7 +159,6 @@ class Minify {
                     return obj;
                 }, Promise.resolve({}));
             } catch (err) {
-                console.log(err);
                 if (err.code === "ENOENT") {
                     return next();
                 }
@@ -170,12 +166,13 @@ class Minify {
                 return next(err);
             }
 
-            const output = terser.minify(code, {nameCache});
+            const output = await terser.minify(code, {nameCache});
 
-            if (output.error) {
-                Log.exception("An uglify-js error occurred.", output.error);
+            if (!output.code) {
+                const err = new Error("A terser error occurred.");
 
-                next(output.error);
+                Log.exception("A terser error occurred.", err);
+                next(err);
                 return void 0;
             }
 
@@ -183,7 +180,7 @@ class Minify {
                 Cache.add(key, output.code, new Date(new Date().getTime() + 86400000));
             }
 
-            res.status(200).send(output.code);
+            res.status(200).type(".js").send(output.code);
             return void 0;
         } catch (err) {
             return next(err);
