@@ -94,7 +94,9 @@ const compression = require("compression"),
 
     // 500 errors.
     app.use((err, req, res, next) => {
-        Log.exception("Unhandled error has occurred.", err);
+        if (!err.code || err.code !== "ECONNABORTED") {
+            Log.exception("Unhandled error has occurred.", err);
+        }
         req.method = "GET";
         req.url = "/500";
         router(req, res, next);
