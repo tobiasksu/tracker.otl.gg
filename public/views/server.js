@@ -40,7 +40,7 @@ class ServerView {
                         <pre>    </pre>"notes": "Contact roncli@roncli.com for details!"<br />
                         }
                     </div>
-                    You must set isServer to true and ensure the trackerBaseUrl is http://tracker.otl.gg to get listed.  You should also set the serverName to name your server, and add any notes that you would like listed alongside your server within the Overload Game Browser.  If you wish for your server to remain listed even after it is offline, set keepListed to true.
+                    You must set isServer to true and ensure the trackerBaseUrl is https://tracker.otl.gg to get listed.  You should also set the serverName to name your server, and add any notes that you would like listed alongside your server within the Overload Game Browser.  If you wish for your server to remain listed even after it is offline, set keepListed to true.
                 </div>
             </div>
             <div class="section">
