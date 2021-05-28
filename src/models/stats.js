@@ -222,6 +222,8 @@ class Stats {
         // Regenerate players and teamScore arrays in case our data is out of sync from the server due to dropped packets, restarted tracker, etc.
         game.players = [];
 
+        const hasEvents = !!game.events;
+
         game.kills.forEach((kill) => {
             const attackerPlayer = game.getPlayer(kill.attacker, kill.attackerTeam),
                 defenderPlayer = game.getPlayer(kill.defender, kill.defenderTeam),
@@ -241,6 +243,12 @@ class Stats {
                 if (assistedPlayer) {
                     assistedPlayer.assists++;
                 }
+            }
+
+            if (!hasEvents) {
+                const ev = JSON.parse(JSON.stringify(kill));
+                ev.description = `${kill.attacker} killed ${kill.defender} with ${kill.weapon}.${kill.assisted ? ` Assisted by ${kill.assisted}.` : ""}`;
+                game.events.push(ev);
             }
         });
 
@@ -274,6 +282,19 @@ class Stats {
                     if (assistedPlayer) {
                         assistedPlayer.goalAssists++;
                     }
+
+                    if (!hasEvents) {
+                        const ev = JSON.parse(JSON.stringify(goal));
+
+                        if (goal.blunder) {
+                            const otherTeam = goal.scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+                            ev.description = `BLUNDER! ${goal.scorer} own goals for ${otherTeam}!`;
+                        } else {
+                            ev.description = `GOAL! ${goal.scorer} scored for ${goal.scorerTeam}!${goal.assisted ? ` Assisted by ${goal.assisted}.` : ""}`;
+                        }
+
+                        game.events.push(ev);
+                    }
                 });
 
                 break;
@@ -303,6 +324,30 @@ class Stats {
                         case "Return":
                             scorerPlayer.returns++;
                             break;
+                    }
+
+                    if (!hasEvents) {
+                        const ev = JSON.parse(JSON.stringify(flag));
+
+                        switch (flag.event) {
+                            case "Return":
+                                ev.description = `${flag.scorer} returned the ${flag.scorerTeam} flag.`;
+                                break;
+                            case "Pickup": {
+                                const otherTeam = flag.scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+                                ev.description = `${flag.scorer} picked up the ${otherTeam} flag.`;
+                                break;
+                            } case "Capture":
+                                ev.description = `${flag.scorer} scores for ${flag.scorerTeam}!`;
+                                break;
+                            case "CarrierKill": {
+                                const otherTeam = flag.scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+                                ev.description = `${flag.scorer} killed the ${otherTeam} flag carrier!`;
+                                break;
+                            }
+                        }
+
+                        game.events.push(ev);
                     }
                 });
 
