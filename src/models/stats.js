@@ -222,7 +222,7 @@ class Stats {
         // Regenerate players and teamScore arrays in case our data is out of sync from the server due to dropped packets, restarted tracker, etc.
         game.players = [];
 
-        const hasEvents = !!game.events;
+        const hasEvents = game.events.length > 0;
 
         game.kills.forEach((kill) => {
             const attackerPlayer = game.getPlayer(kill.attacker, kill.attackerTeam),
