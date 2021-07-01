@@ -4,6 +4,14 @@ The source code for the website at https://tracker.otl.gg.
 
 ## Version History
 
+### 2.1.1 - 6/30/2021
+
+* Server browser includes game version for olmod 0.4.1 and later.
+* End game packets will better rewrite the game's history if it missed anything while it was live.
+* Fixed memory leak.
+* Fixed bug when searching for nothing.
+* Fixed encoding bugs.
+
 ### 2.1.0 - 3/26/2020
 
 * Updated archive list with better pagination.
