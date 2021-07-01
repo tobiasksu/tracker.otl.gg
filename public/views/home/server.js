@@ -27,6 +27,7 @@ class ServerView {
             <div ${old ? "class=\"old\"" : ""}>${ServerView.Common.htmlEncode(server.name)}</div>
             <div ${old ? "class=\"old\"" : ""}><button class="copy" data-clipboard-text="${server.ip}">&#x1F4CB;</button> ${ServerView.Common.htmlEncode(server.ip)}</div>
             <div ${old ? "class=\"old\"" : ""}><time class="timeago" datetime="${new Date(server.lastSeen).toISOString()}">${new Date(server.lastSeen)}</time></div>
+            <div ${old ? "class=\"old\"" : ""}>${ServerView.Common.htmlEncode(server.version)}</div>
             <div ${old ? "class=\"old\"" : ""}>${ServerView.Common.htmlEncode(server.notes)}</div>
         `;
     }

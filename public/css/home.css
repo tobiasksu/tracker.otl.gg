@@ -53,7 +53,7 @@
 #browser {
     padding: 10px;
     display: grid;
-    grid-template-columns: auto auto auto auto;
+    grid-template-columns: repeat(5, auto);
     grid-column-gap: 5px;
     column-gap: 5px;
     align-items: stretch;
