@@ -56,7 +56,13 @@ class ServersDb {
             SELECT Data FROM tblServers
             WHERE Visible = 1
         `);
-        return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => JSON.parse(row.Data)) || [];
+        return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => {
+            try {
+                return JSON.parse(row.Data);
+            } catch (err) {
+                throw new Error(`Invalid JSON:\n${row.Data}`);
+            }
+        }) || [];
     }
 
     //                #         #
