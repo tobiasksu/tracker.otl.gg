@@ -121,7 +121,7 @@ class Common {
             return "";
         }
 
-        return str.replace(/&/gim, "&amp;").replace(/</gim, "&lt;").replace(/[\u0080-\uFFFF<>&]/gim, (i) => "&#" + i.charCodeAt(0) + ";");
+        return str && str.replace(/&/gm, "&amp;").replace(/</gm, "&lt;").replace(/[\u0080-\uFFFF]/gm, (i) => `&#${i.charCodeAt(0)};`) || "";
     }
 
     // ##                   #  ###          #          ###          #          ###                     ##           #
