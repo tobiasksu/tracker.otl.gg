@@ -27,7 +27,7 @@ class GettingStartedView {
             <h2>Download olmod</h2>
             <div class="section">
                 <div>
-                    Download olmod directly from Github.  Visit <a href="https://github.com/arbruijn/olmod/releases" target="_blank">https://github.com/arbruijn/olmod/releases</a> and download the first .zip file listed under the latest release.<br /><br />
+                    Download olmod directly from Github.  Visit <a href="https://github.com/overload-development-community/olmod/releases" target="_blank">https://github.com/overload-development-community/olmod/releases</a> and download the first .zip file listed under the latest release.<br /><br />
                     Once downloaded, there are two ways to run olmod.
                 </div>
             </div>

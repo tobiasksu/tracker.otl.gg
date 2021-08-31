@@ -38,7 +38,7 @@ class AboutView {
             <div class="section">
                 <div class="header">Where can I find out more about olmod?</div>
                 <div>
-                    olmod is open source software, and is available on Github at <a href="https://github.com/arbruijn/olmod" target="_blank">https://github.com/arbruijn/olmod</a>.
+                    olmod is open source software, and is available on Github at <a href="https://github.com/overload-development-community/olmod" target="_blank">https://github.com/overload-development-community/olmod</a>.
                 </div>
             </div>
             <div class="section">
