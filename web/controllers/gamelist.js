@@ -34,7 +34,7 @@ class GameList {
     static async get(req, res) {
         const {games, count} = await Completed.getList(1);
 
-        res.status(200).send(Common.page(
+        res.status(200).send(await Common.page(
             "",
             {
                 js: [

@@ -31,7 +31,7 @@ class Home {
      * Processes the request.
      * @param {express.Request} req The request.
      * @param {express.Response} res The response.
-     * @returns {Promise} A promise that resolves when the request is complete.
+     * @returns {Promise} A promise that resolves when the request is processed
      */
     static async get(req, res) {
         const completed = await Completed.getRecent(),
@@ -60,7 +60,7 @@ class Home {
 
         res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
 
-        res.status(200).send(Common.page(
+        res.status(200).send(await Common.page(
             "",
             {
                 js: [

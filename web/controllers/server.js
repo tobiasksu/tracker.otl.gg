@@ -28,10 +28,10 @@ class Server {
      * Processes the request.
      * @param {express.Request} req The request.
      * @param {express.Response} res The response.
-     * @returns {void} A promise that resolves when the request is complete.
+     * @returns {Promise} A promise that resolves when the request is processed
      */
-    static get(req, res) {
-        res.status(200).send(Common.page("", {}, ServerView.get(), req));
+    static async get(req, res) {
+        res.status(200).send(await Common.page("", {}, ServerView.get(), req));
     }
 }
 

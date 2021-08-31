@@ -30,9 +30,9 @@ class Game {
      * Processes the request.
      * @param {express.Request} req The request.
      * @param {express.Response} res The response.
-     * @returns {void}
+     * @returns {Promise} A promise that resolves when the request is processed
      */
-    static get(req, res) {
+    static async get(req, res) {
         const ip = req.params.ip,
             gameModel = GameModel.getByIp(ip);
 
@@ -40,7 +40,7 @@ class Game {
         try {
             game = JSON.parse(JSON.stringify(gameModel));
         } catch (err) {
-            res.status(404).send(Common.page(
+            res.status(404).send(await Common.page(
                 "",
                 {
                     css: ["/css/error.css"]
@@ -52,7 +52,7 @@ class Game {
         }
 
         if (!game) {
-            res.status(404).send(Common.page(
+            res.status(404).send(await Common.page(
                 "",
                 {
                     css: ["/css/error.css"]
@@ -77,7 +77,7 @@ class Game {
 
         res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
 
-        res.status(200).send(Common.page(
+        res.status(200).send(await Common.page(
             "",
             {
                 js: [

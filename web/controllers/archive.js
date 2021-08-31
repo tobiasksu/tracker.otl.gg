@@ -35,7 +35,7 @@ class Archive {
      */
     static async get(req, res) {
         if (isNaN(Number.parseInt(req.params.id, 10))) {
-            res.status(404).send(Common.page(
+            res.status(404).send(await Common.page(
                 "",
                 {
                     css: ["/css/error.css"]
@@ -49,7 +49,7 @@ class Archive {
         const game = await Completed.getById(Number.parseInt(req.params.id, 10));
 
         if (!game) {
-            res.status(404).send(Common.page(
+            res.status(404).send(await Common.page(
                 "",
                 {
                     css: ["/css/error.css"]
@@ -116,7 +116,7 @@ class Archive {
             }
         }
 
-        res.status(200).send(Common.page(
+        res.status(200).send(await Common.page(
             "",
             {
                 js: [

@@ -62,7 +62,7 @@ class Summary {
 
         res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
 
-        res.status(200).send(Common.page(
+        res.status(200).send(await Common.page(
             "",
             {
                 js: [

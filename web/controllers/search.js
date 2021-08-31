@@ -41,7 +41,7 @@ class Search {
             ({games, count} = await Completed.search(q, 1));
         }
 
-        res.status(200).send(Common.page(
+        res.status(200).send(await Common.page(
             "",
             {
                 js: [
