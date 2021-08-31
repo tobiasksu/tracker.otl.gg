@@ -5,7 +5,7 @@
 
 const url = require("url"),
 
-    HtmlMinifier = require("html-minifier"),
+    HtmlMinifierTerser = require("html-minifier-terser"),
     Minify = require("../../src/minify"),
     pjson = require("../../package.json"),
     settings = require("../../settings");
@@ -170,7 +170,7 @@ class Common {
             ${head}${Minify.combine(files.js, "js")}${Minify.combine(files.css, "css")}
         `;
 
-        return HtmlMinifier.minify(
+        return HtmlMinifierTerser.minify(
             IndexView.get({
                 head,
                 html,
