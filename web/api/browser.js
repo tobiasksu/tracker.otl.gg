@@ -42,7 +42,8 @@ class Browser {
                     name: s.name,
                     serverNotes: s.notes,
                     lastSeen: s.lastSeen,
-                    online: !s.old
+                    online: !s.old,
+                    version: s.version
                 }
             };
 
