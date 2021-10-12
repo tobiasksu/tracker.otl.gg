@@ -1,4 +1,4 @@
-const Db = require("node-database"),
+const Db = require("@roncli/node-database"),
     db = require("./index"),
     FtsQuery = require("full-text-search-query"),
     ftsQuery = new FtsQuery(true);
