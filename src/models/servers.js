@@ -112,6 +112,10 @@ class Servers {
             }
         });
 
+        if (!server.version) {
+            server.version = "Old version";
+        }
+
         delete server.numPlayers;
         delete server.maxNumPlayers;
         delete server.map;
