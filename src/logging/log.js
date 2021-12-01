@@ -124,17 +124,21 @@ class Log {
             }
 
             try {
-                await request.post({
-                    uri: settings.logger.url,
-                    body: {
-                        key: settings.logger.key,
-                        application: "olproxy.otl.gg",
-                        category: "exception",
-                        message: `${log.message}\n${util.inspect(log.obj)}`,
-                        date: new Date().getTime()
-                    },
-                    json: true
-                });
+                if (settings.disableLogger) {
+                    console.log(log.message, log.obj);
+                } else {
+                    await request.post({
+                        uri: settings.logger.url,
+                        body: {
+                            key: settings.logger.key,
+                            application: "olproxy.otl.gg",
+                            category: "exception",
+                            message: `${log.message}\n${util.inspect(log.obj)}`,
+                            date: new Date().getTime()
+                        },
+                        json: true
+                    });
+                }
             } catch (err) {
                 console.log("Error while writing log:", err);
                 console.log("Error that failed to be written:", log.message, log.obj);
