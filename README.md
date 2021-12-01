@@ -2,6 +2,98 @@
 
 The source code for the website at https://tracker.otl.gg.
 
+## Running Locally
+
+To run this locally, you need to be a running a Microsoft SQL Server instance.  You also need to do two things.  First, create a settings.js in the root of the project.
+
+Here is a minimal settings.js file, but you will need to modify the SQL Server information.  Ignore the redis and logger sections, that can remain disabled for local development.
+
+```
+module.exports = {
+    express: {
+        port: 53535
+    },
+    database: {
+        server: "your.sql.server.address",
+        port: 1433,
+        user: "web_oltracker",
+        password: "secure_password",
+        database: "oltrackertest",
+        pool: {
+            max: 50,
+            min: 0,
+            idleTimeoutMillis: 30000
+        },
+        options: {
+            trustServerCertificate: true
+        }
+    },
+    redis: {
+        host: "",
+        port: 6379,
+        password: ""
+    },
+    redisPrefix: "",
+    disableRedis: true,
+    htmlMinifier: {
+        collapseBooleanAttributes: true,
+        collapseWhitespace: true,
+        conservativeCollapse: true,
+        decodeEntities: true,
+        html5: true,
+        removeAttributeQuotes: true,
+        removeComments: true,
+        removeEmptyAttributes: true,
+        removeOptionalTags: true,
+        removeRedundantAttributes: true,
+        useShortDoctype: true
+    },
+    logger: {
+        key: "",
+        url: ""
+    },
+    disableLogger: true,
+    minify: {
+        enabled: true,
+        cache: false
+    }
+};
+```
+
+Second, your SQL server will need the tables required for the tracker to store its information.  Here is a script to run to create those tables.  You will need to create the `web_oltracker` user through the UI.
+
+```
+CREATE TABLE [dbo].[tblCompleted](
+    [CompletedId] [int] IDENTITY(1,1) NOT NULL,
+    [IPAddress] [varchar](15) NOT NULL,
+    [Data] [text] NOT NULL,
+    [CrDate] [datetime] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+    [CompletedId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblCompleted] ADD  DEFAULT (getutcdate()) FOR [CrDate]
+GO
+
+CREATE TABLE [dbo].[tblServers](
+    [ServerId] [int] IDENTITY(1,1) NOT NULL,
+    [IPAddress] [varchar](15) NOT NULL,
+    [Visible] [bit] NOT NULL,
+    [Data] [text] NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+    [ServerId] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
+GO
+
+ALTER TABLE [dbo].[tblServers] ADD  DEFAULT ((1)) FOR [Visible]
+GO
+```
+
 ## Version History
 
 ### 2.1.2 - 8/30/2021
