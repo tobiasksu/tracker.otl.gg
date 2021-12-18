@@ -149,6 +149,11 @@ class GameJs {
      * @returns {void}
      */
     static connect(data) {
+        const player = GameJs.game.getPlayer(data.player);
+
+        player.disconnected = false;
+        player.connected = true;
+        data.description = `${data.player} connected.`;
         GameJs.game.events.push(data);
     }
 
@@ -230,7 +235,14 @@ class GameJs {
      * @returns {void}
      */
     static disconnect(data) {
-        GameJs.game.events.push(data);
+        const player = GameJs.game.getPlayer(data.player);
+
+        if (!GameJs.game.end) {
+            player.disconnected = true;
+            player.connected = false;
+            data.description = `${data.player} disconnected.`;
+            GameJs.game.events.push(data);
+        }
     }
 
     //                #   ##
