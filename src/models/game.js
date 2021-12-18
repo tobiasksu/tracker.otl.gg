@@ -64,7 +64,11 @@ class Game {
      * @returns {Game[]} The list of games.
      */
     static getAll() {
-        return games.filter((g) => new Date().getTime() - g.lastUpdate.getTime() < 5 * 60 * 1000);
+        return games.filter((g) => new Date().getTime() - g.lastUpdate.getTime() < 5 * 60 * 1000 && (
+            !g.settings || !g.settings.suddenDeath || g.teamScore.BLUE !== g.teamScore.ORANGE || !g.countdown || g.countdown >= -10000
+        ) && (
+            !g.settings || g.settings.suddenDeath || !g.countdown || g.countdown >= -10000
+        ));
     }
 
     //              #    ###         ###
