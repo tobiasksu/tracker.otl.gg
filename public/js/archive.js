@@ -34,7 +34,7 @@ class ArchiveJs {
                         el = document.getElementById(`damage-${x}-${y}`);
 
                     el.innerText = damage === 0 ? "" : damage.toFixed(0);
-                    if (!el.classList.contains("friendly")) {
+                    if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
                         total += damage;
                     }
                 }

@@ -52,7 +52,7 @@ class ArchiveView {
                             ${game.players.map((player, index) => /* html */`
                                 <div class="header">${ArchiveView.Common.htmlEncode(player.name)}</div>
                                 ${game.players.map((opponent, opponentIndex) => /* html */`
-                                    <div id="damage-${index}-${opponentIndex}" class="right ${index === opponentIndex || player.team && player.team === opponent.team ? "friendly" : ""}"></div>
+                                    <div id="damage-${index}-${opponentIndex}" class="right ${index === opponentIndex ? "self" : player.team && player.team === opponent.team ? "friendly" : ""}"></div>
                                 `).join("")}
                                 <div id="damage-${index}-total" class="right"></div>
                                 <div class="right">${game.damage.filter((d) => d.attacker === player.name && d.attacker !== d.defender && (!game.players.find((p) => p.name === d.attacker).team || game.players.find((p) => p.name === d.defender) && game.players.find((p) => p.name === d.attacker).team !== game.players.find((p) => p.name === d.defender).team)).map((d) => d.damage).reduce((a, b) => a + b, 0).toFixed(0)}</div>
