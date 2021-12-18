@@ -123,7 +123,11 @@
 }
 
 #damage #grid .table .friendly {
-    color: red;
+    color: #a00000;
+}
+
+#damage #grid .table .self {
+    color: #ff0000;
 }
 
 #damage #grid .table .empty {
