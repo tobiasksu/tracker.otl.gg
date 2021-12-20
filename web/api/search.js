@@ -30,8 +30,8 @@ class Search {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const q = (req.query.q || "").substr(0, 100),
-            page = Number.parseInt(req.query.page, 10);
+        const q = (`${req.query.q}` || "").substr(0, 100),
+            page = Number.parseInt(`${req.query.page}`, 10);
 
         if (isNaN(page)) {
             res.status(400).send("400 - Bad Request - Invalid querystring.");
