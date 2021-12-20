@@ -8,7 +8,7 @@ const csso = require("csso"),
     path = require("path"),
     terser = require("terser"),
 
-    Cache = require("./cache"),
+    Cache = require("@roncli/node-redis").Cache,
     Log = require("./logging/log"),
     settings = require("../settings");
 
@@ -48,7 +48,7 @@ class Minify {
         const key = `${settings.redisPrefix}:minify:${req.query.files}`;
 
         let cache;
-        if (settings.minify.cache) {
+        if (!settings.disableRedis && settings.minify.cache) {
             cache = await Cache.get(key);
 
             if (cache) {
@@ -83,8 +83,8 @@ class Minify {
 
             const output = csso.minify(str);
 
-            if (settings.minify.cache) {
-                Cache.add(key, output.css, new Date(new Date().getTime() + 86400000));
+            if (!settings.disableRedis && settings.minify.cache) {
+                await Cache.add(key, output.css, new Date(new Date().getTime() + 86400000));
             }
 
             res.status(200).type(".css").send(output.css);
@@ -116,7 +116,7 @@ class Minify {
         const key = `${settings.redisPrefix}:minify:${req.query.files}`;
 
         let cache;
-        if (settings.minify.cache) {
+        if (!settings.disableRedis && settings.minify.cache) {
             cache = await Cache.get(key);
 
             if (cache) {
@@ -176,8 +176,8 @@ class Minify {
                 return void 0;
             }
 
-            if (settings.minify.cache) {
-                Cache.add(key, output.code, new Date(new Date().getTime() + 86400000));
+            if (!settings.disableRedis && settings.minify.cache) {
+                await Cache.add(key, output.code, new Date(new Date().getTime() + 86400000));
             }
 
             res.status(200).type(".js").send(output.code);
