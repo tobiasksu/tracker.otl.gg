@@ -65,8 +65,3 @@ IndustryMedium.*
 
 # Settings
 /settings.js
-
-
-test.js
-.vs
-package-lock.json

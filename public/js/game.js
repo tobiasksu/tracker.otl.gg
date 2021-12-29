@@ -92,22 +92,6 @@ class GameJs {
         }
     }
 
-    // teamChange ASCII here
-    /**
-     * Processes the TeamChange stat.
-     * @param {{time: number, playerName: string, previousTeam: string, currentTeam: string }} data The teamChange data.
-     * @returns {void}
-     */
-    static teamChange(data) {
-        GameJs.game.events.push(data);
-        GameJs.game.teamChanges.push(data);
-
-        const player = GameJs.game.getPlayer(data.playerName);
-        player.team = data.currentTeam;
-
-        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
-    }
-
     // #     ##                   #
     // #      #                   #
     // ###    #    #  #  ###    ###   ##   ###
@@ -469,6 +453,28 @@ class GameJs {
                 new Elapsed(GameJs.game.elapsed, el);
             }
         }
+    }
+
+    //  #                       ##   #
+    //  #                      #  #  #
+    // ###    ##    ###  # #   #     ###    ###  ###    ###   ##
+    //  #    # ##  #  #  ####  #     #  #  #  #  #  #  #  #  # ##
+    //  #    ##    # ##  #  #  #  #  #  #  # ##  #  #   ##   ##
+    //   ##   ##    # #  #  #   ##   #  #   # #  #  #  #      ##
+    //                                                  ###
+    /**
+     * Processes the TeamChange stat.
+     * @param {{time: number, playerName: string, previousTeam: string, currentTeam: string }} data The teamChange data.
+     * @returns {void}
+     */
+    static teamChange(data) {
+        GameJs.game.events.push(data);
+        GameJs.game.teamChanges.push(data);
+
+        const player = GameJs.game.getPlayer(data.playerName);
+        player.team = data.currentTeam;
+
+        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
     }
 }
 

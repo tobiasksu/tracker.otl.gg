@@ -156,7 +156,7 @@ class Game {
     /**
      * Retrieves a player from a game.
      * @param {string} name The name of the player.
-     * @param {string} [team] The team the player is on.
+     * @param {string} [team] The team the player is currently on.
      * @returns {Player} The player.
      */
     getPlayer(name, team) {

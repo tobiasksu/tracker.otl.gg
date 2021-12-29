@@ -108,21 +108,6 @@ class Home {
         }
     }
 
-    // teamChange ASCII here
-    /**
-     * 
-     * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, playerName: string, previousTeam: string, currentTeam: string } data The teamChange data.
-     * @returns {void}
-     */
-    static teamChange(ip, data) {
-        const { playerName, previousTeam, currentTeam } = data,
-            game = Game.getGame(ip);
-
-        game.events.push(data);
-        game.teamChanges.push(data);
-    }
-
     // #     ##                   #
     // #      #                   #
     // ###    #    #  #  ###    ###   ##   ###
@@ -537,6 +522,26 @@ class Home {
                 new Elapsed(game.elapsed, el);
             }
         }
+    }
+
+    //  #                       ##   #
+    //  #                      #  #  #
+    // ###    ##    ###  # #   #     ###    ###  ###    ###   ##
+    //  #    # ##  #  #  ####  #     #  #  #  #  #  #  #  #  # ##
+    //  #    ##    # ##  #  #  #  #  #  #  # ##  #  #   ##   ##
+    //   ##   ##    # #  #  #   ##   #  #   # #  #  #  #      ##
+    //                                                  ###
+    /**
+     *
+     * @param {string} ip The IP address of the server to update.
+     * @param {{time: number, playerName: string, previousTeam: string, currentTeam: string}} data The teamChange data.
+     * @returns {void}
+     */
+    static teamChange(ip, data) {
+        const game = Game.getGame(ip);
+
+        game.events.push(data);
+        game.teamChanges.push(data);
     }
 }
 

@@ -15,26 +15,6 @@ const Db = require("../database/completed"),
  * A class that represents statistics.
  */
 class Stats {
-
-    // teamChange ASCII here
-    /**
-     * Processes the teamChange stat.
-     * @param {string} ip The IP address of the server to update.
-     * @param {object} data The teamChange data.
-     * @returns {Promise} A promise that resolves when the stat has been processed.
-     */
-    static async teamChange(ip, data) {
-        const { playerName, previousTeam, currentTeam } = data,
-            game = await Game.getGame(ip);
-
-        data.description = `${playerName} changed from ${previousTeam} to ${currentTeam} team`;
-        game.events.push(data);
-        game.teamChanges.push(data);
-
-        const player = game.getPlayer(playerName);
-        player.team = currentTeam;
-    }
-
     // #     ##                   #
     // #      #                   #
     // ###    #    #  #  ###    ###   ##   ###
@@ -225,7 +205,7 @@ class Stats {
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async endGame(ip, data) {
-        const {start, end, damage, kills, goals, flagStats, teamChanges } = data,
+        const {start, end, damage, kills, goals, flagStats, teamChanges} = data,
             game = await Game.getGame(ip);
 
         game.start = start;
@@ -382,13 +362,17 @@ class Stats {
                 break;
         }
 
-
-
         data.teamScore = game.teamScore;
         data.players = game.players;
 
         if (game.events.length > 0 && game.players.length > 0) {
             data.id = await Db.add(ip, game);
+        }
+
+        if (game.teamChanges) {
+            game.teamChanges.forEach((change) => {
+                game.getPlayer(change.playerName, change.currentTeam).team = change.currentTeam;
+            });
         }
 
         game.remove();
@@ -664,6 +648,31 @@ class Stats {
         data.condition = Game.getCondition(game);
         data.countdown = game.countdown;
         data.elapsed = game.elapsed;
+    }
+
+    //  #                       ##   #
+    //  #                      #  #  #
+    // ###    ##    ###  # #   #     ###    ###  ###    ###   ##
+    //  #    # ##  #  #  ####  #     #  #  #  #  #  #  #  #  # ##
+    //  #    ##    # ##  #  #  #  #  #  #  # ##  #  #   ##   ##
+    //   ##   ##    # #  #  #   ##   #  #   # #  #  #  #      ##
+    //                                                  ###
+    /**
+     * Processes the teamChange stat.
+     * @param {string} ip The IP address of the server to update.
+     * @param {object} data The teamChange data.
+     * @returns {Promise} A promise that resolves when the stat has been processed.
+     */
+    static async teamChange(ip, data) {
+        const {playerName, previousTeam, currentTeam} = data,
+            game = await Game.getGame(ip);
+
+        data.description = `${playerName} changed from ${previousTeam} to ${currentTeam} team`;
+        game.events.push(data);
+        game.teamChanges.push(data);
+
+        const player = game.getPlayer(playerName);
+        player.team = currentTeam;
     }
 }
 
