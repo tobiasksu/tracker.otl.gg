@@ -2,7 +2,7 @@
 
 /**
  * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players?: Player[], kills?: object[], goals?: object[], events?: object[], damage?: object[], teamScore?: Object<string, number>}} GameData
+ * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players?: Player[], kills?: object[], goals?: object[], events?: object[], damage?: object[], teamScore?: Object<string, number>, teamChanges?: object[]}} GameData
  */
 
 //   ###
@@ -39,6 +39,7 @@ class Game {
         this.events = data.events || [];
         this.damage = data.damage || [];
         this.teamScore = data.teamScore || {};
+        this.teamChanges = data.teamChanges || [];
         this.countdown = data.countdown;
     }
 

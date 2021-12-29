@@ -1,5 +1,5 @@
 /**
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players?: Player[], kills?: object[], goals?: object[], flagStats?: object[], events?: object[], damage?: object[], teamScore?: Object<string, number>, startTime?: Date, projectedEnd?: Date, countdown?: number, elapsed?: number, inLobby?: boolean}} GameData
+ * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players?: Player[], kills?: object[], goals?: object[], flagStats?: object[], events?: object[], damage?: object[], teamScore?: Object<string, number>, startTime?: Date, projectedEnd?: Date, countdown?: number, elapsed?: number, inLobby?: boolean, teamChanges?: object[]}} GameData
  */
 
 const Player = require("./player"),
@@ -50,6 +50,7 @@ class Game {
         this.elapsed = data.elapsed;
         this.inLobby = data.inLobby;
         this.lastUpdate = new Date();
+        this.teamChanges = data.teamChanges || [];
     }
 
     //              #     ##   ##    ##

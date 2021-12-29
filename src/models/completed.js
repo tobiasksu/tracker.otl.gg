@@ -76,7 +76,8 @@ class Completed {
                 flagStats: completedGame.data.flagStats,
                 events: completedGame.data.events,
                 damage: completedGame.data.damage,
-                teamScore: completedGame.data.teamScore
+                teamScore: completedGame.data.teamScore,
+                teamChanges: completedGame.data.teamChanges
             });
 
             if (game.events) {

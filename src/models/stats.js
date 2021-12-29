@@ -15,6 +15,26 @@ const Db = require("../database/completed"),
  * A class that represents statistics.
  */
 class Stats {
+
+    // teamChange ASCII here
+    /**
+     * Processes the teamChange stat.
+     * @param {string} ip The IP address of the server to update.
+     * @param {object} data The teamChange data.
+     * @returns {Promise} A promise that resolves when the stat has been processed.
+     */
+    static async teamChange(ip, data) {
+        const { playerName, previousTeam, currentTeam } = data,
+            game = await Game.getGame(ip);
+
+        data.description = `${playerName} changed from ${previousTeam} to ${currentTeam} team`;
+        game.events.push(data);
+        game.teamChanges.push(data);
+
+        const player = game.getPlayer(playerName);
+        player.team = currentTeam;
+    }
+
     // #     ##                   #
     // #      #                   #
     // ###    #    #  #  ###    ###   ##   ###
@@ -201,11 +221,11 @@ class Stats {
     /**
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], teamScore: object, players: object[], id: number?}} data The end game data.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], teamScore: object, teamChanges: object[], players: object[], id: number?}} data The end game data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async endGame(ip, data) {
-        const {start, end, damage, kills, goals, flagStats} = data,
+        const {start, end, damage, kills, goals, flagStats, teamChanges } = data,
             game = await Game.getGame(ip);
 
         game.start = start;
@@ -214,6 +234,7 @@ class Stats {
         game.kills = kills || [];
         game.goals = goals || [];
         game.flagStats = flagStats || [];
+        game.teamChanges = teamChanges || [];
 
         game.damage.forEach((stat) => {
             stat.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(stat.weapon)];
@@ -247,6 +268,14 @@ class Stats {
             if (!hasEvents) {
                 const ev = JSON.parse(JSON.stringify(kill));
                 ev.description = `${kill.attacker} killed ${kill.defender} with ${kill.weapon}.${kill.assisted ? ` Assisted by ${kill.assisted}.` : ""}`;
+                game.events.push(ev);
+            }
+        });
+
+        game.teamChanges.forEach((teamChange) => {
+            if (!hasEvents) {
+                const ev = JSON.parse(JSON.stringify(teamChange));
+                ev.description = `${teamChange.playerName} changed from ${teamChange.previousTeam} to ${teamChange.currentTeam} team`;
                 game.events.push(ev);
             }
         });
@@ -352,6 +381,8 @@ class Stats {
 
                 break;
         }
+
+
 
         data.teamScore = game.teamScore;
         data.players = game.players;
@@ -570,6 +601,8 @@ class Stats {
                 case "LobbyExit":
                     await Stats.exitGame(ip);
                     break;
+                case "TeamChange":
+                    await Stats.teamChange(ip, data);
             }
 
             Websocket.broadcast({ip, data});
