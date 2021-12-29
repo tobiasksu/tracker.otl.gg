@@ -68,3 +68,5 @@ IndustryMedium.*
 
 
 test.js
+.vs
+package-lock.json

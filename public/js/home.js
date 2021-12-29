@@ -77,6 +77,8 @@ class Home {
                     case "Disconnect":
                         Home.disconnect(ip, data);
                         break;
+                    case "TeamChange":
+                        Home.teamChange(ip, data);
                 }
 
                 document.getElementById(`game-${ip}`).querySelector(".scores").innerHTML = ScoreView.get(game);
@@ -104,6 +106,21 @@ class Home {
                 break;
             }
         }
+    }
+
+    // teamChange ASCII here
+    /**
+     * 
+     * @param {string} ip The IP address of the server to update.
+     * @param {{time: number, playerName: string, previousTeam: string, currentTeam: string } data The teamChange data.
+     * @returns {void}
+     */
+    static teamChange(ip, data) {
+        const { playerName, previousTeam, currentTeam } = data,
+            game = Game.getGame(ip);
+
+        game.events.push(data);
+        game.teamChanges.push(data);
     }
 
     // #     ##                   #
