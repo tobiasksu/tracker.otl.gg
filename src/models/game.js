@@ -49,6 +49,7 @@ class Game {
         this.countdown = data.countdown;
         this.elapsed = data.elapsed;
         this.inLobby = data.inLobby;
+        this.lastUpdate = new Date();
         this.teamChanges = data.teamChanges || [];
     }
 
@@ -60,11 +61,15 @@ class Game {
     // #      ##     ##  #  #  ###   ###
     //  ###
     /**
-     * Gets the list of current games.
+     * Gets the list of current games, except for games that haven't received a ping in more than 5 minutes.
      * @returns {Game[]} The list of games.
      */
     static getAll() {
-        return games;
+        return games.filter((g) => new Date().getTime() - g.lastUpdate.getTime() < 5 * 60 * 1000 && (
+            !g.settings || !g.settings.suddenDeath || g.teamScore.BLUE !== g.teamScore.ORANGE || !g.countdown || g.countdown >= -10000
+        ) && (
+            !g.settings || g.settings.suddenDeath || !g.countdown || g.countdown >= -10000
+        ));
     }
 
     //              #    ###         ###
@@ -103,6 +108,8 @@ class Game {
 
             game.server = await ServersDb.getByIp(ip);
         }
+
+        game.lastUpdate = new Date();
 
         return game;
     }

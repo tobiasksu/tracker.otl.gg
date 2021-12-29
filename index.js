@@ -8,7 +8,9 @@ const compression = require("compression"),
     minify = require("./src/minify"),
     morgan = require("morgan"),
     morganExtensions = require("./src/extensions/morgan.extensions"),
+    Redis = require("@roncli/node-redis"),
 
+    Cache = Redis.Cache,
     Log = require("./src/logging/log"),
     Router = require("./src/router"),
     settings = require("./settings");
@@ -31,6 +33,15 @@ const compression = require("compression"),
         process.title = "Overload Game Browser";
     } else {
         process.stdout.write("\x1b]2;Overload Game Browser\x1b\x5c");
+    }
+
+    // Setup Redis.
+    if (!settings.disableRedis) {
+        Redis.setup(settings.redis);
+        Redis.eventEmitter.on("error", (err) => {
+            Log.exception(`Redis error: ${err.message}`, {err: err.err});
+        });
+        await Cache.flush();
     }
 
     // Setup express app.

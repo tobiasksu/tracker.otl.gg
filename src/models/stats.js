@@ -254,17 +254,16 @@ class Stats {
                 return;
             }
 
-            if (kill.attacker === kill.defender) {
+            if (kill.attacker === kill.defender || ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) !== -1 && kill.attackerTeam === kill.defenderTeam) {
                 attackerPlayer.kills--;
-                defenderPlayer.deaths++;
             } else {
                 attackerPlayer.kills++;
-                defenderPlayer.deaths++;
 
                 if (assistedPlayer) {
                     assistedPlayer.assists++;
                 }
             }
+            defenderPlayer.deaths++;
 
             if (!hasEvents) {
                 const ev = JSON.parse(JSON.stringify(kill));

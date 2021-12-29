@@ -34,7 +34,7 @@ class ArchiveJs {
                         el = document.getElementById(`damage-${x}-${y}`);
 
                     el.innerText = damage === 0 ? "" : damage.toFixed(0);
-                    if (!el.classList.contains("friendly")) {
+                    if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
                         total += damage;
                     }
                 }
@@ -47,7 +47,7 @@ class ArchiveJs {
                     const damage = (ArchiveJs.damage.find((d) => d.defender === ArchiveJs.players[x] && d.attacker === ArchiveJs.players[y] && d.weapon === a.title) || {damage: 0}).damage,
                         el = document.getElementById(`damage-${y}-${x}`);
 
-                    if (!el.classList.contains("friendly")) {
+                    if (!el.classList.contains("friendly") && !el.classList.contains("count")) {
                         total += damage;
                     }
                 }

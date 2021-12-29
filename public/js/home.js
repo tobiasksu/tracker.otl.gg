@@ -184,8 +184,12 @@ class Home {
      * @returns {void}
      */
     static connect(ip, data) {
-        const game = Game.getGame(ip);
+        const game = Game.getGame(ip),
+            player = game.getPlayer(data.player);
 
+        player.disconnected = false;
+        player.connected = true;
+        data.description = `${data.player} connected.`;
         game.events.push(data);
     }
 
@@ -268,9 +272,13 @@ class Home {
      * @returns {void}
      */
     static disconnect(ip, data) {
-        const game = Game.getGame(ip);
+        const game = Game.getGame(ip),
+            player = game.getPlayer(data.player);
 
         if (!game.end) {
+            player.disconnected = true;
+            player.connected = false;
+            data.description = `${data.player} disconnected.`;
             game.events.push(data);
         }
     }

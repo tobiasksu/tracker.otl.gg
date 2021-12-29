@@ -30,7 +30,7 @@ class GameList {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const page = Number.parseInt(req.query.page, 10);
+        const page = Number.parseInt(`${req.query.page}`, 10);
         if (isNaN(page)) {
             res.status(400).send("400 - Bad Request - Invalid querystring.");
             return;

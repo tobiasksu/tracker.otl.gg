@@ -43,6 +43,9 @@ class DetailsView {
                 </div>
                 <div class="info">
                     <div class="time">
+                        ${!game.inLobby && game.settings && game.settings.joinInProgress ? /* html */`
+                            ${game.settings.players.filter((p) => !p.disconnected).length}/${game.settings.maxPlayers} Players
+                        ` : ""}
                         ${game.inLobby ? /* html */`
                             In Lobby<br />${game.settings.players.length}/${game.settings.maxPlayers} Players
                         ` : game.countdown ? /* html */`
