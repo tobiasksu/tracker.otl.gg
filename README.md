@@ -96,6 +96,18 @@ GO
 
 ## Version History
 
+### 2.1.3 - 12/29/2021
+
+* Note if an olmod server is on an old version.
+* Show max number of players in the game if it's Join in Progress.
+* Include self damage taken in total damage taken numbers.
+* Counts friendly fire as damage taken in friendly fire games, shown in a different color than self-damage.
+* Games with no data received in 5 minutes are removed from the tracker.
+* Games fall off the tracker if they are over 10 seconds past end time, unless it's an overtime game, then it falls off immediately.
+* Friendly fire kills are now counted correctly for players.
+* Update redis caching to reduce issues with redis.
+* Show team changes in join in progress games.
+
 ### 2.1.2 - 8/30/2021
 
 * Package updates.
