@@ -131,7 +131,7 @@ class Log {
                         uri: settings.logger.url,
                         body: {
                             key: settings.logger.key,
-                            application: "olproxy.otl.gg",
+                            application: "tracker.otl.gg",
                             category: "exception",
                             message: `${log.message}\n${util.inspect(log.obj)}`,
                             date: new Date().getTime()

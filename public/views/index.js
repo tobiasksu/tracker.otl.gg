@@ -62,7 +62,7 @@ class IndexView {
                                 olmod, &copy;${+year > 2019 ? "2019-" : ""}${year} Arne de Bruijn
                             </div>
                             <div class="right">
-                                Bugs with the website?  <a href="https://github.com/overload-development-community/olproxy.otl.gg/issues" target="_blank">Report on GitHub</a><br />
+                                Bugs with the website?  <a href="https://github.com/overload-development-community/tracker.otl.gg/issues" target="_blank">Report on GitHub</a><br />
                                 Bugs with olmod?  <a href="https://github.com/overload-development-community/olmod/issues" target="_blank">Report on GitHub</a><br />
                             </div>
                         </div>

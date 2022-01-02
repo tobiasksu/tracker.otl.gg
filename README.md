@@ -1,4 +1,4 @@
-# olproxy.otl.gg
+# tracker.otl.gg
 
 The source code for the website at https://tracker.otl.gg.
 
@@ -107,6 +107,7 @@ GO
 * Friendly fire kills are now counted correctly for players.
 * Update redis caching to reduce issues with redis.
 * Show team changes in join in progress games.
+* Package updates.
 
 ### 2.1.2 - 8/30/2021
 
@@ -169,7 +170,7 @@ GO
 
 ### 1.1.0 - 6/30/2019
 
-* Save end game stats received from olproxy to the database.
+* Save end game stats received from olmod to the database.
 * Update appsettings.json with the "signOff" parameter.
 
 ### 1.0.3 - 4/30/2019

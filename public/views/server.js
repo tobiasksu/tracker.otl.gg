@@ -52,7 +52,7 @@ class ServerView {
             <div class="section">
                 <div class="header">Adding Examples</div>
                 <div>
-                    If you'd like to add an example script for your operating system, please issue a pull request to the repository for this website at <a target="_blank" href="https://github.com/overload-development-community/olproxy.otl.gg">https://github.com/overload-development-community/olproxy.otl.gg</a>, adding your example to /web/views/server.js.
+                    If you'd like to add an example script for your operating system, please issue a pull request to the repository for this website at <a target="_blank" href="https://github.com/overload-development-community/tracker.otl.gg">https://github.com/overload-development-community/tracker.otl.gg</a>, adding your example to /web/views/server.js.
                 </div>
             </div>
         `;
