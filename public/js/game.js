@@ -275,7 +275,7 @@ class GameJs {
         GameJs.ws.instance.close();
 
         document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
-        document.querySelector("#game .time").innerHTML = /* html */`
+        document.querySelector("#game .timer").innerHTML = /* html */`
             Completed <time class="timeago" datetime="${new Date(GameJs.game.end).toISOString()}">${new Date(GameJs.game.end)}</time>
         `;
 

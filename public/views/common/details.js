@@ -46,13 +46,15 @@ class DetailsView {
                         <span class="playerCount">
                             ${DetailsView.PlayerCountView.get(game)}
                         </span>
-                        ${game.inLobby ? /* html */`
-                            In Lobby<br />${game.settings.players.length}/${game.settings.maxPlayers} Players
-                        ` : game.countdown ? /* html */`
-                            <script>new Countdown(${game.countdown});</script>
-                        ` : game.elapsed || game.elapsed === 0 ? /* html */`
-                            <script>new Elapsed(${game.elapsed});</script>
-                        ` : ""}
+                        <span class="timer">
+                            ${game.inLobby ? /* html */`
+                                In Lobby<br />${game.settings.players.length}/${game.settings.maxPlayers} Players
+                            ` : game.countdown ? /* html */`
+                                <script>new Countdown(${game.countdown});</script>
+                            ` : game.elapsed || game.elapsed === 0 ? /* html */`
+                                <script>new Elapsed(${game.elapsed});</script>
+                            ` : ""}
+                        </span>
                     </div>
                     ${game.settings ? /* html */`
                         <div class="map">${DetailsView.Common.htmlEncode(game.settings.matchMode)}${game.settings.level && ` - ${DetailsView.Common.htmlEncode(game.settings.level)}` || ""}</div>

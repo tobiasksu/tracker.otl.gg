@@ -514,7 +514,7 @@ class Home {
 
         gameEl.innerHTML = DetailsView.get(game, true);
 
-        const el = gameEl.querySelector(".time");
+        const el = gameEl.querySelector(".timer");
 
         if (!game.inLobby) {
             if (game.countdown) {

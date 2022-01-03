@@ -10,7 +10,7 @@
 //                       #
 //                       #
 /**
- * A class that represetns the game details view.
+ * A class that represents the game details view.
  */
 class CompletedDetailsView {
     //              #
