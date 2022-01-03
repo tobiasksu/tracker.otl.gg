@@ -8,7 +8,7 @@
 //   #  #  #       #  #  #   #    #      #        #   # #     #    #      # # #
 //  ####    ###     ##    ####   ###    ###   ####     #     ###    ###    # #
 /**
- * A class that represetns the game details view.
+ * A class that represents the game details view.
  */
 class DetailsView {
     //              #
@@ -43,9 +43,9 @@ class DetailsView {
                 </div>
                 <div class="info">
                     <div class="time">
-                        ${!game.inLobby && game.settings && game.settings.joinInProgress ? /* html */`
-                            ${game.settings.players.filter((p) => !p.disconnected).length}/${game.settings.maxPlayers} Players
-                        ` : ""}
+                        <span class="playerCount">
+                            ${DetailsView.PlayerCountView.get(game)}
+                        </span>
                         ${game.inLobby ? /* html */`
                             In Lobby<br />${game.settings.players.length}/${game.settings.maxPlayers} Players
                         ` : game.countdown ? /* html */`
@@ -69,7 +69,9 @@ class DetailsView {
 // @ts-ignore
 DetailsView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
 // @ts-ignore
-DetailsView.ScoreView = typeof ScoreView === "undefined" ? require("../common/score") : ScoreView; // eslint-disable-line no-undef
+DetailsView.PlayerCountView = typeof PlayerCountView === "undefined" ? require("./playerCount") : PlayerCountView; // eslint-disable-line no-undef
+// @ts-ignore
+DetailsView.ScoreView = typeof ScoreView === "undefined" ? require("./score") : ScoreView; // eslint-disable-line no-undef
 
 if (typeof module !== "undefined") {
     module.exports = DetailsView; // eslint-disable-line no-undef

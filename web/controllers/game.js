@@ -85,6 +85,7 @@ class Game {
                     "/js/common/clipboard.min.js",
                     "/js/common/clipboard.js",
                     "/views/common/score.js",
+                    "/views/common/playerCount.js",
                     "/views/common/details.js",
                     "/views/common/players.js",
                     "/views/common/events.js",

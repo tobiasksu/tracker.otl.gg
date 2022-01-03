@@ -1,4 +1,4 @@
-/* global Common, Countdown, Elapsed, EventsView, Player, PlayersView, ScoreView, WebSocketClient */
+/* global Common, Countdown, Elapsed, EventsView, Player, PlayerCountView, PlayersView, ScoreView, WebSocketClient */
 
 //   ###                          ###
 //  #   #                           #
@@ -85,6 +85,7 @@ class GameJs {
                 }
 
                 document.getElementById("game").querySelector(".scores").innerHTML = ScoreView.get(GameJs.game);
+                document.getElementById("game").querySelector(".playerCount").innerHTML = PlayerCountView.get(GameJs.game);
                 document.getElementById("events").innerHTML = EventsView.get(GameJs.game);
 
                 break;

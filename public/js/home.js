@@ -1,4 +1,4 @@
-/* global Common, CompletedDetailsView, Countdown, DetailsView, Elapsed, Game, Player, ScoreView, ServersView, WebSocketClient */
+/* global Common, CompletedDetailsView, Countdown, DetailsView, Elapsed, Game, Player, PlayerCountView, ScoreView, ServersView, WebSocketClient */
 
 //  #   #
 //  #   #
@@ -82,6 +82,7 @@ class Home {
                 }
 
                 document.getElementById(`game-${ip}`).querySelector(".scores").innerHTML = ScoreView.get(game);
+                document.getElementById(`game-${ip}`).querySelector(".playerCount").innerHTML = PlayerCountView.get(game);
 
                 if (data.type === "EndGame") {
                     Home.endGame(ip, data);

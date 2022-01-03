@@ -23,7 +23,7 @@ class GamesView {
      */
     static get(games) {
         return /* html */`
-            ${Object.keys(games).map((s) => {console.log(games);
+            ${Object.keys(games).map((s) => {
                 let difference, days;
 
                 if (games[s].countdown) {

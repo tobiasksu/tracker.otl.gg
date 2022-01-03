@@ -68,6 +68,7 @@ class Home {
                     "/js/common/clipboard.min.js",
                     "/js/common/clipboard.js",
                     "/views/common/score.js",
+                    "/views/common/playerCount.js",
                     "/views/common/details.js",
                     "/views/home/games.js",
                     "/views/common/completedDetails.js",
