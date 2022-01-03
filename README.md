@@ -96,6 +96,11 @@ GO
 
 ## Version History
 
+### 2.1.4 - 1/3/2022
+
+* Fix bug with player counts not updating live.
+* Rebranded as tracker.otl.gg.  The old URL will continue to work for historical purposes, but new users should use the URL tracker.otl.gg.
+
 ### 2.1.3 - 12/29/2021
 
 * Note if an olmod server is on an old version.
