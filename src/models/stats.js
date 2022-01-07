@@ -365,14 +365,14 @@ class Stats {
         data.teamScore = game.teamScore;
         data.players = game.players;
 
-        if (game.events.length > 0 && game.players.length > 0) {
-            data.id = await Db.add(ip, game);
-        }
-
         if (game.teamChanges) {
             game.teamChanges.forEach((change) => {
                 game.getPlayer(change.playerName, change.currentTeam).team = change.currentTeam;
             });
+        }
+
+        if (game.events.length > 0 && game.players.length > 0) {
+            data.id = await Db.add(ip, game);
         }
 
         game.remove();
