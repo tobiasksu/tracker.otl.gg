@@ -468,6 +468,11 @@ class Stats {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam, weapon} = data,
             game = await Game.getGame(ip);
 
+        // If there is no attacker or defender, bail.
+        if (!attacker || attacker === "" || !defender || defender === "") {
+            return;
+        }
+
         if (!game.settings) {
             game.settings = {matchMode: "ANARCHY"};
         }
