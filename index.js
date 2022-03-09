@@ -64,14 +64,49 @@ const compression = require("compression"),
     morganExtensions(morgan);
 
     // Initialize middleware stack.
-    app.use(express.json({
-        limit: "10mb"
-    }));
     app.use(morgan(":colorstatus \x1b[30m\x1b[0m:method\x1b[0m :url\x1b[30m\x1b[0m:newline    Date :date[iso]    IP :ipaddr    Time :colorresponse ms"));
     app.use(compression());
 
     // Setup public redirects.
     app.use(express.static("public"));
+
+    // 400 and 500 are internal routes, 404 if they're requested directly.
+    app.use("/400", (req, res, next) => {
+        req.method = "GET";
+        req.url = "/404";
+        router(req, res, next);
+    });
+
+    app.use("/500", (req, res, next) => {
+        req.method = "GET";
+        req.url = "/404";
+        router(req, res, next);
+    });
+
+    // Parse JSON.
+    app.use((req, res, next) => {
+        const parser = express.json({limit: "10mb"});
+
+        parser(req, res, (err) => {
+            if (err) {
+                if (err.statusCode === 400) {
+                    req.method = "GET";
+                    req.url = "/400";
+                } else {
+                    if (!err.code || err.code !== "ECONNABORTED") {
+                        Log.exception("Unhandled error has occurred.", err);
+                    }
+
+                    req.method = "GET";
+                    req.url = "/500";
+                }
+                router(req, res, next);
+                return;
+            }
+
+            next();
+        });
+    });
 
     // Setup library handlers.
     app.get("/js/common/timeago.min.js", (req, res) => {
@@ -85,13 +120,6 @@ const compression = require("compression"),
     // Setup JS/CSS handlers.
     app.get("/css", minify.cssHandler);
     app.get("/js", minify.jsHandler);
-
-    // 500 is an internal route, 404 it if it's requested directly.
-    app.use("/500", (req, res, next) => {
-        req.method = "GET";
-        req.url = "/404";
-        router(req, res, next);
-    });
 
     // Setup dynamic routing.
     app.use("/", router);
