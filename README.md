@@ -96,12 +96,21 @@ GO
 
 ## Version History
 
-### 2.1.4 - 1/3/2022
+### v2.1.5 - 3/9/2022
+
+* Player count shows after a game starts.
+* Fix bug with team changes not being recorded.
+* Fix bug when game settings are missing when the game ends.
+* Handle JSON errors from bad actors better.
+* Fix bug when archive search query results in no parameters.  Note that player names like "..." are currently unsearchable.
+* Fix a number of bugs when no player name is passed with an event.  Note players that have no player name will not be recorded on the tracker, because name is the only way we have to track players currently.
+
+### v2.1.4 - 1/3/2022
 
 * Fix bug with player counts not updating live.
 * Rebranded as tracker.otl.gg.  The old URL will continue to work for historical purposes, but new users should use the URL tracker.otl.gg.
 
-### 2.1.3 - 12/29/2021
+### v2.1.3 - 12/29/2021
 
 * Note if an olmod server is on an old version.
 * Show max number of players in the game if it's Join in Progress.
@@ -114,11 +123,11 @@ GO
 * Show team changes in join in progress games.
 * Package updates.
 
-### 2.1.2 - 8/30/2021
+### v2.1.2 - 8/30/2021
 
 * Package updates.
 
-### 2.1.1 - 6/30/2021
+### v2.1.1 - 6/30/2021
 
 * Server browser includes game version for olmod 0.4.1 and later.
 * End game packets will better rewrite the game's history if it missed anything while it was live.
@@ -126,7 +135,7 @@ GO
 * Fixed bug when searching for nothing.
 * Fixed encoding bugs.
 
-### 2.1.0 - 3/26/2020
+### v2.1.0 - 3/26/2020
 
 * Updated archive list with better pagination.
 * Added search to archive list.
@@ -141,20 +150,20 @@ GO
 * Fixed bug causing games to appear like they had 24 hours remaining in recent versions of Chrome.
 * Fixed bug with some meta tags.
 
-### 2.0.3 - 1/28/2020
+### v2.0.3 - 1/28/2020
 
 * Onboarding update with current information about olmod and how to play.
 * Added IP address and copy button to games where joining is possible.
 * Fixed bugs with unofficial game modes.
 * Add minification and combination of CSS & JS files.
 
-### 2.0.2 - 12/10/2019
+### v2.0.2 - 12/10/2019
 
 * Update server list API to not draw from the database.
 * Other fixes to server list API.
 * Remove active API.
 
-### 2.0.1 - 11/19/2019
+### v2.0.1 - 11/19/2019
 
 * Active lobbys are now shown with number of players and max players.
 * Archive now displays the initial page in local time like the rest of the pages.
@@ -165,7 +174,7 @@ GO
 * Fixed bug with completed games linking to an invalid page.
 * Replaced original websocket implementation with express-ws.
 
-### 2.0.0 - 11/14/2019
+### v2.0.0 - 11/14/2019
 
 * Stats are now tracked and displayed in real time using websockets.
 * Support for CTF and Monsterball.
@@ -173,19 +182,19 @@ GO
 * New completed game API.
 * Backend website improvements.
 
-### 1.1.0 - 6/30/2019
+### v1.1.0 - 6/30/2019
 
 * Save end game stats received from olmod to the database.
 * Update appsettings.json with the "signOff" parameter.
 
-### 1.0.3 - 4/30/2019
+### v1.0.3 - 4/30/2019
 
 * Fix bug with HTML encoding.
 * Fix bug when mode hasn't been set yet.
 * Update links.
 * Add SSL.
 
-### 1.0.2 - 3/17/2019
+### v1.0.2 - 3/17/2019
 
 * Use database for backend server list persistence.
 * Add "online" querystring to toggle a server's visibility.
@@ -194,10 +203,10 @@ GO
 * Add links to the map being played.
 * Filter out servers that are missing key information.
 
-### 1.0.1 - 3/2/2019
+### v1.0.1 - 3/2/2019
 
 * HTML encode all externally provided data.
 
-### 1.0.0 - 3/2/2019
+### v1.0.0 - 3/2/2019
 
 Initial Version
