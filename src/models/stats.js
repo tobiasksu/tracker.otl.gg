@@ -79,6 +79,11 @@ class Stats {
         const game = await Game.getGame(ip),
             player = game.getPlayer(data.player);
 
+        // If the player is invalid, bail.
+        if (!player) {
+            return;
+        }
+
         player.disconnected = false;
         player.connected = true;
         data.description = `${data.player} connected.`;
@@ -183,6 +188,11 @@ class Stats {
     static async disconnect(ip, data) {
         const game = await Game.getGame(ip),
             player = game.getPlayer(data.player);
+
+        // If the player is invalid, bail.
+        if (!player) {
+            return;
+        }
 
         if (!game.end) {
             player.disconnected = true;
