@@ -175,6 +175,12 @@ class CompletedDb {
      * @returns {Promise<{games: {id: number, ip: string, data: object, date: Date}[], count: number}>} A promise that resolves with the recent games.
      */
     static async search(query, page, pageSize) {
+        const transformedQuery = ftsQuery.transform(query);
+
+        if (!transformedQuery || transformedQuery.length === 0) {
+            return {games: [], count: 0};
+        }
+
         /**
          * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[], {Games: number}[]]}}
          */
@@ -191,7 +197,7 @@ class CompletedDb {
 
             SELECT COUNT(CompletedId) Games FROM tblCompleted WHERE CONTAINS(tblCompleted.Data, @query)
         `, {
-            query: {type: Db.NVARCHAR(4000), value: ftsQuery.transform(query)},
+            query: {type: Db.NVARCHAR(4000), value: transformedQuery},
             page: {type: Db.INT, value: page},
             pageSize: {type: Db.INT, value: pageSize}
         });
