@@ -96,6 +96,10 @@ GO
 
 ## Version History
 
+### v2.1.6 - 5/22/2022
+
+* Package updates.
+
 ### v2.1.5 - 3/9/2022
 
 * Player count shows after a game starts.
