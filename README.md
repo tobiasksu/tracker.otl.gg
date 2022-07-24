@@ -96,6 +96,10 @@ GO
 
 ## Version History
 
+### v2.1.7 - 7/24/2022
+
+* Package updates.
+
 ### v2.1.6 - 5/22/2022
 
 * Package updates.
