@@ -18,7 +18,7 @@
         "url": "https://github.com/overload-development-community/tracker.otl.gg.git"
     },
     "dependencies": {
-        "@roncli/node-database": "roncli/node-database#v1.2.10",
+        "@roncli/node-database": "roncli/node-database#v1.2.11",
         "@roncli/node-redis": "roncli/node-redis#v0.1.15",
         "@root/request": "1.8.3",
         "clipboard": "2.0.11",
