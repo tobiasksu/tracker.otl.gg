@@ -96,6 +96,14 @@ GO
 
 ## Version History
 
+### v2.1.8 - 8/24/2022
+
+* Added creator to /api/browser list.
+* Fixed a bug that was causing the game page to remove the player count and not display events when it started.
+* Removed a bunch of unnecessary data from the API that powers the archive list.
+* Players lists on the archive page that are longer than 4 players will have an ellipsis after the player list to indicate there were more than 4 players.
+* Package updates.
+
 ### v2.1.7 - 7/24/2022
 
 * Package updates.
