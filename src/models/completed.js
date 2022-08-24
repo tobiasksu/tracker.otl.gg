@@ -150,6 +150,11 @@ class Completed {
 
         for (const game of games) {
             game.data = JSON.parse(game.data);
+            Object.keys(game.data).forEach((key) => {
+                if (["settings", "teamScore", "players"].indexOf(key) === -1) {
+                    delete game.data[key];
+                }
+            });
             game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
         }
 
