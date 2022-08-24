@@ -445,7 +445,7 @@ class GameJs {
         GameJs.game.countdown = data.countdown;
         GameJs.game.elapsed = data.elapsed;
 
-        const el = document.querySelector(".time");
+        const el = document.querySelector(".timer");
 
         if (!GameJs.game.inLobby) {
             if (GameJs.game.countdown) {
