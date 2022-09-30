@@ -61,7 +61,7 @@ class Browser {
                     hasPassword: game.settings && game.settings.hasPassword || false,
                     matchNotes: game.settings && game.settings.matchNotes || "",
                     inLobby: game.inLobby,
-                    creator: game.settings.creator
+                    creator: game.settings && game.settings.creator || ""
                 };
             }
 
