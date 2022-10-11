@@ -24,7 +24,7 @@
         "clipboard": "2.0.11",
         "compression": "1.7.4",
         "csso": "5.0.5",
-        "express": "4.18.1",
+        "express": "4.18.2",
         "express-ws": "5.0.2",
         "full-text-search-query": "2.0.0",
         "html-minifier-terser": "7.0.0",
