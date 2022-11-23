@@ -27,7 +27,7 @@
         "express": "4.18.2",
         "express-ws": "5.0.2",
         "full-text-search-query": "2.0.0",
-        "html-minifier-terser": "7.0.0",
+        "html-minifier-terser": "7.1.0",
         "morgan": "1.10.0",
         "terser": "5.15.1",
         "timeago.js": "4.0.2"
