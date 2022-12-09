@@ -29,8 +29,11 @@ class ArchiveView {
                     ${ArchiveView.CompletedDetailsView.get(game)}
                 </div>
                 <div id="players">
-                    ${ArchiveView.PlayersView.get(game)}
+                    ${ArchiveView.CompletedPlayersView.get(game)}
                 </div>
+            </div>
+            <div id="selector">
+                <a id="show-damage" href="#">Player Stats</a> | <a id="show-game" href="#">Game Graphs</a> | <a id="show-damage-graphs" href="#">Damage Graphs</a> | <a id="show-weapon-graphs" href="#">Weapon Graphs</a> | <a id="show-player" href="#">Player Graphs</a>
             </div>
             <div id="damage">
                 ${game.players && /* html */`
@@ -73,6 +76,28 @@ class ArchiveView {
                     </div>
                 ` || ""}
             </div>
+            <div id="damage-graphs" class="chart hidden">
+                <a id="overall-damage" href="#">Overall Damage</a> | <a id="damage-taken" href="#">Damage Taken</a> | <a id="net-damage" href="#">Net Damage</a> | <a id="damage-types" href="#">Damage Types</a> | <a id="primary-damage" href="#">Primary Damage</a> | <a id="secondary-damage" href="#">Secondary Damage</a>
+                <canvas id="damage-chart"></canvas>
+            </div>
+            <div id="weapon-graphs" class="chart hidden">
+                <div id="weapons-2">
+                    Weapon: ${weapons.map((weapon) => /* html */`
+                        <a class="weapon-graph" href="#" title="${weapon}"><img src="/images/${weapon.replace(/ /g, "").toLocaleLowerCase()}.png" width="28" height="41" alt="${weapon}" /></a>
+                    `).join("")}
+                </div>
+                <canvas id="weapon-chart"></canvas>
+            </div>
+            <div id="game-graphs" class="chart hidden">
+                <a id="score-over-time" href="#">Score Over Time</a> | <a id="score-differential-over-time" href="#">Score Differential Over Time</a>
+                <canvas id="game-chart"></canvas>
+            </div>
+            <div id="player-graphs" class="chart hidden">
+                ${game.players.map((player) => /* html */`
+                    <a class="player-graph" href="#" title="${ArchiveView.Common.htmlEncode(player.name)}">${ArchiveView.Common.htmlEncode(player.name)}</a>
+                `).join(" | ")}
+                <canvas id="player-chart"></canvas>
+            </div>
             <div id="bottom">
                 <div id="events">
                     ${ArchiveView.EventsView.get(game)}
@@ -82,8 +107,7 @@ class ArchiveView {
                 </div>
             </div>
             <script>
-                ArchiveJs.players = ${JSON.stringify(game.players && game.players.map((p) => p.name) || [])}
-                ArchiveJs.damage = ${JSON.stringify(game.damage || [])};
+                ArchiveJs.game = ${JSON.stringify(game)}
             </script>
         `;
     }
@@ -94,7 +118,7 @@ ArchiveView.Common = typeof Common === "undefined" ? require("../../web/includes
 // @ts-ignore
 ArchiveView.CompletedDetailsView = typeof CompletedDetailsView === "undefined" ? require("./common/completedDetails") : CompletedDetailsView; // eslint-disable-line no-undef
 // @ts-ignore
-ArchiveView.PlayersView = typeof PlayersView === "undefined" ? require("./common/players") : PlayersView; // eslint-disable-line no-undef
+ArchiveView.CompletedPlayersView = typeof CompletedPlayersView === "undefined" ? require("./common/completedPlayers") : CompletedPlayersView; // eslint-disable-line no-undef
 // @ts-ignore
 ArchiveView.EventsView = typeof EventsView === "undefined" ? require("./common/events") : EventsView; // eslint-disable-line no-undef
 // @ts-ignore

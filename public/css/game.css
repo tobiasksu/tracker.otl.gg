@@ -77,12 +77,22 @@
 #players .table .pickups:not(.header),
 #players .table .carrierKills:not(.header),
 #players .table .returns:not(.header),
+#players .table .kda:not(.header),
 #players .table .kills:not(.header),
 #players .table .assists:not(.header),
 #players .table .deaths:not(.header),
+#players .table .damage:not(.header),
+#players .table .taken:not(.header),
+#players .table .net:not(.header),
+#players .table .dpd:not(.header),
+#players .table .dpk:not(.header),
 #players .table .timeInGame:not(.header) {
     text-align: right;
     font-variant-numeric: tabular-nums;
+}
+
+#selector {
+    padding: 10px 10px 0 10px;
 }
 
 #damage {
@@ -96,8 +106,10 @@
 
 #damage #weapons,
 #damage #weapons a,
-#damage #weapons a img {
-    height: 41px;
+#damage #weapons a img,
+#weapons-2,
+#weapons-2 a,
+#weapons-2 a img {
     vertical-align: middle;
 }
     
@@ -168,4 +180,13 @@
 
 .game .timeInGame {
     visibility: hidden;
+}
+
+.chart {
+    width: 800px;
+    padding: 10px;
+}
+
+.hidden {
+    display: none;
 }

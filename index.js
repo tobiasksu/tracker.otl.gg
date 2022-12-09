@@ -117,6 +117,10 @@ const compression = require("compression"),
         res.sendFile(`${__dirname}/node_modules/clipboard/dist/clipboard.min.js`);
     });
 
+    app.get("/js/common/chart.js", (req, res) => {
+        res.sendFile(`${__dirname}/node_modules/chart.js/dist/chart.umd.js`);
+    });
+
     // Setup JS/CSS handlers.
     app.get("/css", minify.cssHandler);
     app.get("/js", minify.jsHandler);

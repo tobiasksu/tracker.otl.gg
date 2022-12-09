@@ -11,7 +11,7 @@ Here is a minimal settings.js file, but you will need to modify the SQL Server i
 ```
 module.exports = {
     express: {
-        port: 53535
+        port: 3030
     },
     database: {
         server: "your.sql.server.address",

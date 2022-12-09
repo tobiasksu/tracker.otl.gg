@@ -121,6 +121,7 @@ class Archive {
             {
                 js: [
                     "/js/common/timeago.min.js",
+                    "/js/common/chart.js",
                     "/views/common/score.js",
                     "/views/common/playerCount.js",
                     "/views/common/completedDetails.js",
