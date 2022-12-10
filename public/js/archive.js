@@ -27,8 +27,6 @@ class ArchiveJs {
             playerChart = document.getElementById("player-chart"),
             weaponChart = document.getElementById("weapon-chart");
 
-        let damageChartObj, gameChartObj, playerChartObj, weaponChartObj;
-
         Common.loadTimeAgo();
 
         document.getElementById("show-damage").addEventListener("click", (ev) => {
@@ -127,8 +125,8 @@ class ArchiveJs {
         }));
 
         document.getElementById("overall-damage").addEventListener("click", (ev) => {
-            damageChartObj.destroy();
-            damageChartObj = ArchiveJs.damageDoneChart(damageChart, "all");
+            ArchiveJs.damageChartObj.destroy();
+            ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "all");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -136,8 +134,8 @@ class ArchiveJs {
         });
 
         document.getElementById("damage-taken").addEventListener("click", (ev) => {
-            damageChartObj.destroy();
-            damageChartObj = ArchiveJs.damageDoneChart(damageChart, "taken");
+            ArchiveJs.damageChartObj.destroy();
+            ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "taken");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -145,8 +143,8 @@ class ArchiveJs {
         });
 
         document.getElementById("net-damage").addEventListener("click", (ev) => {
-            damageChartObj.destroy();
-            damageChartObj = ArchiveJs.damageDoneChart(damageChart, "net");
+            ArchiveJs.damageChartObj.destroy();
+            ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "net");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -154,8 +152,8 @@ class ArchiveJs {
         });
 
         document.getElementById("damage-types").addEventListener("click", (ev) => {
-            damageChartObj.destroy();
-            damageChartObj = ArchiveJs.damageDoneChart(damageChart, "types");
+            ArchiveJs.damageChartObj.destroy();
+            ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "types");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -163,8 +161,8 @@ class ArchiveJs {
         });
 
         document.getElementById("primary-damage").addEventListener("click", (ev) => {
-            damageChartObj.destroy();
-            damageChartObj = ArchiveJs.damageDoneChart(damageChart, "primary");
+            ArchiveJs.damageChartObj.destroy();
+            ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "primary");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -172,8 +170,8 @@ class ArchiveJs {
         });
 
         document.getElementById("secondary-damage").addEventListener("click", (ev) => {
-            damageChartObj.destroy();
-            damageChartObj = ArchiveJs.damageDoneChart(damageChart, "secondary");
+            ArchiveJs.damageChartObj.destroy();
+            ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "secondary");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -181,8 +179,8 @@ class ArchiveJs {
         });
 
         document.getElementById("score-over-time").addEventListener("click", (ev) => {
-            gameChartObj.destroy();
-            gameChartObj = ArchiveJs.gameGraphChart(gameChart, "score");
+            ArchiveJs.gameChartObj.destroy();
+            ArchiveJs.gameChartObj = ArchiveJs.gameGraphChart(gameChart, "score");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -190,8 +188,8 @@ class ArchiveJs {
         });
 
         document.getElementById("score-differential-over-time").addEventListener("click", (ev) => {
-            gameChartObj.destroy();
-            gameChartObj = ArchiveJs.gameGraphChart(gameChart, "differential");
+            ArchiveJs.gameChartObj.destroy();
+            ArchiveJs.gameChartObj = ArchiveJs.gameGraphChart(gameChart, "differential");
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -199,8 +197,8 @@ class ArchiveJs {
         });
 
         document.querySelectorAll("a.weapon-graph").forEach((a) => a.addEventListener("click", (ev) => {
-            weaponChartObj.destroy();
-            weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, a.title);
+            ArchiveJs.weaponChartObj.destroy();
+            ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, a.title);
 
             ev.preventDefault();
             ev.stopPropagation();
@@ -208,18 +206,18 @@ class ArchiveJs {
         }));
 
         document.querySelectorAll("a.player-graph").forEach((a) => a.addEventListener("click", (ev) => {
-            playerChartObj.destroy();
-            playerChartObj = ArchiveJs.playerGraphChart(playerChart, a.title);
+            ArchiveJs.playerChartObj.destroy();
+            ArchiveJs.playerChartObj = ArchiveJs.playerGraphChart(playerChart, a.title);
 
             ev.preventDefault();
             ev.stopPropagation();
             return false;
         }));
 
-        damageChartObj = ArchiveJs.damageDoneChart(damageChart, "all");
-        gameChartObj = ArchiveJs.gameGraphChart(gameChart, "score");
-        weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, document.querySelector("a.weapon-graph").title);
-        playerChartObj = ArchiveJs.playerGraphChart(playerChart, document.querySelector("a.player-graph").title);
+        ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "all");
+        ArchiveJs.gameChartObj = ArchiveJs.gameGraphChart(gameChart, "score");
+        ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, document.querySelector("a.weapon-graph").title);
+        ArchiveJs.playerChartObj = ArchiveJs.playerGraphChart(playerChart, document.querySelector("a.player-graph").title);
     }
 
     //    #                                ###                      ##   #                  #
@@ -596,8 +594,13 @@ class ArchiveJs {
                                 bodyFont: {
                                     family: "Industry Medium"
                                 },
+                                footerFont: {
+                                    family: "Industry Medium",
+                                    weight: "normal"
+                                },
                                 callbacks: {
-                                    label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(0)}`
+                                    label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(0)}`,
+                                    footer: (context) => `Click for ${context[0].dataset.label} damage chart`
                                 }
                             }
                         },
@@ -626,6 +629,14 @@ class ArchiveJs {
                                     color: "#333333",
                                     drawTicks: false
                                 }
+                            }
+                        },
+                        onClick: (ev) => {
+                            const els = ev.chart.getElementsAtEventForMode(ev, "nearest", {intersect: true});
+                            if (els.length > 0) {
+                                document.getElementById("show-weapon-graphs").click();
+                                ArchiveJs.weaponChartObj.destroy();
+                                ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(document.getElementById("weapon-chart"), ev.chart.legend.legendItems[els[0].datasetIndex].text);
                             }
                         }
                     }
@@ -706,8 +717,13 @@ class ArchiveJs {
                                 bodyFont: {
                                     family: "Industry Medium"
                                 },
+                                footerFont: {
+                                    family: "Industry Medium",
+                                    weight: "normal"
+                                },
                                 callbacks: {
-                                    label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(0)}`
+                                    label: (context) => `${context.dataset.label}: ${context.parsed.y.toFixed(0)}`,
+                                    footer: (context) => `Click for ${context[0].dataset.label} damage chart`
                                 }
                             }
                         },
@@ -736,6 +752,14 @@ class ArchiveJs {
                                     color: "#333333",
                                     drawTicks: false
                                 }
+                            }
+                        },
+                        onClick: (ev) => {
+                            const els = ev.chart.getElementsAtEventForMode(ev, "nearest", {intersect: true});
+                            if (els.length > 0) {
+                                document.getElementById("show-weapon-graphs").click();
+                                ArchiveJs.weaponChartObj.destroy();
+                                ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(document.getElementById("weapon-chart"), ev.chart.legend.legendItems[els[0].datasetIndex].text);
                             }
                         }
                     }
@@ -1687,5 +1711,10 @@ class ArchiveJs {
         return `${Math.floor(milliseconds / 60000)}:${Math.floor(milliseconds % 60000 / 1000).toFixed(0).padStart(2, "0")}.${(milliseconds % 1000).toFixed(0).padStart(3, "0")}`;
     }
 }
+
+ArchiveJs.damageChartObj = void 0;
+ArchiveJs.gameChartObj = void 0;
+ArchiveJs.playerChartObj = void 0;
+ArchiveJs.weaponChartObj = void 0;
 
 document.addEventListener("DOMContentLoaded", ArchiveJs.DOMContentLoaded);
