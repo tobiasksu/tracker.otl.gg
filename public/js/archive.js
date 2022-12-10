@@ -89,6 +89,174 @@ class ArchiveJs {
             return false;
         });
 
+        document.querySelectorAll("a.stats").forEach((a) => a.addEventListener("click", (ev) => {
+            document.getElementById("weapon").innerText = a.innerText;
+
+            switch (a.innerText) {
+                case "Damage":
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const damage = ArchiveJs.game.damage.filter((d) => d.attacker === ArchiveJs.game.players[x].name && d.defender === ArchiveJs.game.players[y].name).reduce((prev, cur) => prev + cur.damage, 0) || 0,
+                                el = document.getElementById(`damage-${x}-${y}`);
+
+                            el.innerText = damage === 0 ? "" : damage.toFixed(0);
+                            if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
+                                total += damage;
+                            }
+                        }
+                        document.getElementById(`damage-${x}-total`).innerText = total.toFixed(0);
+                    }
+
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const damage = ArchiveJs.game.damage.filter((d) => d.defender === ArchiveJs.game.players[x].name && d.attacker === ArchiveJs.game.players[y].name).reduce((prev, cur) => prev + cur.damage, 0) || 0,
+                                el = document.getElementById(`damage-${y}-${x}`);
+
+                            if (!el.classList.contains("friendly") && !el.classList.contains("count")) {
+                                total += damage;
+                            }
+                        }
+                        document.getElementById(`damage-total-${x}`).innerText = total.toFixed(0);
+                    }
+
+                    break;
+                case "Kills":
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const kills = ArchiveJs.game.kills.filter((d) => d.attacker === ArchiveJs.game.players[x].name && d.defender === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${x}-${y}`);
+
+                            el.innerText = kills === 0 ? "" : kills.toFixed(0);
+                            if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
+                                total += kills;
+                            } else {
+                                total -= kills;
+                            }
+                        }
+                        document.getElementById(`damage-${x}-total`).innerText = total.toFixed(0);
+                    }
+
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const kills = ArchiveJs.game.kills.filter((d) => d.defender === ArchiveJs.game.players[x].name && d.attacker === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${y}-${x}`);
+
+                            if (!el.classList.contains("friendly") && !el.classList.contains("count")) {
+                                total += kills;
+                            }
+                        }
+                        document.getElementById(`damage-total-${x}`).innerText = total.toFixed(0);
+                    }
+
+                    break;
+                case "Assists":
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const assists = ArchiveJs.game.kills.filter((d) => d.assisted === ArchiveJs.game.players[x].name && d.defender === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${x}-${y}`);
+
+                            el.innerText = assists === 0 ? "" : assists.toFixed(0);
+                            if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
+                                total += assists;
+                            } else {
+                                total -= assists;
+                            }
+                        }
+                        document.getElementById(`damage-${x}-total`).innerText = total.toFixed(0);
+                    }
+
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const assists = ArchiveJs.game.kills.filter((d) => d.defender === ArchiveJs.game.players[x].name && d.assisted === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${y}-${x}`);
+
+                            if (!el.classList.contains("friendly") && !el.classList.contains("count")) {
+                                total += assists;
+                            }
+                        }
+                        document.getElementById(`damage-total-${x}`).innerText = total.toFixed(0);
+                    }
+
+                    break;
+                case "Assisted":
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const assists = ArchiveJs.game.kills.filter((d) => d.assisted === ArchiveJs.game.players[x].name && d.attacker === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${x}-${y}`);
+
+                            el.innerText = assists === 0 ? "" : assists.toFixed(0);
+                            if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
+                                total += assists;
+                            } else {
+                                total -= assists;
+                            }
+                        }
+                        document.getElementById(`damage-${x}-total`).innerText = total.toFixed(0);
+                    }
+
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let total = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const assists = ArchiveJs.game.kills.filter((d) => d.attacker === ArchiveJs.game.players[x].name && d.assisted === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${y}-${x}`);
+
+                            if (!el.classList.contains("friendly") && !el.classList.contains("count")) {
+                                total += assists;
+                            }
+                        }
+                        document.getElementById(`damage-total-${x}`).innerText = total.toFixed(0);
+                    }
+
+                    break;
+                case "Damage Per Kill":
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let totalDamage = 0,
+                            totalKills = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const damage = ArchiveJs.game.damage.filter((d) => d.attacker === ArchiveJs.game.players[x].name && d.defender === ArchiveJs.game.players[y].name).reduce((prev, cur) => prev + cur.damage, 0) || 0,
+                                kills = ArchiveJs.game.kills.filter((d) => d.attacker === ArchiveJs.game.players[x].name && d.defender === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${x}-${y}`);
+
+                            el.innerText = damage / Math.max(kills, 1) === 0 ? "" : (damage / Math.max(kills, 1)).toFixed(2);
+                            if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
+                                totalDamage += damage;
+                                totalKills += kills;
+                            }
+                        }
+                        document.getElementById(`damage-${x}-total`).innerText = (totalDamage / Math.max(totalKills, 1)).toFixed(2);
+                    }
+
+                    for (let x = 0; x < ArchiveJs.game.players.length; x++) {
+                        let totalDamage = 0,
+                            totalKills = 0;
+                        for (let y = 0; y < ArchiveJs.game.players.length; y++) {
+                            const damage = ArchiveJs.game.damage.filter((d) => d.defender === ArchiveJs.game.players[x].name && d.attacker === ArchiveJs.game.players[y].name).reduce((prev, cur) => prev + cur.damage, 0) || 0,
+                                kills = ArchiveJs.game.kills.filter((d) => d.defender === ArchiveJs.game.players[x].name && d.attacker === ArchiveJs.game.players[y].name).length || 0,
+                                el = document.getElementById(`damage-${y}-${x}`);
+
+                            if (!el.classList.contains("friendly") && !el.classList.contains("count")) {
+                                totalDamage += damage;
+                                totalKills += kills;
+                            }
+                        }
+                        document.getElementById(`damage-total-${x}`).innerText = (totalDamage / Math.max(totalKills, 1)).toFixed(2);
+                    }
+
+                    break;
+            }
+
+            ev.preventDefault();
+            ev.stopPropagation();
+            return false;
+        }));
+
         document.querySelectorAll("a.weapon").forEach((a) => a.addEventListener("click", (ev) => {
             document.getElementById("weapon").innerText = a.title;
 
@@ -218,6 +386,7 @@ class ArchiveJs {
         ArchiveJs.gameChartObj = ArchiveJs.gameGraphChart(gameChart, "score");
         ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, document.querySelector("a.weapon-graph").title);
         ArchiveJs.playerChartObj = ArchiveJs.playerGraphChart(playerChart, document.querySelector("a.player-graph").title);
+        document.querySelectorAll("a.stats")[0].click();
     }
 
     //    #                                ###                      ##   #                  #

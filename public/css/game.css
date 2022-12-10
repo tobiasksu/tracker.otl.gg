@@ -104,6 +104,10 @@
     display: grid;
 }
 
+#damage #grid .table > div {
+    min-width: 41px;
+}
+
 #damage #weapons,
 #damage #weapons a,
 #damage #weapons a img,
