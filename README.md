@@ -96,6 +96,12 @@ GO
 
 ## Version History
 
+### v2.2.0 - 12/10/2022
+
+* Fix error when creator is missing from game settings.
+* New stats and graphs on the archive pages, inspired by https://pudlez.net/otl.  Ironically, this will probably break that site for a bit.
+* Package updates.
+
 ### v2.1.8 - 8/24/2022
 
 * Added creator to /api/browser list.
