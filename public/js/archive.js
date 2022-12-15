@@ -192,11 +192,7 @@ class ArchiveJs {
                                 el = document.getElementById(`damage-${x}-${y}`);
 
                             el.innerText = assists === 0 ? "" : assists.toFixed(0);
-                            if (!el.classList.contains("friendly") && !el.classList.contains("self")) {
-                                total += assists;
-                            } else {
-                                total -= assists;
-                            }
+                            total += assists;
                         }
                         document.getElementById(`damage-${x}-total`).innerText = total.toFixed(0);
                     }
