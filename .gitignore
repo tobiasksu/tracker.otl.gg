@@ -57,11 +57,14 @@ typings/
 # dotenv environment variables file
 .env
 
-# next.js build output
-.next
+# secrets
+secrets/**
 
-# Industry Medium font
-IndustryMedium.*
+# vscode
+.vscode/**
+
+# Madge graph.svg
+graph.svg
 
 # Settings
-/settings.js
+/node/settings.js
