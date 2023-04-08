@@ -1,16 +1,14 @@
-/* global Common, GamesView */
-
-//   ###                        #        #            #
-//  #   #                       #                     #
-//  #       ###   ## #    ###   #       ##     ###   ####
-//  #          #  # # #  #   #  #        #    #       #
-//  #  ##   ####  # # #  #####  #        #     ###    #
-//  #   #  #   #  # # #  #      #        #        #   #  #
-//   ###    ####  #   #   ###   #####   ###   ####     ##
+//   ###                        #        #            #       ###
+//  #   #                       #                     #         #
+//  #       ###   ## #    ###   #       ##     ###   ####       #   ###
+//  #          #  # # #  #   #  #        #    #       #         #  #
+//  #  ##   ####  # # #  #####  #        #     ###    #         #   ###
+//  #   #  #   #  # # #  #      #        #        #   #  #  #   #      #
+//   ###    ####  #   #   ###   #####   ###   ####     ##    ###   ####
 /**
  * A class that provides functions for the game list page.
  */
-class GameList {
+class GameListJs {
     // ###    ##   #  #   ##                #                 #    #                    #           #
     // #  #  #  #  ####  #  #               #                 #    #                    #           #
     // #  #  #  #  ####  #      ##   ###   ###    ##   ###   ###   #      ##    ###   ###   ##    ###
@@ -22,8 +20,8 @@ class GameList {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        document.getElementById("paginator").addEventListener("change", GameList.getPage);
-        GameList.parseTime();
+        document.getElementById("paginator").addEventListener("change", GameListJs.getPage);
+        GameListJs.parseTime();
     }
 
     //                                ###    #
@@ -38,8 +36,8 @@ class GameList {
      * @returns {void}
      */
     static parseTime() {
-        for (const time of document.getElementsByClassName("local")) {
-            time.innerText = Common.formatDate(new Date(time.dateTime));
+        for (const time of /** @type {HTMLCollectionOf<HTMLTimeElement>} */(document.getElementsByClassName("local"))) { // eslint-disable-line no-extra-parens
+            time.innerText = GameListJs.Time.formatDate(new Date(time.dateTime));
         }
     }
 
@@ -55,17 +53,29 @@ class GameList {
      * @returns {Promise} A promise that resolves when the page has been retrieved.
      */
     static async getPage() {
-        const el = document.getElementById("paginator"),
+        const el = /** @type {HTMLSelectElement} */(document.getElementById("paginator")), // eslint-disable-line no-extra-parens
             page = el.options[el.selectedIndex].value;
 
         el.classList.add("hidden");
 
-        await Common.loadDataIntoTemplate(`/api/gamelist?page=${page}`, "#games", GamesView.get);
+        await GameListJs.Template.loadDataIntoTemplate(`/api/gamelist?page=${page}`, "#games", GameListJs.GameListGamesView.get);
 
         el.classList.remove("hidden");
 
-        GameList.parseTime();
+        GameListJs.parseTime();
     }
 }
 
-document.addEventListener("DOMContentLoaded", GameList.DOMContentLoaded);
+document.addEventListener("DOMContentLoaded", GameListJs.DOMContentLoaded);
+
+/** @type {typeof import("../views/gamelist/games")} */
+// @ts-ignore
+GameListJs.GameListGamesView = typeof GameListGamesView === "undefined" ? require("../views/gamelist/games") : GameListGamesView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/template")} */
+// @ts-ignore
+GameListJs.Template = typeof Template === "undefined" ? require("./common/template") : Template; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/time")} */
+// @ts-ignore
+GameListJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef

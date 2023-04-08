@@ -1,5 +1,6 @@
 const Common = require("../includes/common"),
-    MethodNotAllowedView = require("../../public/views/405");
+    MethodNotAllowedView = require("../../public/views/405"),
+    RouterBase = require("hot-router").RouterBase;
 
 /**
  * @typedef {import("express").Request} Express.Request
@@ -16,7 +17,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the 405 page.
  */
-class MethodNotAllowed {
+class MethodNotAllowed extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.methodNotAllowed = true;
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -41,7 +60,5 @@ class MethodNotAllowed {
         ));
     }
 }
-
-MethodNotAllowed.route = {};
 
 module.exports = MethodNotAllowed;

@@ -1,14 +1,14 @@
-//   ###                                             #   #    #
-//  #   #                                            #   #
-//  #       ###   # ##   #   #   ###   # ##    ###   #   #   ##     ###   #   #
-//   ###   #   #  ##  #  #   #  #   #  ##  #  #       # #     #    #   #  #   #
-//      #  #####  #       # #   #####  #       ###    # #     #    #####  # # #
-//  #   #  #      #       # #   #      #          #   # #     #    #      # # #
-//   ###    ###   #        #     ###   #      ####     #     ###    ###    # #
+//  #   #                        ###                                             #   #    #
+//  #   #                       #   #                                            #   #
+//  #   #   ###   ## #    ###   #       ###   # ##   #   #   ###   # ##    ###   #   #   ##     ###   #   #
+//  #####  #   #  # # #  #   #   ###   #   #  ##  #  #   #  #   #  ##  #  #       # #     #    #   #  #   #
+//  #   #  #   #  # # #  #####      #  #####  #       # #   #####  #       ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  #      #   #  #      #       # #   #      #          #   # #     #    #      # # #
+//  #   #   ###   #   #   ###    ###    ###   #        #     ###   #      ####     #     ###    ###    # #
 /**
  * A class that represents the servers view.
  */
-class ServersView {
+class HomeServersView {
     //              #
     //              #
     //  ###   ##   ###
@@ -28,15 +28,18 @@ class ServersView {
             <div class="header">Last Updated</div>
             <div class="header">Version</div>
             <div class="header">Notes</div>
-            ${Object.keys(servers).filter((s) => !servers[s].old).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => ServersView.ServerView.get(servers[s])).join("")}
-            ${Object.keys(servers).filter((s) => servers[s].old).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => ServersView.ServerView.get(servers[s], true)).join("")}
+            ${Object.keys(servers).filter((s) => !servers[s].old).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => HomeServersView.HomeServerView.get(servers[s])).join("")}
+            ${Object.keys(servers).filter((s) => servers[s].old).sort((a, b) => servers[a].name.localeCompare(servers[b].name)).map((s) => HomeServersView.HomeServerView.get(servers[s], true)).join("")}
         `;
     }
 }
 
+/** @type {typeof import("./server")} */
 // @ts-ignore
-ServersView.ServerView = typeof ServerView === "undefined" ? require("./server") : ServerView; // eslint-disable-line no-undef
+HomeServersView.HomeServerView = typeof ServerView === "undefined" ? require("./server") : HomeServerView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = ServersView; // eslint-disable-line no-undef
+if (typeof module === "undefined") {
+    window.HomeServersView = HomeServersView;
+} else {
+    module.exports = HomeServersView; // eslint-disable-line no-undef
 }

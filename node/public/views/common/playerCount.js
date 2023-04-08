@@ -1,16 +1,16 @@
-//  ####    ##                                 ###                         #     #   #    #
-//  #   #    #                                #   #                        #     #   #
-//  #   #    #     ###   #   #   ###   # ##   #       ###   #   #  # ##   ####   #   #   ##     ###   #   #
-//  ####     #        #  #   #  #   #  ##  #  #      #   #  #   #  ##  #   #      # #     #    #   #  #   #
-//  #        #     ####  #  ##  #####  #      #      #   #  #   #  #   #   #      # #     #    #####  # # #
-//  #        #    #   #   ## #  #      #      #   #  #   #  #  ##  #   #   #  #   # #     #    #      # # #
-//  #       ###    ####      #   ###   #       ###    ###    ## #  #   #    ##     #     ###    ###    # #
-//                       #   #
-//                        ###
+//   ###                                      ####    ##                                 ###                         #     #   #    #
+//  #   #                                     #   #    #                                #   #                        #     #   #
+//  #       ###   ## #   ## #    ###   # ##   #   #    #     ###   #   #   ###   # ##   #       ###   #   #  # ##   ####   #   #   ##     ###   #   #
+//  #      #   #  # # #  # # #  #   #  ##  #  ####     #        #  #   #  #   #  ##  #  #      #   #  #   #  ##  #   #      # #     #    #   #  #   #
+//  #      #   #  # # #  # # #  #   #  #   #  #        #     ####  #  ##  #####  #      #      #   #  #   #  #   #   #      # #     #    #####  # # #
+//  #   #  #   #  # # #  # # #  #   #  #   #  #        #    #   #   ## #  #      #      #   #  #   #  #  ##  #   #   #  #   # #     #    #      # # #
+//   ###    ###   #   #  #   #   ###   #   #  #       ###    ####      #   ###   #       ###    ###    ## #  #   #    ##     #     ###    ###    # #
+//                                                                 #   #
+//                                                                  ###
 /**
  * A class that represents the game details view.
  */
-class PlayerCountView {
+class CommonPlayerCountView {
     //              #
     //              #
     //  ###   ##   ###
@@ -32,6 +32,8 @@ class PlayerCountView {
     }
 }
 
-if (typeof module !== "undefined") {
-    module.exports = PlayerCountView; // eslint-disable-line no-undef
+if (typeof module === "undefined") {
+    window.CommonPlayerCountView = CommonPlayerCountView;
+} else {
+    module.exports = CommonPlayerCountView; // eslint-disable-line no-undef
 }

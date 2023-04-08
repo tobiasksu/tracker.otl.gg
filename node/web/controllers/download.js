@@ -3,6 +3,8 @@
  * @typedef {import("express").Response} express.Response
  */
 
+const RouterBase = require("hot-router").RouterBase;
+
 //  ####                         ##                      #
 //   #  #                         #                      #
 //   #  #   ###   #   #  # ##     #     ###    ###    ## #
@@ -13,7 +15,25 @@
 /**
  * A class that forwards to the getting started page.
  */
-class Download {
+class Download extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/download";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -31,9 +51,5 @@ class Download {
         res.redirect(301, "/getting-started");
     }
 }
-
-Download.route = {
-    path: "/download"
-};
 
 module.exports = Download;

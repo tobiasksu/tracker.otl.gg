@@ -1,13 +1,14 @@
-const Common = require("../includes/common"),
-    Completed = require("../../src/models/completed"),
-    ArchiveView = require("../../public/views/archive.js"),
-    NotFoundView = require("../../public/views/404"),
-    Weapon = require("../../src/models/weapon");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    Completed = require("../../src/models/completed"),
+    ArchiveView = require("../../public/views/archive.js"),
+    NotFoundView = require("../../public/views/404"),
+    RouterBase = require("hot-router").RouterBase,
+    Weapon = require("../../src/models/weapon");
 
 //    #                  #        #
 //   # #                 #
@@ -19,7 +20,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents an archived game's page.
  */
-class Archive {
+class Archive extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/archive/:id";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -136,9 +155,5 @@ class Archive {
         ));
     }
 }
-
-Archive.route = {
-    path: "/archive/:id"
-};
 
 module.exports = Archive;

@@ -1,14 +1,16 @@
-//   ###                               #   #    #
-//  #   #                              #   #
-//  #       ###   ## #    ###    ###   #   #   ##     ###   #   #
-//  #          #  # # #  #   #  #       # #     #    #   #  #   #
-//  #  ##   ####  # # #  #####   ###    # #     #    #####  # # #
-//  #   #  #   #  # # #  #          #   # #     #    #      # # #
-//   ###    ####  #   #   ###   ####     #     ###    ###    # #
+//   ###                                              ###                               #   #    #
+//  #   #                                            #   #                              #   #
+//  #      #   #  ## #   ## #    ###   # ##   #   #  #       ###   ## #    ###    ###   #   #   ##     ###   #   #
+//   ###   #   #  # # #  # # #      #  ##  #  #   #  #          #  # # #  #   #  #       # #     #    #   #  #   #
+//      #  #   #  # # #  # # #   ####  #      #  ##  #  ##   ####  # # #  #####   ###    # #     #    #####  # # #
+//  #   #  #  ##  # # #  # # #  #   #  #       ## #  #   #  #   #  # # #  #          #   # #     #    #      # # #
+//   ###    ## #  #   #  #   #   ####  #          #   ###    ####  #   #   ###   ####     #     ###    ###    # #
+//                                            #   #
+//                                             ###
 /**
  * A class that represents the games view.
  */
-class GamesView {
+class SummaryGamesView {
     //              #
     //              #
     //  ###   ##   ###
@@ -35,7 +37,7 @@ class GamesView {
 
             return /* html */`
                 <div class="server">
-                    <a href="/game/${games[s].ip}">${GamesView.Common.htmlEncode(games[s].server && games[s].server.name || games[s].server && games[s].server.ip || games[s].ip || "Unknown")}</a>
+                    <a href="/game/${games[s].ip}">${SummaryGamesView.Encoding.htmlEncode(games[s].server && games[s].server.name || games[s].server && games[s].server.ip || games[s].ip || "Unknown")}</a>
                     </a>${games[s].inLobby || games[s].settings && games[s].settings.joinInProgress ? /* html */`, Join at ${games[s].ip} <button class="copy" data-clipboard-text="${games[s].ip}">&#x1F4CB;</button>` : ""}
                 </div>
                 <div class="time">
@@ -49,7 +51,7 @@ class GamesView {
                 </div>
                 <div class="map">
                     ${games[s].settings ? /* html */`
-                        ${GamesView.Common.htmlEncode(games[s].settings.matchMode)}${games[s].settings.level && ` - ${GamesView.Common.htmlEncode(games[s].settings.level)}` || ""}
+                        ${SummaryGamesView.Encoding.htmlEncode(games[s].settings.matchMode)}${games[s].settings.level && ` - ${SummaryGamesView.Encoding.htmlEncode(games[s].settings.level)}` || ""}
                     ` : ""}
                 </div>
                 <div class="condition">
@@ -59,9 +61,9 @@ class GamesView {
                 </div>
                 <div class="scores">
                     ${games[s].teamScore && Object.keys(games[s].teamScore).sort((a, b) => games[s].teamScore[b] - games[s].teamScore[a]).slice(0, 4).map((team) => /* html */`
-                        ${GamesView.Common.htmlEncode(team)} ${games[s].teamScore[team]}
+                        ${SummaryGamesView.Encoding.htmlEncode(team)} ${games[s].teamScore[team]}
                     `.trim()).join(", ") || games[s].players && games[s].players.length > 0 && games[s].players.sort((a, b) => b.kills * (games[s].players.length > 2 ? 3 : 1) + b.assists - (a.kills * (games[s].players.length > 2 ? 3 : 1) + a.assists)).slice(0, 4).map((player) => /* html */`
-                        ${GamesView.Common.htmlEncode(player.name)} ${player.kills * (games[s].players.length > 2 ? 3 : 1) + player.assists}
+                        ${SummaryGamesView.Encoding.htmlEncode(player.name)} ${player.kills * (games[s].players.length > 2 ? 3 : 1) + player.assists}
                     `.trim()).join(", ") || ""}${games[s].teamScore && Object.keys(games[s].teamScore).length > 4 || (!games[s].teamScore || games[s].teamScore.length === 0) && games[s].players && games[s].players.length > 4 ? ", ..." : ""}
                 </div>
             `;
@@ -71,9 +73,12 @@ class GamesView {
     }
 }
 
+/** @type {typeof import("../../js/common/encoding")} */
 // @ts-ignore
-GamesView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
+SummaryGamesView.Encoding = typeof Encoding === "undefined" ? require("../../js/common/encoding") : Encoding; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = GamesView; // eslint-disable-line no-undef
+if (typeof module === "undefined") {
+    window.SummaryGamesView = SummaryGamesView;
+} else {
+    module.exports = SummaryGamesView; // eslint-disable-line no-undef
 }

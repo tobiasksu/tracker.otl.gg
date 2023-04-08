@@ -1,8 +1,5 @@
-/* global Player */
-
 /**
- * @typedef {import("./player")} Player
- * @typedef {{ip: string, settings?: object, server?: string, start?: Date, end?: Date, players?: Player[], kills?: object[], goals?: object[], events?: object[], damage?: object[], teamScore?: Object<string, number>, teamChanges?: object[]}} GameData
+ * @typedef {import("../../../types/node/gameTypes").GameData} GameTypes.GameData
  */
 
 //   ###
@@ -24,7 +21,7 @@ class Game {
     //  ##    ##   #  #  ###      ##  #      ###   ##     ##   ##   #
     /**
      * Creates a new game from the data provided.
-     * @param {GameData} data The data to create the game with.
+     * @param {GameTypes.GameData} data The data to create the game with.
      */
     constructor(data) {
         this.ip = data.ip;
@@ -41,6 +38,8 @@ class Game {
         this.teamScore = data.teamScore || {};
         this.teamChanges = data.teamChanges || [];
         this.countdown = data.countdown;
+        this.elapsed = /** @type {number} */(void 0); // eslint-disable-line no-extra-parens
+        this.inLobby = /** @type {boolean} */(void 0); // eslint-disable-line no-extra-parens
     }
 
     //              #     ##
@@ -74,15 +73,17 @@ class Game {
     /**
      * Retrieves a player from a game.
      * @param {string} name The name of the player.
-     * @returns {Player} The player.
+     * @returns {InstanceType<Game.Player>} The player. // TODO: Fix return type.
      */
     getPlayer(name) {
         if (!name) {
             return void 0;
         }
 
-        if (!this.players.find((p) => p.name === name)) {
-            this.players.push(new Player({
+        const players = this.players.find((p) => p.name === name);
+
+        if (!players) {
+            const player = new Game.Player({
                 name,
                 kills: 0,
                 assists: 0,
@@ -94,10 +95,12 @@ class Game {
                 pickups: 0,
                 captures: 0,
                 carrierKills: 0
-            }));
+            });
+            this.players.push(player);
+            return player;
         }
 
-        return this.players.find((p) => p.name === name);
+        return void 0;
     }
 
     // ###    ##   # #    ##   # #    ##
@@ -128,7 +131,15 @@ class Game {
     }
 }
 
-/**
- * @type {Game[]}
- */
+/** @type {Game[]} */
 Game.games = [];
+
+/** @type {typeof import("./player")} */
+// @ts-ignore
+Game.Player = typeof Player === "undefined" ? require("./player") : Player; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.Game = Game;
+} else {
+    module.exports = Game; // eslint-disable-line no-undef
+}

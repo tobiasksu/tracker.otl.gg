@@ -1,13 +1,14 @@
-const Common = require("../includes/common"),
-    Completed = require("../../src/models/completed"),
-    Game = require("../../src/models/game"),
-    HomeView = require("../../public/views/home"),
-    Servers = require("../../src/models/servers");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    Completed = require("../../src/models/completed"),
+    Game = require("../../src/models/game"),
+    HomeView = require("../../public/views/home"),
+    RouterBase = require("hot-router").RouterBase,
+    Servers = require("../../src/models/servers");
 
 //   #   #
 //   #   #
@@ -19,7 +20,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the home page.
  */
-class Home {
+class Home extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -66,7 +85,7 @@ class Home {
                 js: [
                     "/js/common/timeago.min.js",
                     "/js/common/clipboard.min.js",
-                    "/js/common/clipboard.js",
+                    "/js/common/clipboardHandler.js",
                     "/views/common/score.js",
                     "/views/common/playerCount.js",
                     "/views/common/details.js",
@@ -89,9 +108,5 @@ class Home {
         ));
     }
 }
-
-Home.route = {
-    path: "/"
-};
 
 module.exports = Home;

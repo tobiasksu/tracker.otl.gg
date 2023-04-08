@@ -73,6 +73,8 @@ class IndexView {
     }
 }
 
-if (typeof module !== "undefined") {
+if (typeof module === "undefined") {
+    window.IndexView = IndexView;
+} else {
     module.exports = IndexView; // eslint-disable-line no-undef
 }

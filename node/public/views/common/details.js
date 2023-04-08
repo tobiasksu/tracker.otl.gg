@@ -1,16 +1,14 @@
-/* global Countdown */
-
-//  ####           #              #     ##           #   #    #
-//   #  #          #                     #           #   #
-//   #  #   ###   ####    ###    ##      #     ###   #   #   ##     ###   #   #
-//   #  #  #   #   #         #    #      #    #       # #     #    #   #  #   #
-//   #  #  #####   #      ####    #      #     ###    # #     #    #####  # # #
-//   #  #  #       #  #  #   #    #      #        #   # #     #    #      # # #
-//  ####    ###     ##    ####   ###    ###   ####     #     ###    ###    # #
+//   ###                                      ####           #              #     ##           #   #    #
+//  #   #                                      #  #          #                     #           #   #
+//  #       ###   ## #   ## #    ###   # ##    #  #   ###   ####    ###    ##      #     ###   #   #   ##     ###   #   #
+//  #      #   #  # # #  # # #  #   #  ##  #   #  #  #   #   #         #    #      #    #       # #     #    #   #  #   #
+//  #      #   #  # # #  # # #  #   #  #   #   #  #  #####   #      ####    #      #     ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  # # #  #   #  #   #   #  #  #       #  #  #   #    #      #        #   # #     #    #      # # #
+//   ###    ###   #   #  #   #   ###   #   #  ####    ###     ##    ####   ###    ###   ####     #     ###    ###    # #
 /**
  * A class that represents the game details view.
  */
-class DetailsView {
+class CommonDetailsView {
     //              #
     //              #
     //  ###   ##   ###
@@ -28,23 +26,23 @@ class DetailsView {
         // @ts-ignore
         if (typeof window !== "undefined") {
             // @ts-ignore
-            setTimeout(Countdown.create, 1);
+            setTimeout(CommonDetailsView.Countdown.create, 1);
         }
 
         return /* html */`
             <div class="table">
                 <div class="server">${addLink ? /* html */`
                     <a href="/game/${game.ip}">
-                        ` : ""}${DetailsView.Common.htmlEncode(game.server && game.server.name || game.server && game.server.ip || game.ip || "Unknown")}${addLink ? /* html */`
+                        ` : ""}${CommonDetailsView.Encoding.htmlEncode(game.server && game.server.name || game.server && game.server.ip || game.ip || "Unknown")}${addLink ? /* html */`
                     </a>${game.inLobby || game.settings && game.settings.joinInProgress ? /* html */`<br />Join at ${game.ip} <button class="copy" data-clipboard-text="${game.ip}">&#x1F4CB;</button>` : ""}
                 ` : ""}</div>
                 <div class="scores">
-                    ${DetailsView.ScoreView.get(game)}
+                    ${CommonDetailsView.ScoreView.get(game)}
                 </div>
                 <div class="info">
                     <div class="time">
                         <span class="playerCount">
-                            ${DetailsView.PlayerCountView.get(game)}
+                            ${CommonDetailsView.PlayerCountView.get(game)}
                         </span>
                         <span class="timer">
                             ${game.inLobby ? /* html */`
@@ -57,7 +55,7 @@ class DetailsView {
                         </span>
                     </div>
                     ${game.settings ? /* html */`
-                        <div class="map">${DetailsView.Common.htmlEncode(game.settings.matchMode)}${game.settings.level && ` - ${DetailsView.Common.htmlEncode(game.settings.level)}` || ""}</div>
+                        <div class="map">${CommonDetailsView.Encoding.htmlEncode(game.settings.matchMode)}${game.settings.level && ` - ${CommonDetailsView.Encoding.htmlEncode(game.settings.level)}` || ""}</div>
                     ` : ""}
                     ${game.settings && game.settings.condition ? /* html */`
                         <div class="condition">${game.settings.condition}</div>
@@ -68,13 +66,24 @@ class DetailsView {
     }
 }
 
+/** @type {typeof import("../../js/common/countdown")} */
 // @ts-ignore
-DetailsView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
-// @ts-ignore
-DetailsView.PlayerCountView = typeof PlayerCountView === "undefined" ? require("./playerCount") : PlayerCountView; // eslint-disable-line no-undef
-// @ts-ignore
-DetailsView.ScoreView = typeof ScoreView === "undefined" ? require("./score") : ScoreView; // eslint-disable-line no-undef
+CommonDetailsView.Countdown = typeof Countdown === "undefined" ? require("../../js/common/countdown") : Countdown; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = DetailsView; // eslint-disable-line no-undef
+/** @type {typeof import("../../js/common/encoding")} */
+// @ts-ignore
+CommonDetailsView.Encoding = typeof Encoding === "undefined" ? require("../../js/common/encoding") : Encoding; // eslint-disable-line no-undef
+
+/** @type {typeof import("./playerCount")} */
+// @ts-ignore
+CommonDetailsView.PlayerCountView = typeof PlayerCountView === "undefined" ? require("./playerCount") : PlayerCountView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./score")} */
+// @ts-ignore
+CommonDetailsView.ScoreView = typeof ScoreView === "undefined" ? require("./score") : ScoreView; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.CommonDetailsView = CommonDetailsView;
+} else {
+    module.exports = CommonDetailsView; // eslint-disable-line no-undef
 }

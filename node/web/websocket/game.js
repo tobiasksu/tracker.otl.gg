@@ -2,7 +2,8 @@
  * @typedef {import("ws")} WebSocket
  */
 
-const WS = require("../../src/websocket");
+const RouterBase = require("hot-router").RouterBase,
+    WS = require("../../src/websocket");
 
 //   ###
 //  #   #
@@ -14,7 +15,26 @@ const WS = require("../../src/websocket");
 /**
  * A websocket to handle connections to a game.
  */
-class Game {
+class Game extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/game/:ip";
+        route.webSocket = true;
+
+        return route;
+    }
+
     //       ##
     //        #
     //  ##    #     ##    ###    ##
@@ -45,10 +65,5 @@ class Game {
         WS.register(ws);
     }
 }
-
-Game.route = {
-    path: "/game/:ip",
-    webSocket: true
-};
 
 module.exports = Game;

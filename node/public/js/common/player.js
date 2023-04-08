@@ -1,5 +1,5 @@
 /**
- * @typedef {{name: string, team?: string, kills: number, assists: number, deaths: number, goals: number, goalAssists: number, blunders: number, returns: number, pickups: number, captures: number, carrierKills: number, connected?: number, disconnected?: number}} PlayerData
+ * @typedef {import("../../../types/node/playerTypes").PlayerData} PlayerTypes.PlayerData
  */
 
 //  ####    ##
@@ -23,7 +23,7 @@ class Player {
     //  ##    ##   #  #  ###      ##  #      ###   ##     ##   ##   #
     /**
      * Creates a new player from the data provided.
-     * @param {PlayerData} data The data to create the player with.
+     * @param {PlayerTypes.PlayerData} data The data to create the player with.
      */
     constructor(data) {
         this.name = data.name;
@@ -41,4 +41,10 @@ class Player {
         this.connected = data.connected;
         this.disconnected = data.disconnected;
     }
+}
+
+if (typeof module === "undefined") {
+    window.Player = Player;
+} else {
+    module.exports = Player; // eslint-disable-line no-undef
 }

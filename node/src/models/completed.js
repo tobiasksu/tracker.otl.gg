@@ -155,7 +155,8 @@ class Completed {
                     delete game.data[key];
                 }
             });
-            game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
+            servers[game.ip] ||= await ServersDb.getByIp(game.ip);
+            game.server = servers[game.ip];
         }
 
         return {games, count};
@@ -182,7 +183,8 @@ class Completed {
         for (const game of games) {
             game.remaining = 3600000 + game.date.getTime() + new Date().getTime();
             game.data = JSON.parse(game.data);
-            game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
+            servers[game.ip] ||= await ServersDb.getByIp(game.ip);
+            game.server = servers[game.ip];
         }
 
         return games.filter((g) => g.data && g.data.events && g.data.events.length && g.data.events.length > 0);
@@ -211,7 +213,8 @@ class Completed {
 
         for (const game of games) {
             game.data = JSON.parse(game.data);
-            game.server = servers[game.ip] || (servers[game.ip] = await ServersDb.getByIp(game.ip));
+            servers[game.ip] ||= await ServersDb.getByIp(game.ip);
+            game.server = servers[game.ip];
         }
 
         return {games, count};

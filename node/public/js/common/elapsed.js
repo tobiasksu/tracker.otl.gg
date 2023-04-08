@@ -58,7 +58,7 @@ class Elapsed {
 
         elapsed.innerText = `${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(difference).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"})}`;
 
-        if (window.live) {
+        if (Elapsed.Time.live) {
             setTimeout(() => {
                 this.update();
             }, 1001 - difference % 1000);
@@ -67,3 +67,13 @@ class Elapsed {
 }
 
 Elapsed.id = 0;
+
+/** @type {typeof import("./time")} */
+// @ts-ignore
+Elapsed.Time = typeof Time === "undefined" ? require("./time") : Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.Elapsed = Elapsed;
+} else {
+    module.exports = Elapsed; // eslint-disable-line no-undef
+}

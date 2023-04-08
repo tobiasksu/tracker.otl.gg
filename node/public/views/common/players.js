@@ -1,16 +1,16 @@
-//  ####    ##                                       #   #    #
-//  #   #    #                                       #   #
-//  #   #    #     ###   #   #   ###   # ##    ###   #   #   ##     ###   #   #
-//  ####     #        #  #   #  #   #  ##  #  #       # #     #    #   #  #   #
-//  #        #     ####  #  ##  #####  #       ###    # #     #    #####  # # #
-//  #        #    #   #   ## #  #      #          #   # #     #    #      # # #
-//  #       ###    ####      #   ###   #      ####     #     ###    ###    # #
-//                       #   #
-//                        ###
+//   ###                                      ####    ##                                       #   #    #
+//  #   #                                     #   #    #                                       #   #
+//  #       ###   ## #   ## #    ###   # ##   #   #    #     ###   #   #   ###   # ##    ###   #   #   ##     ###   #   #
+//  #      #   #  # # #  # # #  #   #  ##  #  ####     #        #  #   #  #   #  ##  #  #       # #     #    #   #  #   #
+//  #      #   #  # # #  # # #  #   #  #   #  #        #     ####  #  ##  #####  #       ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  # # #  #   #  #   #  #        #    #   #   ## #  #      #          #   # #     #    #      # # #
+//   ###    ###   #   #  #   #   ###   #   #  #       ###    ####      #   ###   #      ####     #     ###    ###    # #
+//                                                                 #   #
+//                                                                  ###
 /**
  * A class that represents the game players view.
  */
-class PlayersView {
+class CommonPlayersView {
     //              #
     //              #
     //  ###   ##   ###
@@ -46,9 +46,9 @@ class PlayersView {
                 <div class="deaths header">Deaths</div>
                 <div class="timeInGame header">Time In Game</div>
                 ${game.players && game.players.sort((a, b) => b.goals - a.goals || b.goalAssists - a.goalAssists || a.blunders - b.blunders || b.captures - a.captures || b.kills - a.kills || b.assists - a.assists || a.deaths - b.deaths || a.name.toString().localeCompare(b.name)).map((player) => /* html */`
-                    <div class="name">${PlayersView.Common.htmlEncode(player.name)}</div>
+                    <div class="name">${CommonPlayersView.Encoding.htmlEncode(player.name)}</div>
                     ${game.settings && game.settings.matchMode !== "ANARCHY" ? /* html */`
-                        <div class="team">${player.team ? PlayersView.Common.htmlEncode(player.team) : ""}</div>
+                        <div class="team">${player.team ? CommonPlayersView.Encoding.htmlEncode(player.team) : ""}</div>
                     ` : ""}
                     ${game.settings && game.settings.matchMode === "MONSTERBALL" ? /* html */`
                         <div class="goals">${player.goals}</div>
@@ -64,16 +64,23 @@ class PlayersView {
                     <div class="kills">${player.kills}</div>
                     <div class="assists">${player.assists}</div>
                     <div class="deaths">${player.deaths}</div>
-                    <div class="timeInGame">${PlayersView.Common.formatTimeSpan(player.timeInGame, 0)}</div>
+                    <div class="timeInGame">${CommonPlayersView.Time.formatTimeSpan(player.timeInGame, 0)}</div>
                 `).join("") || ""}
             </div>
         `;
     }
 }
 
+/** @type {typeof import("../../js/common/encoding")} */
 // @ts-ignore
-PlayersView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
+CommonPlayersView.Encoding = typeof Encoding === "undefined" ? require("../../js/common/encoding") : Encoding; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = PlayersView; // eslint-disable-line no-undef
+/** @type {typeof import("../../js/common/time")} */
+// @ts-ignore
+CommonPlayersView.Time = typeof Time === "undefined" ? require("../../js/common/time") : this.Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.CommonPlayersView = CommonPlayersView;
+} else {
+    module.exports = CommonPlayersView; // eslint-disable-line no-undef
 }

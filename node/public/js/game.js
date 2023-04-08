@@ -1,5 +1,3 @@
-/* global Common, Countdown, Elapsed, EventsView, Player, PlayerCountView, PlayersView, ScoreView, WebSocketClient */
-
 //   ###                          ###
 //  #   #                           #
 //  #       ###   ## #    ###       #   ###
@@ -22,14 +20,14 @@ class GameJs {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        Common.loadTimeAgo();
+        GameJs.Time.loadTimeAgo();
 
-        const el = document.getElementById("live-updates");
+        const el = /** @type {HTMLAnchorElement} */(document.getElementById("live-updates")); // eslint-disable-line no-extra-parens
 
-        if (window.live) {
-            GameJs.ws = new WebSocketClient();
-            GameJs.ws.onmessage = GameJs.onmessage;
-            GameJs.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host + "/game/" + GameJs.game.ip);
+        if (GameJs.Time.live) {
+            GameJs.ws = new GameJs.WebSocketClient(`ws${window.location.protocol === "https:" ? "s" : ""}://${window.location.host}/game/${GameJs.game.ip}`);
+            GameJs.ws.instance.onmessage = GameJs.onmessage;
+            GameJs.ws.open();
             el.innerText = "Disable Live Updates";
             el.href = `${window.location.href.replace(/[?&]live=on/, "")}${window.location.href.replace(/[?&]live=on/, "").indexOf("?") === -1 ? "?" : "&"}live=off`;
         } else {
@@ -45,11 +43,11 @@ class GameJs {
     //                                              ###
     /**
      * Handles incoming messages.
-     * @param {string} message The data received.
-     * @returns {void}
+     * @param {MessageEvent} ev The data received.
+     * @returns {object} The return.
      */
-    static onmessage(message) {
-        const {data} = JSON.parse(message.data);
+    static onmessage(ev) {
+        const {data} = JSON.parse(ev.data);
 
         switch (data.name) {
             case "Stats": {
@@ -84,9 +82,9 @@ class GameJs {
                         break;
                 }
 
-                document.getElementById("game").querySelector(".scores").innerHTML = ScoreView.get(GameJs.game);
-                document.getElementById("game").querySelector(".playerCount").innerHTML = PlayerCountView.get(GameJs.game);
-                document.getElementById("events").innerHTML = EventsView.get(GameJs.game);
+                document.getElementById("game").querySelector(".scores").innerHTML = GameJs.CommonScoreView.get(GameJs.game);
+                document.getElementById("game").querySelector(".playerCount").innerHTML = GameJs.CommonPlayerCountView.get(GameJs.game);
+                document.getElementById("events").innerHTML = GameJs.CommonEventsView.get(GameJs.game);
 
                 break;
             }
@@ -101,14 +99,14 @@ class GameJs {
     // ###   ###    ###  #  #   ###   ##   #
     /**
      * Processes the blunder stat.
-     * @param {{time: number, scorer: string, scorerTeam: string}} data The blunder data.
+     * @param {{time: number, scorer: string, scorerTeam: string, blunder: boolean, assisted: string}} data The blunder data.
      * @returns {void}
      */
     static blunder(data) {
         const {scorer, scorerTeam} = data;
 
         if (!GameJs.game.settings) {
-            GameJs.game.settings = {matchMode: "ANARCHY"};
+            GameJs.game.settings = {matchMode: "MONSTERBALL", friendlyFire: false};
         }
 
         if (!GameJs.game.settings.matchMode) {
@@ -118,7 +116,7 @@ class GameJs {
         if (GameJs.game.settings.matchMode !== "MONSTERBALL") {
             GameJs.game.settings.matchMode = "MONSTERBALL";
             GameJs.game.teamScore = {"BLUE": 0, "ORANGE": 0};
-            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.querySelector(".map")).innerText = GameJs.game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         GameJs.game.events.push(data);
@@ -138,7 +136,7 @@ class GameJs {
             GameJs.game.teamScore[otherTeam] = 1;
         }
 
-        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+        document.getElementById("players").innerHTML = GameJs.CommonPlayersView.get(GameJs.game);
     }
 
     //                                      #
@@ -149,7 +147,7 @@ class GameJs {
     //  ##    ##   #  #  #  #   ##    ##     ##
     /**
      * Processes the connect stat.
-     * @param {{time: number, player: string}} data The connect data.
+     * @param {{time: number, player: string, description: string}} data The connect data.
      * @returns {void}
      */
     static connect(data) {
@@ -176,7 +174,7 @@ class GameJs {
         const {event, scorer, scorerTeam} = data;
 
         if (!GameJs.game.settings) {
-            GameJs.game.settings = {matchMode: "ANARCHY"};
+            GameJs.game.settings = {matchMode: "CTF", friendlyFire: false};
         }
 
         if (!GameJs.game.settings.matchMode) {
@@ -186,7 +184,7 @@ class GameJs {
         if (GameJs.game.settings.matchMode !== "CTF") {
             GameJs.game.settings.matchMode = "CTF";
             GameJs.game.teamScore = {"BLUE": 0, "ORANGE": 0};
-            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.querySelector(".map")).innerText = GameJs.game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         if (event === "Return" && !scorer) {
@@ -224,7 +222,7 @@ class GameJs {
                 break;
         }
 
-        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+        document.getElementById("players").innerHTML = GameJs.CommonPlayersView.get(GameJs.game);
     }
 
     //    #   #                                                #
@@ -235,7 +233,7 @@ class GameJs {
     //  ###  ###   ###     ##    ##   #  #  #  #   ##    ##     ##
     /**
      * Processes the disconnect stat.
-     * @param {{time: number, player: string}} data The connect data.
+     * @param {{time: number, player: string, description: string}} data The connect data.
      * @returns {void}
      */
     static disconnect(data) {
@@ -274,12 +272,12 @@ class GameJs {
 
         GameJs.ws.instance.close();
 
-        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+        document.getElementById("players").innerHTML = GameJs.CommonPlayersView.get(GameJs.game);
         document.querySelector("#game .timer").innerHTML = /* html */`
             Completed <time class="timeago" datetime="${new Date(GameJs.game.end).toISOString()}">${new Date(GameJs.game.end)}</time>
         `;
 
-        Common.loadTimeAgo();
+        GameJs.Time.loadTimeAgo();
     }
 
     //                   ##
@@ -291,14 +289,14 @@ class GameJs {
     //  ###
     /**
      * Processes the goal stat.
-     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, assistedTeam: string}} data The goal data.
+     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, blunder: boolean}} data The goal data.
      * @returns {void}
      */
     static goal(data) {
-        const {scorer, scorerTeam, assisted, assistedTeam} = data;
+        const {scorer, scorerTeam, assisted} = data;
 
         if (!GameJs.game.settings) {
-            GameJs.game.settings = {matchMode: "ANARCHY"};
+            GameJs.game.settings = {matchMode: "ANARCHY", friendlyFire: false};
         }
 
         if (!GameJs.game.settings.matchMode) {
@@ -308,7 +306,7 @@ class GameJs {
         if (GameJs.game.settings.matchMode !== "MONSTERBALL") {
             GameJs.game.settings.matchMode = "MONSTERBALL";
             GameJs.game.teamScore = {"BLUE": 0, "ORANGE": 0};
-            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.querySelector(".map")).innerText = GameJs.game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         GameJs.game.events.push(data);
@@ -319,7 +317,7 @@ class GameJs {
 
         scorerPlayer.team = scorerTeam;
         if (assistedPlayer) {
-            assistedPlayer.team = assistedTeam;
+            assistedPlayer.team = scorerTeam;
         }
 
         scorerPlayer.goals++;
@@ -333,7 +331,7 @@ class GameJs {
             GameJs.game.teamScore[scorerTeam] = 1;
         }
 
-        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+        document.getElementById("players").innerHTML = GameJs.CommonPlayersView.get(GameJs.game);
     }
 
     // #      #    ##    ##
@@ -351,7 +349,7 @@ class GameJs {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data;
 
         if (!GameJs.game.settings) {
-            GameJs.game.settings = {matchMode: "ANARCHY"};
+            GameJs.game.settings = {matchMode: "ANARCHY", friendlyFire: false};
         }
 
         if (!GameJs.game.settings.matchMode) {
@@ -360,7 +358,7 @@ class GameJs {
 
         if (GameJs.game.settings.matchMode === "ANARCHY" && (attackerTeam || defenderTeam)) {
             GameJs.game.settings.matchMode = "TEAM ANARCHY";
-            document.querySelector(".map").innerText = GameJs.game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.querySelector(".map")).innerText = GameJs.game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         GameJs.game.events.push(data);
@@ -410,7 +408,7 @@ class GameJs {
             }
         }
 
-        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+        document.getElementById("players").innerHTML = GameJs.CommonPlayersView.get(GameJs.game);
     }
 
     //         #                 #     ##
@@ -428,7 +426,7 @@ class GameJs {
         GameJs.game.server = data.server;
         GameJs.game.settings = data;
         GameJs.game.inLobby = data.type === "LobbyStatus";
-        GameJs.game.players = data.players && data.players.map((player) => new Player({
+        GameJs.game.players = data.players && data.players.map((player) => new GameJs.Player({
             name: player,
             kills: 0,
             assists: 0,
@@ -449,9 +447,9 @@ class GameJs {
 
         if (!GameJs.game.inLobby) {
             if (GameJs.game.countdown) {
-                new Countdown(GameJs.game.countdown, el);
+                new GameJs.Countdown(GameJs.game.countdown, el);
             } else if (GameJs.game.elapsed || GameJs.game.elapsed === 0) {
-                new Elapsed(GameJs.game.elapsed, el);
+                new GameJs.Elapsed(GameJs.game.elapsed, el);
             }
         }
     }
@@ -475,8 +473,50 @@ class GameJs {
         const player = GameJs.game.getPlayer(data.playerName);
         player.team = data.currentTeam;
 
-        document.getElementById("players").innerHTML = PlayersView.get(GameJs.game);
+        document.getElementById("players").innerHTML = GameJs.CommonPlayersView.get(GameJs.game);
     }
 }
 
 document.addEventListener("DOMContentLoaded", GameJs.DOMContentLoaded);
+
+/** @type {import("./common/game")} */
+GameJs.game = null;
+
+/** @type {import("./common/websocketclient")} */
+GameJs.ws = null;
+
+/** @type {typeof import("../views/common/events")} */
+// @ts-ignore
+GameJs.CommonEventsView = typeof CommonEventsView === "undefined" ? require("../views/common/events") : CommonEventsView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../views/common/playerCount")} */
+// @ts-ignore
+GameJs.CommonPlayerCountView = typeof CommonPlayerCountView === "undefined" ? require("../views/common/playerCount") : CommonPlayerCountView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../views/common/players")} */
+// @ts-ignore
+GameJs.CommonPlayersView = typeof CommonPlayersView === "undefined" ? require("../views/common/players") : CommonPlayersView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../views/common/score")} */
+// @ts-ignore
+GameJs.CommonScoreView = typeof CommonScoreView === "undefined" ? require("../views/common/score") : CommonScoreView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/countdown")} */
+// @ts-ignore
+GameJs.Countdown = typeof Countdown === "undefined" ? require("./common/countdown") : Countdown; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/elapsed")} */
+// @ts-ignore
+GameJs.Elapsed = typeof Elapsed === "undefined" ? require("./common/elapsed") : Elapsed; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/player")} */
+// @ts-ignore
+GameJs.Player = typeof Player === "undefined" ? require("./common/player") : Player; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/time")} */
+// @ts-ignore
+GameJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/websocketclient")} */
+// @ts-ignore
+GameJs.WebSocketClient = typeof WebSocketClient === "undefined" ? require("./common/websocketclient") : WebSocketClient; // eslint-disable-line no-undef

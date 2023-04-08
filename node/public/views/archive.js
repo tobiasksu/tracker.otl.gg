@@ -26,10 +26,10 @@ class ArchiveView {
         return /* html */`
             <div id="top">
                 <div id="game">
-                    ${ArchiveView.CompletedDetailsView.get(game)}
+                    ${ArchiveView.CommonCompletedDetailsView.get(game)}
                 </div>
                 <div id="players">
-                    ${ArchiveView.CompletedPlayersView.get(game)}
+                    ${ArchiveView.CommonCompletedPlayersView.get(game)}
                 </div>
             </div>
             <div id="selector">
@@ -49,11 +49,11 @@ class ArchiveView {
                                 <div id="weapon"></div>
                             </div>
                             ${game.players.sort((a, b) => a.name.localeCompare(b.name)).map((player) => /* html */`
-                                <div class="vertical header">${ArchiveView.Common.htmlEncode(player.name)}</div>
+                                <div class="vertical header">${ArchiveView.Encoding.htmlEncode(player.name)}</div>
                             `).join("")}
                             <div class="vertical header">Total</div>
                             ${game.players.map((player, index) => /* html */`
-                                <div class="header">${ArchiveView.Common.htmlEncode(player.name)}</div>
+                                <div class="header">${ArchiveView.Encoding.htmlEncode(player.name)}</div>
                                 ${game.players.map((opponent, opponentIndex) => /* html */`
                                     <div id="damage-${index}-${opponentIndex}" class="right ${index === opponentIndex ? "self" : player.team && player.team === opponent.team ? `friendly${game.settings && game.settings.friendlyFire ? " count" : ""}` : ""}"></div>
                                 `).join("")}
@@ -86,16 +86,16 @@ class ArchiveView {
             </div>
             <div id="player-graphs" class="chart hidden">
                 ${game.players.map((player) => /* html */`
-                    <a class="player-graph" href="#" title="${ArchiveView.Common.htmlEncode(player.name)}">${ArchiveView.Common.htmlEncode(player.name)}</a>
+                    <a class="player-graph" href="#" title="${ArchiveView.Encoding.htmlEncode(player.name)}">${ArchiveView.Encoding.htmlEncode(player.name)}</a>
                 `).join(" | ")}
                 <canvas id="player-chart"></canvas>
             </div>
             <div id="bottom">
                 <div id="events">
-                    ${ArchiveView.EventsView.get(game)}
+                    ${ArchiveView.CommonEventsView.get(game)}
                 </div>
                 <div id="settings">
-                    ${ArchiveView.SettingsView.get(game)}
+                    ${ArchiveView.CommonSettingsView.get(game)}
                 </div>
             </div>
             <script>
@@ -105,17 +105,28 @@ class ArchiveView {
     }
 }
 
+/** @type {typeof import("./common/completedDetails")} */
 // @ts-ignore
-ArchiveView.Common = typeof Common === "undefined" ? require("../../web/includes/common") : Common; // eslint-disable-line no-undef
-// @ts-ignore
-ArchiveView.CompletedDetailsView = typeof CompletedDetailsView === "undefined" ? require("./common/completedDetails") : CompletedDetailsView; // eslint-disable-line no-undef
-// @ts-ignore
-ArchiveView.CompletedPlayersView = typeof CompletedPlayersView === "undefined" ? require("./common/completedPlayers") : CompletedPlayersView; // eslint-disable-line no-undef
-// @ts-ignore
-ArchiveView.EventsView = typeof EventsView === "undefined" ? require("./common/events") : EventsView; // eslint-disable-line no-undef
-// @ts-ignore
-ArchiveView.SettingsView = typeof SettingsView === "undefined" ? require("./common/settings") : SettingsView; // eslint-disable-line no-undef
+ArchiveView.CommonCompletedDetailsView = typeof CommonCompletedDetailsView === "undefined" ? require("./common/completedDetails") : CommonCompletedDetailsView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
+/** @type {typeof import("./common/completedPlayers")} */
+// @ts-ignore
+ArchiveView.CommonCompletedPlayersView = typeof CommonCompletedPlayersView === "undefined" ? require("./common/completedPlayers") : CommonCompletedPlayersView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/events")} */
+// @ts-ignore
+ArchiveView.CommonEventsView = typeof CommonEventsView === "undefined" ? require("./common/events") : CommonEventsView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/settings")} */
+// @ts-ignore
+ArchiveView.CommonSettingsView = typeof CommonSettingsView === "undefined" ? require("./common/settings") : CommonSettingsView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../js/common/encoding")} */
+// @ts-ignore
+ArchiveView.Encoding = typeof Encoding === "undefined" ? require("../js/common/encoding") : Encoding; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.ArchiveView = ArchiveView;
+} else {
     module.exports = ArchiveView; // eslint-disable-line no-undef
 }

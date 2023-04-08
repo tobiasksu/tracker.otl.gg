@@ -73,6 +73,8 @@ class GettingStartedView {
     }
 }
 
-if (typeof module !== "undefined") {
+if (typeof module === "undefined") {
+    window.GettingStartedView = GettingStartedView;
+} else {
     module.exports = GettingStartedView; // eslint-disable-line no-undef
 }

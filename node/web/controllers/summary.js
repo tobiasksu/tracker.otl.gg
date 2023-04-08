@@ -1,13 +1,14 @@
-const Common = require("../includes/common"),
-    Completed = require("../../src/models/completed"),
-    Game = require("../../src/models/game"),
-    Servers = require("../../src/models/servers"),
-    SummaryView = require("../../public/views/summary");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    Completed = require("../../src/models/completed"),
+    Game = require("../../src/models/game"),
+    RouterBase = require("hot-router").RouterBase,
+    Servers = require("../../src/models/servers"),
+    SummaryView = require("../../public/views/summary");
 
 //   ###
 //  #   #
@@ -21,7 +22,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the summary page.
  */
-class Summary {
+class Summary extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/summary";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -68,7 +87,7 @@ class Summary {
                 js: [
                     "/js/common/timeago.min.js",
                     "/js/common/clipboard.min.js",
-                    "/js/common/clipboard.js",
+                    "/js/common/clipboardHandler.js",
                     "/js/summary.js"
                 ],
                 css: ["/css/summary.css"]
@@ -78,9 +97,5 @@ class Summary {
         ));
     }
 }
-
-Summary.route = {
-    path: "/summary"
-};
 
 module.exports = Summary;

@@ -1,11 +1,12 @@
-const Common = require("../includes/common"),
-    Completed = require("../../src/models/completed"),
-    SearchView = require("../../public/views/search");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    Completed = require("../../src/models/completed"),
+    RouterBase = require("hot-router").RouterBase,
+    SearchView = require("../../public/views/search");
 
 //   ###                               #
 //  #   #                              #
@@ -17,7 +18,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the search page.
  */
-class Search {
+class Search extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/search";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -56,9 +75,5 @@ class Search {
         ));
     }
 }
-
-Search.route = {
-    path: "/search"
-};
 
 module.exports = Search;

@@ -107,7 +107,7 @@ class Stats {
             game = await Game.getGame(ip);
 
         if (!game.settings) {
-            game.settings = {matchMode: "ANARCHY"};
+            game.settings = {matchMode: "CTF"};
         }
 
         if (!game.settings.matchMode) {
@@ -226,7 +226,7 @@ class Stats {
         game.flagStats = flagStats || [];
         game.teamChanges = teamChanges || [];
 
-        game.settings = game.settings || {matchMode: "ANARCHY"};
+        game.settings ||= {matchMode: "ANARCHY"};
 
         game.damage.forEach((stat) => {
             stat.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(stat.weapon)];

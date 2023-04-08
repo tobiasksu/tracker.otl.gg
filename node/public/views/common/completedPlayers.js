@@ -1,16 +1,16 @@
-//  ####    ##                                       #   #    #
-//  #   #    #                                       #   #
-//  #   #    #     ###   #   #   ###   # ##    ###   #   #   ##     ###   #   #
-//  ####     #        #  #   #  #   #  ##  #  #       # #     #    #   #  #   #
-//  #        #     ####  #  ##  #####  #       ###    # #     #    #####  # # #
-//  #        #    #   #   ## #  #      #          #   # #     #    #      # # #
-//  #       ###    ####      #   ###   #      ####     #     ###    ###    # #
-//                       #   #
-//                        ###
+//   ###                                       ###                         ##            #                #  ####    ##                                       #   #    #
+//  #   #                                     #   #                         #            #                #  #   #    #                                       #   #
+//  #       ###   ## #   ## #    ###   # ##   #       ###   ## #   # ##     #     ###   ####    ###    ## #  #   #    #     ###   #   #   ###   # ##    ###   #   #   ##     ###   #   #
+//  #      #   #  # # #  # # #  #   #  ##  #  #      #   #  # # #  ##  #    #    #   #   #     #   #  #  ##  ####     #        #  #   #  #   #  ##  #  #       # #     #    #   #  #   #
+//  #      #   #  # # #  # # #  #   #  #   #  #      #   #  # # #  ##  #    #    #####   #     #####  #   #  #        #     ####  #  ##  #####  #       ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  # # #  #   #  #   #  #   #  #   #  # # #  # ##     #    #       #  #  #      #  ##  #        #    #   #   ## #  #      #          #   # #     #    #      # # #
+//   ###    ###   #   #  #   #   ###   #   #   ###    ###   #   #  #       ###    ###     ##    ###    ## #  #       ###    ####      #   ###   #      ####     #     ###    ###    # #
+//                                                                 #                                                              #   #
+//                                                                 #                                                               ###
 /**
  * A class that represents the game players view.
  */
-class PlayersView {
+class CommonCompletedPlayersView {
     //              #
     //              #
     //  ###   ##   ###
@@ -52,9 +52,9 @@ class PlayersView {
                 <div class="dpk header">Per Kill</div>
                 <div class="timeInGame header">Time In Game</div>
                 ${game.players && game.players.sort((a, b) => b.goals - a.goals || b.goalAssists - a.goalAssists || a.blunders - b.blunders || b.captures - a.captures || b.kills - a.kills || b.assists - a.assists || a.deaths - b.deaths || a.name.toString().localeCompare(b.name)).map((player) => /* html */`
-                    <div class="name">${PlayersView.Common.htmlEncode(player.name)}</div>
+                    <div class="name">${CommonCompletedPlayersView.Encoding.htmlEncode(player.name)}</div>
                     ${game.settings && game.settings.matchMode !== "ANARCHY" ? /* html */`
-                        <div class="team">${player.team ? PlayersView.Common.htmlEncode(player.team) : ""}</div>
+                        <div class="team">${player.team ? CommonCompletedPlayersView.Encoding.htmlEncode(player.team) : ""}</div>
                     ` : ""}
                     ${game.settings && game.settings.matchMode === "MONSTERBALL" ? /* html */`
                         <div class="goals">${player.goals}</div>
@@ -71,21 +71,28 @@ class PlayersView {
                     <div class="kills">${player.kills}</div>
                     <div class="assists">${player.assists}</div>
                     <div class="deaths">${player.deaths}</div>
-                    <div class="damage">${(game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0).toFixed(0)}</div>
+                    <div class="damage">${(game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.getPlayer(d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0).toFixed(0)}</div>
                     <div class="taken">${(game.damage.filter((d) => d.defender === player.name && (game.settings && game.settings.friendlyFire || d.attacker === d.defender || (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || d.attacker && game.players.find((p) => p.name === d.attacker).team !== player.team))).reduce((total, dmg) => total + dmg.damage, 0) || 0).toFixed(0)}</div>
-                    <div class="net">${((game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0) - (game.damage.filter((d) => d.defender === player.name && (game.settings && game.settings.friendlyFire || d.attacker === d.defender || (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || d.attacker && game.players.find((p) => p.name === d.attacker).team !== player.team))).reduce((total, dmg) => total + dmg.damage, 0) || 0)).toFixed(0)}</div>
-                    <div class="dpd">${((game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0) / Math.max(player.deaths, 1)).toFixed(2)}</div>
-                    <div class="dpk">${((game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0) / Math.max(game.kills.filter((k) => k.attacker === player.name && k.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.players.find((p) => p.name === k.defender).team !== player.team)).length, 1)).toFixed(2)}</div>
-                    <div class="timeInGame">${PlayersView.Common.formatTimeSpan(player.timeInGame, 0)}</div>
+                    <div class="net">${((game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.getPlayer(d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0) - (game.damage.filter((d) => d.defender === player.name && (game.settings && game.settings.friendlyFire || d.attacker === d.defender || (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || d.attacker && game.players.find((p) => p.name === d.attacker) && game.players.find((p) => p.name === d.attacker).team !== player.team))).reduce((total, dmg) => total + dmg.damage, 0) || 0)).toFixed(0)}</div>
+                    <div class="dpd">${((game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.getPlayer(d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0) / Math.max(player.deaths, 1)).toFixed(2)}</div>
+                    <div class="dpk">${((game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.getPlayer(d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0) / Math.max(game.kills.filter((k) => k.attacker === player.name && k.defender !== player.name && (game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(game.settings.matchMode) === -1 || game.players.find((p) => p.name === k.defender).team !== player.team)).length, 1)).toFixed(2)}</div>
+                    <div class="timeInGame">${CommonCompletedPlayersView.Time.formatTimeSpan(player.timeInGame, 0)}</div>
                 `).join("") || ""}
             </div>
         `;
     }
 }
 
+/** @type {typeof import("../../js/common/encoding")} */
 // @ts-ignore
-PlayersView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
+CommonCompletedPlayersView.Encoding = typeof Encoding === "undefined" ? require("../../js/common/encoding") : Encoding; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = PlayersView; // eslint-disable-line no-undef
+/** @type {typeof import("../../js/common/time")} */
+// @ts-ignore
+CommonCompletedPlayersView.Time = typeof Time === "undefined" ? require("../../js/common/time") : Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.CommonCompletedPlayersView = CommonCompletedPlayersView;
+} else {
+    module.exports = CommonCompletedPlayersView; // eslint-disable-line no-undef
 }

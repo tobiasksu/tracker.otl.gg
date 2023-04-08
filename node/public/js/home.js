@@ -1,16 +1,14 @@
-/* global Common, CompletedDetailsView, Countdown, DetailsView, Elapsed, Game, Player, PlayerCountView, ScoreView, ServersView, WebSocketClient */
-
-//  #   #
-//  #   #
-//  #   #   ###   ## #    ###
-//  #####  #   #  # # #  #   #
-//  #   #  #   #  # # #  #####
-//  #   #  #   #  # # #  #
-//  #   #   ###   #   #   ###
+//  #   #                         ###
+//  #   #                           #
+//  #   #   ###   ## #    ###       #   ###
+//  #####  #   #  # # #  #   #      #  #
+//  #   #  #   #  # # #  #####      #   ###
+//  #   #  #   #  # # #  #      #   #      #
+//  #   #   ###   #   #   ###    ###   ####
 /**
  * A class that provides functions for the home page.
  */
-class Home {
+class HomeJs {
     // ###    ##   #  #   ##                #                 #    #                    #           #
     // #  #  #  #  ####  #  #               #                 #    #                    #           #
     // #  #  #  #  ####  #      ##   ###   ###    ##   ###   ###   #      ##    ###   ###   ##    ###
@@ -22,14 +20,14 @@ class Home {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        Common.loadTimeAgo();
+        HomeJs.Time.loadTimeAgo();
 
-        const el = document.getElementById("live-updates");
+        const el = /** @type {HTMLAnchorElement} */(document.getElementById("live-updates")); // eslint-disable-line no-extra-parens
 
-        if (window.live) {
-            Home.ws = new WebSocketClient();
-            Home.ws.onmessage = Home.onmessage;
-            Home.ws.open((window.location.protocol === "http:" ? "ws:" : window.location.protocol === "https:" ? "wss:" : window.location.protocol) + "//" + window.location.host);
+        if (HomeJs.Time.live) {
+            HomeJs.ws = new HomeJs.WebSocketClient(`ws${window.location.protocol === "https:" ? "s" : ""}://${window.location.host}`);
+            HomeJs.ws.instance.onmessage = HomeJs.onmessage;
+            HomeJs.ws.open();
             el.innerText = "Disable Live Updates";
             el.href = `${window.location.href.replace(/[?&]live=on/, "")}${window.location.href.replace(/[?&]live=on/, "").indexOf("?") === -1 ? "?" : "&"}live=off`;
         } else {
@@ -45,64 +43,64 @@ class Home {
     //                                              ###
     /**
      * Handles incoming messages.
-     * @param {string} message The data received.
+     * @param {MessageEvent} ev The data received.
      * @returns {void}
      */
-    static onmessage(message) {
-        const {ip, data} = JSON.parse(message.data),
-            game = Game.getGame(ip);
+    static onmessage(ev) {
+        const {ip, data} = JSON.parse(ev.data),
+            game = HomeJs.Game.getGame(ip);
 
         switch (data.name) {
             case "Stats":
                 switch (data.type) {
                     case "StartGame":
                     case "LobbyStatus":
-                        Home.startGame(ip, data);
+                        HomeJs.startGame(ip, data);
                         break;
                     case "Kill":
-                        Home.kill(ip, data);
+                        HomeJs.kill(ip, data);
                         break;
                     case "Goal":
-                        Home.goal(ip, data);
+                        HomeJs.goal(ip, data);
                         break;
                     case "Blunder":
-                        Home.blunder(ip, data);
+                        HomeJs.blunder(ip, data);
                         break;
                     case "CTF":
-                        Home.ctf(ip, data);
+                        HomeJs.ctf(ip, data);
                         break;
                     case "Connect":
-                        Home.connect(ip, data);
+                        HomeJs.connect(ip, data);
                         break;
                     case "Disconnect":
-                        Home.disconnect(ip, data);
+                        HomeJs.disconnect(ip, data);
                         break;
                     case "TeamChange":
-                        Home.teamChange(ip, data);
+                        HomeJs.teamChange(ip, data);
                 }
 
-                document.getElementById(`game-${ip}`).querySelector(".scores").innerHTML = ScoreView.get(game);
-                document.getElementById(`game-${ip}`).querySelector(".playerCount").innerHTML = PlayerCountView.get(game);
+                document.getElementById(`game-${ip}`).querySelector(".scores").innerHTML = HomeJs.CommonScoreView.get(game);
+                document.getElementById(`game-${ip}`).querySelector(".playerCount").innerHTML = HomeJs.CommonPlayerCountView.get(game);
 
                 if (data.type === "EndGame") {
-                    Home.endGame(ip, data);
+                    HomeJs.endGame(ip, data);
                 }
                 if (data.type === "LobbyExit") {
-                    Home.exitGame(ip);
+                    HomeJs.exitGame(ip);
                 }
                 break;
             case "Server": {
-                const oldServer = Home.servers.find((s) => s.ip === ip);
+                const oldServer = HomeJs.servers.find((s) => s.ip === ip);
                 if (oldServer) {
-                    Home.servers.splice(Home.servers.indexOf(oldServer), 1);
+                    HomeJs.servers.splice(HomeJs.servers.indexOf(oldServer), 1);
                 }
 
                 if (data.visible) {
-                    Home.servers.push(data.server);
+                    HomeJs.servers.push(data.server);
                 }
 
-                document.getElementById("browser").innerHTML = ServersView.get(Home.servers);
-                Common.loadTimeAgo();
+                document.getElementById("browser").innerHTML = HomeJs.HomeServersView.get(HomeJs.servers);
+                HomeJs.Time.loadTimeAgo();
 
                 break;
             }
@@ -118,15 +116,15 @@ class Home {
     /**
      * Processes the blunder stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, scorer: string, scorerTeam: string}} data The blunder data.
+     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, blunder: boolean}} data The blunder data.
      * @returns {void}
      */
     static blunder(ip, data) {
         const {scorer, scorerTeam} = data,
-            game = Game.getGame(ip);
+            game = HomeJs.Game.getGame(ip);
 
         if (!game.settings) {
-            game.settings = {matchMode: "ANARCHY"};
+            game.settings = {matchMode: "MONSTERBALL", friendlyFire: false};
         }
 
         if (!game.settings.matchMode) {
@@ -136,7 +134,7 @@ class Home {
         if (game.settings.matchMode !== "MONSTERBALL") {
             game.settings.matchMode = "MONSTERBALL";
             game.teamScore = {"BLUE": 0, "ORANGE": 0};
-            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.getElementById(`game-${ip}`).querySelector(".map")).innerText = game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         game.events.push(data);
@@ -166,11 +164,11 @@ class Home {
     /**
      * Processes the connect stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, player: string}} data The connect data.
+     * @param {{time: number, player: string, description: string}} data The connect data.
      * @returns {void}
      */
     static connect(ip, data) {
-        const game = Game.getGame(ip),
+        const game = HomeJs.Game.getGame(ip),
             player = game.getPlayer(data.player);
 
         player.disconnected = false;
@@ -193,10 +191,10 @@ class Home {
      */
     static ctf(ip, data) {
         const {event, scorer, scorerTeam} = data,
-            game = Game.getGame(ip);
+            game = HomeJs.Game.getGame(ip);
 
         if (!game.settings) {
-            game.settings = {matchMode: "ANARCHY"};
+            game.settings = {matchMode: "CTF", friendlyFire: false};
         }
 
         if (!game.settings.matchMode) {
@@ -206,7 +204,7 @@ class Home {
         if (game.settings.matchMode !== "CTF") {
             game.settings.matchMode = "CTF";
             game.teamScore = {"BLUE": 0, "ORANGE": 0};
-            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.getElementById(`game-${ip}`).querySelector(".map")).innerText = game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         if (event === "Return" && !scorer) {
@@ -254,11 +252,11 @@ class Home {
     /**
      * Processes the disconnect stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, player: string}} data The connect data.
+     * @param {{time: number, player: string, description: string}} data The connect data.
      * @returns {void}
      */
     static disconnect(ip, data) {
-        const game = Game.getGame(ip),
+        const game = HomeJs.Game.getGame(ip),
             player = game.getPlayer(data.player);
 
         if (!game.end) {
@@ -278,12 +276,12 @@ class Home {
     /**
      * Processes the end game stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], players: object[], teamScore: object}} data The end game data.
+     * @param {{id: number, start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], players: object[], teamScore: object}} data The end game data.
      * @returns {void}
      */
     static endGame(ip, data) {
         const {id, start, end, damage, kills, goals, flagStats, players, teamScore} = data,
-            game = Game.getGame(ip);
+            game = HomeJs.Game.getGame(ip);
 
         game.start = new Date(start);
         game.end = new Date(end);
@@ -297,15 +295,15 @@ class Home {
         const gameEl = document.getElementById(`game-${ip}`);
         gameEl.parentNode.removeChild(gameEl);
 
-        const gameId = `completed-${Common.uuidv4()}`;
+        const gameId = `completed-${HomeJs.uuidv4()}`;
 
         document.getElementById("completed").insertAdjacentHTML("beforeend", /* html */`
             <div class="game" id="${gameId}">
-                ${CompletedDetailsView.get(game, true, id)}
+                ${HomeJs.CommonCompletedDetailsView.get(game, true, id)}
             </div>
         `);
 
-        Common.loadTimeAgo();
+        HomeJs.Time.loadTimeAgo();
 
         game.remove();
 
@@ -327,7 +325,7 @@ class Home {
      * @returns {void}
      */
     static exitGame(ip) {
-        const game = Game.getGame(ip);
+        const game = HomeJs.Game.getGame(ip);
 
         const gameEl = document.getElementById(`game-${ip}`);
         gameEl.parentNode.removeChild(gameEl);
@@ -346,15 +344,15 @@ class Home {
     /**
      * Processes the goal stat.
      * @param {string} ip The IP address of the server to update.
-     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, assistedTeam: string}} data The goal data.
+     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, blunder: boolean}} data The goal data.
      * @returns {void}
      */
     static goal(ip, data) {
-        const {scorer, scorerTeam, assisted, assistedTeam} = data,
-            game = Game.getGame(ip);
+        const {scorer, scorerTeam, assisted} = data,
+            game = HomeJs.Game.getGame(ip);
 
         if (!game.settings) {
-            game.settings = {matchMode: "ANARCHY"};
+            game.settings = {matchMode: "MONSTERBALL", friendlyFire: false};
         }
 
         if (!game.settings.matchMode) {
@@ -364,7 +362,7 @@ class Home {
         if (game.settings.matchMode !== "MONSTERBALL") {
             game.settings.matchMode = "MONSTERBALL";
             game.teamScore = {"BLUE": 0, "ORANGE": 0};
-            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.getElementById(`game-${ip}`).querySelector(".map")).innerText = game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         game.events.push(data);
@@ -375,7 +373,7 @@ class Home {
 
         scorerPlayer.team = scorerTeam;
         if (assistedPlayer) {
-            assistedPlayer.team = assistedTeam;
+            assistedPlayer.team = scorerTeam;
         }
 
         scorerPlayer.goals++;
@@ -404,10 +402,10 @@ class Home {
      */
     static kill(ip, data) {
         const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data,
-            game = Game.getGame(ip);
+            game = HomeJs.Game.getGame(ip);
 
         if (!game.settings) {
-            game.settings = {matchMode: "ANARCHY"};
+            game.settings = {matchMode: "ANARCHY", friendlyFire: false};
         }
 
         if (!game.settings.matchMode) {
@@ -416,7 +414,7 @@ class Home {
 
         if (game.settings.matchMode === "ANARCHY" && (attackerTeam || defenderTeam)) {
             game.settings.matchMode = "TEAM ANARCHY";
-            document.getElementById(`game-${ip}`).querySelector(".map").innerText = game.settings.matchMode;
+            /** @type {HTMLDivElement} */(document.getElementById(`game-${ip}`).querySelector(".map")).innerText = game.settings.matchMode; // eslint-disable-line no-extra-parens
         }
 
         game.events.push(data);
@@ -480,12 +478,12 @@ class Home {
      * @returns {void}
      */
     static startGame(ip, data) {
-        const game = Game.getGame(ip);
+        const game = HomeJs.Game.getGame(ip);
 
         game.server = data.server;
         game.settings = data;
         game.inLobby = data.type === "LobbyStatus";
-        game.players = data.players && data.players.map((player) => new Player({
+        game.players = data.players && data.players.map((player) => new HomeJs.Player({
             name: player,
             kills: 0,
             assists: 0,
@@ -512,15 +510,15 @@ class Home {
             gameEl = document.getElementById(`game-${ip}`);
         }
 
-        gameEl.innerHTML = DetailsView.get(game, true);
+        gameEl.innerHTML = HomeJs.CommonDetailsView.get(game, true);
 
         const el = gameEl.querySelector(".timer");
 
         if (!game.inLobby) {
             if (game.countdown) {
-                new Countdown(game.countdown, el);
+                new HomeJs.Countdown(game.countdown, el);
             } else if (game.elapsed || game.elapsed === 0) {
-                new Elapsed(game.elapsed, el);
+                new HomeJs.Elapsed(game.elapsed, el);
             }
         }
     }
@@ -539,11 +537,75 @@ class Home {
      * @returns {void}
      */
     static teamChange(ip, data) {
-        const game = Game.getGame(ip);
+        const game = HomeJs.Game.getGame(ip);
 
         game.events.push(data);
         game.teamChanges.push(data);
     }
+
+    //              #       #          #
+    //                      #         ##
+    // #  #  #  #  ##     ###  # #   # #
+    // #  #  #  #   #    #  #  # #   ####
+    // #  #  #  #   #    #  #  # #     #
+    //  ###   ###  ###    ###   #      #
+    /**
+     * Gets a unique UUID.
+     * @returns {string} The UUID.
+     */
+    static uuidv4() {
+        return (1e7.toString() + -1e3 + -4e3 + -8e3 + -1e11).replace(/[018]/g, (c) => (+c ^ crypto.getRandomValues(new Uint8Array(1))[0] & 15 >> +c / 4).toString(16));
+    }
 }
 
-document.addEventListener("DOMContentLoaded", Home.DOMContentLoaded);
+document.addEventListener("DOMContentLoaded", HomeJs.DOMContentLoaded);
+
+/** @type {object[]} */
+HomeJs.servers = null;
+
+/** @type {import("./common/websocketclient")} */
+HomeJs.ws = null;
+
+/** @type {typeof import("../views/common/completedDetails")} */
+// @ts-ignore
+HomeJs.CommonCompletedDetailsView = typeof CommonCompletedDetailsView === "undefined" ? require("../views/common/completedDetails") : CommonCompletedDetailsView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../views/common/details")} */
+// @ts-ignore
+HomeJs.CommonDetailsView = typeof CommonDetailsView === "undefined" ? require("../views/common/details") : CommonDetailsView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../views/common/playerCount")} */
+// @ts-ignore
+HomeJs.CommonPlayerCountView = typeof CommonPlayerCountView === "undefined" ? require("../views/common/playerCount") : CommonPlayerCountView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../views/common/score")} */
+// @ts-ignore
+HomeJs.CommonScoreView = typeof CommonScoreView === "undefined" ? require("../views/common/score") : CommonScoreView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/countdown")} */
+// @ts-ignore
+HomeJs.Countdown = typeof Countdown === "undefined" ? require("./common/countdown") : Countdown; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/elapsed")} */
+// @ts-ignore
+HomeJs.Elapsed = typeof Elapsed === "undefined" ? require("./common/elapsed") : Elapsed; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/game")} */
+// @ts-ignore
+HomeJs.Game = typeof Game === "undefined" ? require("./common/game") : Game; // eslint-disable-line no-undef
+
+/** @type {typeof import("../views/home/servers")} */
+// @ts-ignore
+HomeJs.HomeServersView = typeof HomeServersView === "undefined" ? require("../views/home/servers") : HomeServersView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/player")} */
+// @ts-ignore
+HomeJs.Player = typeof Player === "undefined" ? require("./common/player") : Player; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/time")} */
+// @ts-ignore
+HomeJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/websocketclient")} */
+// @ts-ignore
+HomeJs.WebSocketClient = typeof WebSocketClient === "undefined" ? require("./common/websocketclient") : WebSocketClient; // eslint-disable-line no-undef

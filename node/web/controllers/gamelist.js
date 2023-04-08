@@ -1,11 +1,12 @@
-const Common = require("../includes/common"),
-    Completed = require("../../src/models/completed"),
-    GameListView = require("../../public/views/gamelist");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    Completed = require("../../src/models/completed"),
+    GameListView = require("../../public/views/gamelist"),
+    RouterBase = require("hot-router").RouterBase;
 
 //   ###                        #        #            #
 //  #   #                       #                     #
@@ -17,7 +18,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the game list page.
  */
-class GameList {
+class GameList extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/gamelist";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -49,9 +68,5 @@ class GameList {
         ));
     }
 }
-
-GameList.route = {
-    path: "/gamelist"
-};
 
 module.exports = GameList;

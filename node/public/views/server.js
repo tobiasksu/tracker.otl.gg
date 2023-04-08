@@ -59,6 +59,8 @@ class ServerView {
     }
 }
 
-if (typeof module !== "undefined") {
+if (typeof module === "undefined") {
+    window.ServerView = ServerView;
+} else {
     module.exports = ServerView; // eslint-disable-line no-undef
 }

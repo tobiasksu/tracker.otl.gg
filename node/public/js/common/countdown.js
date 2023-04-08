@@ -44,7 +44,7 @@ class Countdown {
      * @returns {void}
      */
     static create() {
-        const countdowns = document.querySelectorAll(".countdown");
+        const countdowns = /** @type {NodeListOf<HTMLElement>} **/(document.querySelectorAll(".countdown")); // eslint-disable-line no-extra-parens
 
         countdowns.forEach((countdown) => {
             new Countdown(+countdown.dataset.countdown, countdown);
@@ -75,7 +75,7 @@ class Countdown {
         if (difference > 0) {
             countdown.innerText = `${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(difference).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"})}`;
 
-            if (window.live) {
+            if (Countdown.Time.live) {
                 setTimeout(() => {
                     this.update();
                 }, difference % 1000 + 1);
@@ -83,7 +83,7 @@ class Countdown {
         } else {
             countdown.innerText = `+${days > 0 ? `${days} day${days === 1 ? "" : "s"} ` : ""}${new Date(Math.abs(difference)).toLocaleString("en-US", {timeZone: "GMT", hour: "2-digit", minute: "2-digit", second: "2-digit", hourCycle: "h23"})}`;
 
-            if (window.live) {
+            if (Countdown.Time.live) {
                 setTimeout(() => {
                     this.update();
                 }, 1000 - Math.abs(difference) % 1000 + 1);
@@ -93,3 +93,13 @@ class Countdown {
 }
 
 Countdown.id = 0;
+
+/** @type {typeof import("./time")} */
+// @ts-ignore
+Countdown.Time = typeof Time === "undefined" ? require("./time") : Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.Countdown = Countdown;
+} else {
+    module.exports = Countdown; // eslint-disable-line no-undef
+}

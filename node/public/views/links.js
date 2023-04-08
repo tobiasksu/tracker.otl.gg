@@ -50,6 +50,8 @@ class LinksView {
     }
 }
 
-if (typeof module !== "undefined") {
+if (typeof module === "undefined") {
+    window.LinksView = LinksView;
+} else {
     module.exports = LinksView; // eslint-disable-line no-undef
 }

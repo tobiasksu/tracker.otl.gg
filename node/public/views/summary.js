@@ -34,7 +34,7 @@ class SummaryView {
                 <div class="header">Map</div>
                 <div class="header">Condition</div>
                 <div class="header">Scores</div>
-                ${SummaryView.CompletedGamesView.get(completed)}
+                ${SummaryView.SummaryCompletedGamesView.get(completed)}
             </div>
             <h2>Games In Progress</h2>
             <div id="games">
@@ -43,11 +43,11 @@ class SummaryView {
                 <div class="header">Map</div>
                 <div class="header">Condition</div>
                 <div class="header">Scores</div>
-                ${SummaryView.GamesView.get(games)}
+                ${SummaryView.SummaryGamesView.get(games)}
             </div>
             <h2>Server Browser</h2>
             <div id="browser">
-                ${SummaryView.ServersView.get(servers)}
+                ${SummaryView.HomeServersView.get(servers)}
             </div>
             <script>
                 ${games.map((game) => /* html */`
@@ -65,13 +65,20 @@ class SummaryView {
     }
 }
 
+/** @type {typeof import("./home/servers")} */
 // @ts-ignore
-SummaryView.CompletedGamesView = typeof CompletedGamesView === "undefined" ? require("./summary/completedGames") : CompletedGamesView; // eslint-disable-line no-undef
-// @ts-ignore
-SummaryView.GamesView = typeof GamesView === "undefined" ? require("./summary/games") : GamesView; // eslint-disable-line no-undef
-// @ts-ignore
-SummaryView.ServersView = typeof ServersView === "undefined" ? require("./home/servers") : ServersView; // eslint-disable-line no-undef
+SummaryView.HomeServersView = typeof HomeServersView === "undefined" ? require("./home/servers") : HomeServersView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
+/** @type {typeof import("./summary/completedGames")} */
+// @ts-ignore
+SummaryView.SummaryCompletedGamesView = typeof SummaryCompletedGamesView === "undefined" ? require("./summary/completedGames") : SummaryCompletedGamesView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./summary/games")} */
+// @ts-ignore
+SummaryView.SummaryGamesView = typeof SummaryGamesView === "undefined" ? require("./summary/games") : SummaryGamesView; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.SummaryView = SummaryView;
+} else {
     module.exports = SummaryView; // eslint-disable-line no-undef
 }

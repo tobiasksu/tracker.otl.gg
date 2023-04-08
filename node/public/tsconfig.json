@@ -1,0 +1,12 @@
+{
+    "extends": "../tsconfig.json",
+    "outDir": "../.vscode/ts-browser",
+    "compilerOptions": {
+        "lib": ["DOM", "DOM.Iterable", "ES2017"],
+        "target": "ES2017"
+    },
+    "include": [
+        "**/*.js",
+        "../types/browser/*.d.ts"
+    ]
+}

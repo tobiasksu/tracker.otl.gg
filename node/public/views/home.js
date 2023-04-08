@@ -30,21 +30,21 @@ class HomeView {
             </div>
             <h2>Recently Completed Games</h2>
             <div id="completed">
-                ${HomeView.CompletedGamesView.get(completed)}
+                ${HomeView.HomeCompletedGamesView.get(completed)}
             </div>
             <h2>Games In Progress</h2>
             <div id="games">
-                ${HomeView.GamesView.get(games)}
+                ${HomeView.HomeGamesView.get(games)}
             </div>
             <h2>Server Browser</h2>
             <div id="browser">
-                ${HomeView.ServersView.get(servers)}
+                ${HomeView.HomeServersView.get(servers)}
             </div>
             <script>
                 ${games.map((game) => /* html */`
                     Game.games.push(new Game(${JSON.stringify(game)}));
                 `).join("")}
-                Home.servers = ${JSON.stringify(servers)};
+                HomeJs.servers = ${JSON.stringify(servers)};
                 ${completed.map((game) => /* html */`
                     setTimeout(() => {
                         const el = document.getElementById("completed-${game.id}");
@@ -56,13 +56,20 @@ class HomeView {
     }
 }
 
+/** @type {typeof import("./home/completedGames")} */
 // @ts-ignore
-HomeView.CompletedGamesView = typeof CompletedGamesView === "undefined" ? require("./home/completedGames") : CompletedGamesView; // eslint-disable-line no-undef
-// @ts-ignore
-HomeView.GamesView = typeof GamesView === "undefined" ? require("./home/games") : GamesView; // eslint-disable-line no-undef
-// @ts-ignore
-HomeView.ServersView = typeof ServersView === "undefined" ? require("./home/servers") : ServersView; // eslint-disable-line no-undef
+HomeView.HomeCompletedGamesView = typeof HomeCompletedGamesView === "undefined" ? require("./home/completedGames") : HomeCompletedGamesView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
+/** @type {typeof import("./home/games")} */
+// @ts-ignore
+HomeView.HomeGamesView = typeof HomeGamesView === "undefined" ? require("./home/games") : HomeGamesView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./home/servers")} */
+// @ts-ignore
+HomeView.HomeServersView = typeof HomeServersView === "undefined" ? require("./home/servers") : HomeServersView; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.HomeView = HomeView;
+} else {
     module.exports = HomeView; // eslint-disable-line no-undef
 }

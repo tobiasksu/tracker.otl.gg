@@ -1,18 +1,16 @@
-/* global Common */
-
-//   ###
-//  #   #
-//  #      #   #  ## #   ## #    ###   # ##   #   #
-//   ###   #   #  # # #  # # #      #  ##  #  #   #
-//      #  #   #  # # #  # # #   ####  #      #  ##
-//  #   #  #  ##  # # #  # # #  #   #  #       ## #
-//   ###    ## #  #   #  #   #   ####  #          #
+//   ###                                               ###
+//  #   #                                                #
+//  #      #   #  ## #   ## #    ###   # ##   #   #      #   ###
+//   ###   #   #  # # #  # # #      #  ##  #  #   #      #  #
+//      #  #   #  # # #  # # #   ####  #      #  ##      #   ###
+//  #   #  #  ##  # # #  # # #  #   #  #       ## #  #   #      #
+//   ###    ## #  #   #  #   #   ####  #          #   ###   ####
 //                                            #   #
 //                                             ###
 /**
  * A class that provides functions for the Summary page.
  */
-class Summary {
+class SummaryJs {
     // ###    ##   #  #   ##                #                 #    #                    #           #
     // #  #  #  #  ####  #  #               #                 #    #                    #           #
     // #  #  #  #  ####  #      ##   ###   ###    ##   ###   ###   #      ##    ###   ###   ##    ###
@@ -24,8 +22,12 @@ class Summary {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        Common.loadTimeAgo();
+        SummaryJs.Time.loadTimeAgo();
     }
 }
 
-document.addEventListener("DOMContentLoaded", Summary.DOMContentLoaded);
+document.addEventListener("DOMContentLoaded", SummaryJs.DOMContentLoaded);
+
+/** @type {typeof import("./common/time")} */
+// @ts-ignore
+SummaryJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef

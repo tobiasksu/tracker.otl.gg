@@ -1,14 +1,14 @@
-//  #####                        #            #   #    #
-//  #                            #            #   #
-//  #      #   #   ###   # ##   ####    ###   #   #   ##     ###   #   #
-//  ####   #   #  #   #  ##  #   #     #       # #     #    #   #  #   #
-//  #       # #   #####  #   #   #      ###    # #     #    #####  # # #
-//  #       # #   #      #   #   #  #      #   # #     #    #      # # #
-//  #####    #     ###   #   #    ##   ####     #     ###    ###    # #
+//   ###                                      #####                        #            #   #    #
+//  #   #                                     #                            #            #   #
+//  #       ###   ## #   ## #    ###   # ##   #      #   #   ###   # ##   ####    ###   #   #   ##     ###   #   #
+//  #      #   #  # # #  # # #  #   #  ##  #  ####   #   #  #   #  ##  #   #     #       # #     #    #   #  #   #
+//  #      #   #  # # #  # # #  #   #  #   #  #       # #   #####  #   #   #      ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  # # #  #   #  #   #  #       # #   #      #   #   #  #      #   # #     #    #      # # #
+//   ###    ###   #   #  #   #   ###   #   #  #####    #     ###   #   #    ##   ####     #     ###    ###    # #
 /**
  * A class that represents the game events view.
  */
-class EventsView {
+class CommonEventsView {
     //              #
     //              #
     //  ###   ##   ###
@@ -24,16 +24,23 @@ class EventsView {
     static get(game) {
         return /* html */`
             ${game.events && game.events.sort((a, b) => b.time - a.time).map((event) => /* html */`
-                <div class="time">${EventsView.Common.formatTimeSpan(event.time)}</div>
-                <div class="event">${EventsView.Common.htmlEncode(event.description)}</div>
+                <div class="time">${CommonEventsView.Time.formatTimeSpan(event.time)}</div>
+                <div class="event">${CommonEventsView.Encoding.htmlEncode(event.description)}</div>
             `).join("") || ""}
         `;
     }
 }
 
+/** @type {typeof import("../../js/common/encoding")} */
 // @ts-ignore
-EventsView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
+CommonEventsView.Encoding = typeof Encoding === "undefined" ? require("../../js/common/encoding") : Encoding; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = EventsView; // eslint-disable-line no-undef
+/** @type {typeof import("../../js/common/time")} */
+// @ts-ignore
+CommonEventsView.Time = typeof Time === "undefined" ? require("../../js/common/time") : Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.CommonEventsView = CommonEventsView;
+} else {
+    module.exports = CommonEventsView; // eslint-disable-line no-undef
 }

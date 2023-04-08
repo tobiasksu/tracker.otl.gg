@@ -1,4 +1,8 @@
-/* global Chart, Common */
+/**
+ * @typedef {import("chart.js").ChartEvent} ChartJs.ChartEvent
+ * @typedef {typeof import("chart.js").Chart} ChartJs.Chart
+ * @typedef {import("./common/game")} Game
+ */
 
 //    #                  #        #                    ###
 //   # #                 #                               #
@@ -22,12 +26,12 @@ class ArchiveJs {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        const damageChart = document.getElementById("damage-chart"),
-            gameChart = document.getElementById("game-chart"),
-            playerChart = document.getElementById("player-chart"),
-            weaponChart = document.getElementById("weapon-chart");
+        const damageChart = /** @type {HTMLCanvasElement} */(document.getElementById("damage-chart")), // eslint-disable-line no-extra-parens
+            gameChart = /** @type {HTMLCanvasElement} */(document.getElementById("game-chart")), // eslint-disable-line no-extra-parens
+            playerChart = /** @type {HTMLCanvasElement} */(document.getElementById("player-chart")), // eslint-disable-line no-extra-parens
+            weaponChart = /** @type {HTMLCanvasElement} */(document.getElementById("weapon-chart")); // eslint-disable-line no-extra-parens
 
-        Common.loadTimeAgo();
+        ArchiveJs.Time.loadTimeAgo();
 
         document.getElementById("show-damage").addEventListener("click", (ev) => {
             ev.preventDefault();
@@ -89,7 +93,7 @@ class ArchiveJs {
             return false;
         });
 
-        document.querySelectorAll("a.stats").forEach((a) => a.addEventListener("click", (ev) => {
+        /** @type {NodeListOf<HTMLAnchorElement>} */(document.querySelectorAll("a.stats")).forEach((a) => a.addEventListener("click", (ev) => { // eslint-disable-line no-extra-parens
             document.getElementById("weapon").innerText = a.innerText;
 
             switch (a.innerText) {
@@ -253,7 +257,9 @@ class ArchiveJs {
             return false;
         }));
 
-        document.querySelectorAll("a.weapon").forEach((a) => a.addEventListener("click", (ev) => {
+        const weapons = /** @type {NodeListOf<HTMLAnchorElement>} */(document.querySelectorAll("a.weapon")); // eslint-disable-line no-extra-parens
+
+        weapons.forEach((a) => a.addEventListener("click", (ev) => {
             document.getElementById("weapon").innerText = a.title;
 
             for (let x = 0; x < ArchiveJs.game.players.length; x++) {
@@ -360,7 +366,9 @@ class ArchiveJs {
             return false;
         });
 
-        document.querySelectorAll("a.weapon-graph").forEach((a) => a.addEventListener("click", (ev) => {
+        const weaponGraphs = /** @type {NodeListOf<HTMLAnchorElement>}*/(document.querySelectorAll("a.weapon-graph")); // eslint-disable-line no-extra-parens
+
+        weaponGraphs.forEach((a) => a.addEventListener("click", (ev) => {
             ArchiveJs.weaponChartObj.destroy();
             ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, a.title);
 
@@ -369,7 +377,9 @@ class ArchiveJs {
             return false;
         }));
 
-        document.querySelectorAll("a.player-graph").forEach((a) => a.addEventListener("click", (ev) => {
+        const playerGraphs = /** @type {NodeListOf<HTMLAnchorElement>}*/(document.querySelectorAll("a.player-graph")); // eslint-disable-line no-extra-parens
+
+        playerGraphs.forEach((a) => a.addEventListener("click", (ev) => {
             ArchiveJs.playerChartObj.destroy();
             ArchiveJs.playerChartObj = ArchiveJs.playerGraphChart(playerChart, a.title);
 
@@ -380,9 +390,9 @@ class ArchiveJs {
 
         ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "all");
         ArchiveJs.gameChartObj = ArchiveJs.gameGraphChart(gameChart, "score");
-        ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, document.querySelector("a.weapon-graph").title);
-        ArchiveJs.playerChartObj = ArchiveJs.playerGraphChart(playerChart, document.querySelector("a.player-graph").title);
-        document.querySelectorAll("a.stats")[0].click();
+        ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, /** @type {HTMLAnchorElement}*/(document.querySelector("a.weapon-graph")).title); // eslint-disable-line no-extra-parens
+        ArchiveJs.playerChartObj = ArchiveJs.playerGraphChart(playerChart, /** @type {HTMLAnchorElement}*/(document.querySelector("a.player-graph")).title); // eslint-disable-line no-extra-parens
+        /** @type {HTMLAnchorElement}*/(document.querySelector("a.stats")).click(); // eslint-disable-line no-extra-parens
     }
 
     //    #                                ###                      ##   #                  #
@@ -394,16 +404,16 @@ class ArchiveJs {
     //                          ###
     /**
      * Shows a damage done chart.
-     * @param {HTMLDivElement} chart The chart element.
+     * @param {HTMLCanvasElement} chart The chart element.
      * @param {string} type The type of chart.
-     * @returns {Chart} The chart.
+     * @returns {InstanceType<ChartJs.Chart>} The chart.
      */
     static damageDoneChart(chart, type) {
         switch (type) {
             case "all": {
                 const damage = ArchiveJs.game.players.map((player) => ({name: player.name, team: player.team, damage: ArchiveJs.game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0}));
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "bar",
                     data: {
                         labels: damage.map((d) => d.name),
@@ -471,7 +481,7 @@ class ArchiveJs {
             case "taken": {
                 const taken = ArchiveJs.game.players.map((player) => ({name: player.name, team: player.team, damage: ArchiveJs.game.damage.filter((d) => d.defender === player.name && (ArchiveJs.game.settings && ArchiveJs.game.settings.friendlyFire || d.attacker === d.defender || (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || d.attacker && ArchiveJs.game.players.find((p) => p.name === d.attacker).team !== player.team))).reduce((total, dmg) => total + dmg.damage, 0) || 0}));
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "bar",
                     data: {
                         labels: taken.map((d) => d.name),
@@ -539,7 +549,7 @@ class ArchiveJs {
             case "net": {
                 const net = ArchiveJs.game.players.map((player) => ({name: player.name, team: player.team, damage: (ArchiveJs.game.damage.filter((d) => d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0) - (ArchiveJs.game.damage.filter((d) => d.defender === player.name && (ArchiveJs.game.settings && ArchiveJs.game.settings.friendlyFire || d.attacker === d.defender || (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || d.attacker && ArchiveJs.game.players.find((p) => p.name === d.attacker).team !== player.team))).reduce((total, dmg) => total + dmg.damage, 0) || 0)}));
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "bar",
                     data: {
                         labels: net.map((d) => d.name),
@@ -609,7 +619,7 @@ class ArchiveJs {
                     secondary = ArchiveJs.game.players.map((player) => ({name: player.name, damage: ArchiveJs.game.damage.filter((d) => ArchiveJs.getType(d.weapon) === "Secondary" && d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0})),
                     misc = ArchiveJs.game.players.map((player) => ({name: player.name, damage: ArchiveJs.game.damage.filter((d) => ArchiveJs.getType(d.weapon) === "Miscellaneous" && d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0}));
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "bar",
                     data: {
                         labels: ArchiveJs.game.players.map((player) => player.name),
@@ -694,7 +704,7 @@ class ArchiveJs {
                     thunderbolt = ArchiveJs.game.players.map((player) => ({name: player.name, damage: ArchiveJs.game.damage.filter((d) => d.weapon === "Thunderbolt" && d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0})),
                     lancer = ArchiveJs.game.players.map((player) => ({name: player.name, damage: ArchiveJs.game.damage.filter((d) => d.weapon === "Lancer" && d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0}));
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "bar",
                     data: {
                         labels: ArchiveJs.game.players.map((player) => player.name),
@@ -796,12 +806,12 @@ class ArchiveJs {
                                 }
                             }
                         },
-                        onClick: (ev) => {
-                            const els = ev.chart.getElementsAtEventForMode(ev, "nearest", {intersect: true});
+                        onClick: (/** @type {ChartJs.ChartEvent & {chart?: InstanceType<ChartJs.Chart>}} */ev) => {
+                            const els = ev.chart.getElementsAtEventForMode(ev.native, "nearest", {intersect: true}, false);
                             if (els.length > 0) {
                                 document.getElementById("show-weapon-graphs").click();
                                 ArchiveJs.weaponChartObj.destroy();
-                                ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(document.getElementById("weapon-chart"), ev.chart.legend.legendItems[els[0].datasetIndex].text);
+                                ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(/** @type {HTMLCanvasElement} */(document.getElementById("weapon-chart")), ev.chart.legend.legendItems[els[0].datasetIndex].text); // eslint-disable-line no-extra-parens
                             }
                         }
                     }
@@ -817,7 +827,7 @@ class ArchiveJs {
                     devastator = ArchiveJs.game.players.map((player) => ({name: player.name, damage: ArchiveJs.game.damage.filter((d) => d.weapon === "Devastator" && d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0})),
                     vortex = ArchiveJs.game.players.map((player) => ({name: player.name, damage: ArchiveJs.game.damage.filter((d) => d.weapon === "Vortex" && d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0}));
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "bar",
                     data: {
                         labels: ArchiveJs.game.players.map((player) => player.name),
@@ -919,12 +929,12 @@ class ArchiveJs {
                                 }
                             }
                         },
-                        onClick: (ev) => {
-                            const els = ev.chart.getElementsAtEventForMode(ev, "nearest", {intersect: true});
+                        onClick: (/** @type {ChartJs.ChartEvent & {chart?: InstanceType<ChartJs.Chart>}} */ev) => {
+                            const els = ev.chart.getElementsAtEventForMode(ev.native, "nearest", {intersect: true}, false);
                             if (els.length > 0) {
                                 document.getElementById("show-weapon-graphs").click();
                                 ArchiveJs.weaponChartObj.destroy();
-                                ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(document.getElementById("weapon-chart"), ev.chart.legend.legendItems[els[0].datasetIndex].text);
+                                ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(/** @type {HTMLCanvasElement} */(document.getElementById("weapon-chart")), ev.chart.legend.legendItems[els[0].datasetIndex].text); // eslint-disable-line no-extra-parens
                             }
                         }
                     }
@@ -944,9 +954,9 @@ class ArchiveJs {
     //  ###                                      #
     /**
      * Shows a game graph chart.
-     * @param {HTMLDivElement} chart The chart element.
+     * @param {HTMLCanvasElement} chart The chart element.
      * @param {string} type The type of chart.
-     * @returns {Chart} The chart.
+     * @returns {InstanceType<ChartJs.Chart>} The chart.
      */
     static gameGraphChart(chart, type) {
         switch (type) {
@@ -1093,7 +1103,7 @@ class ArchiveJs {
                     }));
                 }
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "line",
                     data: {
                         datasets
@@ -1287,7 +1297,7 @@ class ArchiveJs {
                     }));
                 }
 
-                return new Chart(chart, {
+                return new ArchiveJs.Chart(chart, {
                     type: "line",
                     data: {
                         datasets
@@ -1360,14 +1370,14 @@ class ArchiveJs {
     //                   #                                   #
     /**
      * Shows a weapon graph chart.
-     * @param {HTMLDivElement} chart The chart element.
+     * @param {HTMLCanvasElement} chart The chart element.
      * @param {string} weapon The weapon.
-     * @returns {Chart} The chart.
+     * @returns {InstanceType<ChartJs.Chart>} The chart.
      */
     static weaponGraphChart(chart, weapon) {
         const damage = ArchiveJs.game.players.map((player) => ({name: player.name, team: player.team, damage: ArchiveJs.game.damage.filter((d) => d.weapon === weapon && d.attacker === player.name && d.defender !== player.name && (ArchiveJs.game.settings && ["TEAM ANARCHY", "CTF", "MONSTERBALL"].indexOf(ArchiveJs.game.settings.matchMode) === -1 || ArchiveJs.game.players.find((p) => p.name === d.defender).team !== player.team)).reduce((total, dmg) => total + dmg.damage, 0) || 0}));
 
-        return new Chart(chart, {
+        return new ArchiveJs.Chart(chart, {
             type: "bar",
             data: {
                 labels: ArchiveJs.game.players.map((player) => player.name),
@@ -1444,9 +1454,9 @@ class ArchiveJs {
     // #                  #                                  #
     /**
      * Shows a weapon graph chart.
-     * @param {HTMLDivElement} chart The chart element.
+     * @param {HTMLCanvasElement} chart The chart element.
      * @param {string} player The player.
-     * @returns {Chart} The chart.
+     * @returns {InstanceType<ChartJs.Chart>} The chart.
      */
     static playerGraphChart(chart, player) {
         const data = {};
@@ -1604,7 +1614,7 @@ class ArchiveJs {
             }));
         }
 
-        return new Chart(chart, {
+        return new ArchiveJs.Chart(chart, {
             type: "line",
             data: {
                 datasets
@@ -1877,9 +1887,27 @@ class ArchiveJs {
     }
 }
 
-ArchiveJs.damageChartObj = void 0;
-ArchiveJs.gameChartObj = void 0;
-ArchiveJs.playerChartObj = void 0;
-ArchiveJs.weaponChartObj = void 0;
+/** @type {Game} */
+ArchiveJs.game = null;
+
+/** @type {InstanceType<ChartJs.Chart>} */
+ArchiveJs.damageChartObj = null;
+
+/** @type {InstanceType<ChartJs.Chart>} */
+ArchiveJs.gameChartObj = null;
+
+/** @type {InstanceType<ChartJs.Chart>} */
+ArchiveJs.playerChartObj = null;
+
+/** @type {InstanceType<ChartJs.Chart>} */
+ArchiveJs.weaponChartObj = null;
 
 document.addEventListener("DOMContentLoaded", ArchiveJs.DOMContentLoaded);
+
+/** @type {ChartJs.Chart} */
+// @ts-ignore
+ArchiveJs.Chart = typeof Chart === "undefined" ? require("../../node_modules/chart.js/dist/chart") : Chart; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/time")} */
+// @ts-ignore
+ArchiveJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef

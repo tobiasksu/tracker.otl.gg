@@ -1,10 +1,11 @@
-const AboutView = require("../../public/views/about"),
-    Common = require("../includes/common");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const AboutView = require("../../public/views/about"),
+    Common = require("../includes/common"),
+    RouterBase = require("hot-router").RouterBase;
 
 //    #    #                     #
 //   # #   #                     #
@@ -16,7 +17,25 @@ const AboutView = require("../../public/views/about"),
 /**
  * A class that represents the about page.
  */
-class About {
+class About extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/about";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -34,9 +53,5 @@ class About {
         res.status(200).send(await Common.page("", {}, AboutView.get(), req));
     }
 }
-
-About.route = {
-    path: "/about"
-};
 
 module.exports = About;

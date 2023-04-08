@@ -1,4 +1,3 @@
-const Db = require("@roncli/node-database"),
-    settings = require("../../settings");
+const Db = require("@roncli/node-database");
 
 module.exports = new Db(settings.database);

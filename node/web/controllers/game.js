@@ -1,12 +1,13 @@
-const Common = require("../includes/common"),
-    GameModel = require("../../src/models/game"),
-    GameView = require("../../public/views/game.js"),
-    NotFoundView = require("../../public/views/404");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    GameModel = require("../../src/models/game"),
+    GameView = require("../../public/views/game.js"),
+    NotFoundView = require("../../public/views/404"),
+    RouterBase = require("hot-router").RouterBase;
 
 //   ###
 //  #   #
@@ -18,7 +19,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the game page.
  */
-class Game {
+class Game extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/game/:ip";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -83,7 +102,7 @@ class Game {
                 js: [
                     "/js/common/timeago.min.js",
                     "/js/common/clipboard.min.js",
-                    "/js/common/clipboard.js",
+                    "/js/common/clipboardHandler.js",
                     "/views/common/score.js",
                     "/views/common/playerCount.js",
                     "/views/common/details.js",
@@ -103,9 +122,5 @@ class Game {
         ));
     }
 }
-
-Game.route = {
-    path: "/game/:ip"
-};
 
 module.exports = Game;

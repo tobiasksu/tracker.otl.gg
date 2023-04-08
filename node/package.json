@@ -18,28 +18,30 @@
         "url": "https://github.com/overload-development-community/tracker.otl.gg.git"
     },
     "dependencies": {
-        "@roncli/node-database": "roncli/node-database#v1.2.12",
+        "@roncli/node-application-insights-logger": "roncli/node-application-insights-logger#v1.0.13",
+        "@roncli/node-minify": "roncli/node-minify#v1.1.11",
         "@roncli/node-redis": "roncli/node-redis#v0.1.17",
         "@root/request": "1.9.2",
-        "chart.js": "4.1.1",
+        "chart.js": "4.2.1",
         "clipboard": "2.0.11",
         "compression": "1.7.4",
         "csso": "5.0.5",
         "express": "4.18.2",
         "express-ws": "5.0.2",
         "full-text-search-query": "2.0.0",
+        "hot-router": "1.0.1",
         "html-minifier-terser": "7.1.0",
         "morgan": "1.10.0",
-        "terser": "5.16.1",
+        "terser": "5.16.8",
         "timeago.js": "4.0.2"
     },
     "devDependencies": {
-        "@babel/core": "7.20.7",
-        "@babel/eslint-parser": "7.19.1",
-        "@types/express": "4.17.15",
+        "@babel/core": "7.21.4",
+        "@babel/eslint-parser": "7.21.3",
+        "@types/express": "4.17.17",
         "@types/express-ws": "3.0.1",
         "@types/html-minifier-terser": "7.0.0",
-        "@types/node": "18.11.18"
+        "@types/node": "18.15.11"
     },
     "engines": {
         "node": ">=12.0.0"

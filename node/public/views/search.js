@@ -35,7 +35,7 @@ class SearchView {
                 </select>
             </div>
             <div id="games">
-                ${SearchView.GamesView.get(gameList)}
+                ${SearchView.GameListGamesView.get(gameList)}
             </div>
             <script>
                 window.q = "${gameList.q.replace(/\\/g, "\\\\").replace(/"/g, "\\\"")}";
@@ -45,9 +45,12 @@ class SearchView {
     }
 }
 
+/** @type {typeof import("./gamelist/games")} */
 // @ts-ignore
-SearchView.GamesView = typeof GamesView === "undefined" ? require("./gamelist/games") : GamesView; // eslint-disable-line no-undef
+SearchView.GameListGamesView = typeof GameListGamesView === "undefined" ? require("./gamelist/games") : GameListGamesView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
+if (typeof module === "undefined") {
+    window.SearchView = SearchView;
+} else {
     module.exports = SearchView; // eslint-disable-line no-undef
 }

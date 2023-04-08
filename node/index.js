@@ -5,15 +5,19 @@
 const compression = require("compression"),
     express = require("express"),
     expressWs = require("express-ws"),
-    minify = require("./src/minify"),
-    morgan = require("morgan"),
-    morganExtensions = require("./src/extensions/morgan.extensions"),
+    HotRouter = require("hot-router"),
+    Log = require("@roncli/node-application-insights-logger"),
+    Minify = require("@roncli/node-minify"),
+    path = require("path"),
+    Redirects = require("./src/redirects"),
     Redis = require("@roncli/node-redis"),
+    util = require("util"),
 
-    Cache = Redis.Cache,
-    Log = require("./src/logging/log"),
-    Router = require("./src/router"),
-    settings = require("./settings");
+    Cache = Redis.Cache;
+
+process.on("unhandledRejection", (reason) => {
+    Log.error("Unhandled promise rejection caught.", {err: reason instanceof Error ? reason : new Error(util.inspect(reason))});
+});
 
 //         #                 #
 //         #                 #
@@ -26,6 +30,11 @@ const compression = require("compression"),
  * Starts up the application.
  */
 (async function startup() {
+    // Setup application insights.
+    if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY !== "") {
+        Log.setupApplicationInsights(process.env.APPINSIGHTS_INSTRUMENTATIONKEY, {application: "sixgg", container: "sixgg-node"});
+    }
+
     console.log("Starting up...");
 
     // Set title.
@@ -36,123 +45,91 @@ const compression = require("compression"),
     }
 
     // Setup Redis.
-    if (!settings.disableRedis) {
-        Redis.setup(settings.redis);
-        Redis.eventEmitter.on("error", (err) => {
-            Log.exception(`Redis error: ${err.message}`, {err: err.err});
-        });
-        await Cache.flush();
-    }
+    Redis.setup({
+        host: "redis",
+        port: +process.env.REDIS_PORT,
+        password: process.env.REDIS_PASSWORD
+    });
+    Redis.eventEmitter.on("error", (err) => {
+        Log.error(`Redis error: ${err.message}`, {err: err.err});
+    });
+    await Cache.flush();
 
     // Setup express app.
     const app = express();
 
+    // Remove powered by.
+    app.disable("x-powered-by");
+
     // Startup websockets.
     expressWs(app);
 
-    // Get the router.
-    /** @type {Express.Router} */
-    let router;
-    try {
-        router = await Router.getRouter();
-    } catch (err) {
-        console.log(err);
-        return;
-    }
-
-    // Add morgan extensions.
-    morganExtensions(morgan);
-
     // Initialize middleware stack.
-    app.use(morgan(":colorstatus \x1b[30m\x1b[0m:method\x1b[0m :url\x1b[30m\x1b[0m:newline    Date :date[iso]    IP :ipaddr    Time :colorresponse ms"));
     app.use(compression());
 
+    // Trust proxy to get correct IP from web server.
+    app.enable("trust proxy");
+
     // Setup public redirects.
-    app.use(express.static("public"));
+    app.use(/^(?!\/tsconfig\.json)/, express.static("public"));
 
-    // 400 and 500 are internal routes, 404 if they're requested directly.
-    app.use("/400", (req, res, next) => {
-        req.method = "GET";
-        req.url = "/404";
-        router(req, res, next);
-    });
-
-    app.use("/500", (req, res, next) => {
-        req.method = "GET";
-        req.url = "/404";
-        router(req, res, next);
-    });
-
-    // Parse JSON.
-    app.use((req, res, next) => {
-        const parser = express.json({limit: "10mb"});
-
-        parser(req, res, (err) => {
-            if (err) {
-                if (err.statusCode === 400) {
-                    req.method = "GET";
-                    req.url = "/400";
-                } else {
-                    if (!err.code || err.code !== "ECONNABORTED") {
-                        Log.exception("Unhandled error has occurred.", err);
-                    }
-
-                    req.method = "GET";
-                    req.url = "/500";
+    // Setup minification.
+    Minify.setup({
+        cssRoot: "/css/",
+        jsRoot: "/js/",
+        wwwRoot: path.join(__dirname, "public"),
+        caching: process.env.MINIFY_CACHE ? {
+            get: async (key) => {
+                try {
+                    return await Cache.get(key);
+                } catch (err) {
+                    Log.error("An error occurred while attempting to get a Minify cache.", {err, properties: {key}});
+                    return void 0;
                 }
-                router(req, res, next);
-                return;
-            }
+            },
+            set: (key, value) => {
+                Cache.add(key, value, new Date(new Date().getTime() + 86400000)).catch((err) => {
+                    Log.error("An error occurred while attempting to set a Minify cache.", {err, properties: {key}});
+                });
+            },
+            prefix: process.env.REDIS_PREFIX
+        } : void 0,
+        redirects: Redirects,
+        disableTagCombining: !process.env.MINIFY_ENABLED
+    });
+    app.get("/css", Minify.cssHandler);
+    app.get("/js", Minify.jsHandler);
 
+    // Setup redirect routes.
+    app.get("*", (req, res, next) => {
+        const redirect = Redirects[req.path];
+        if (!redirect) {
             next();
-        });
-    });
-
-    // Setup library handlers.
-    app.get("/js/common/timeago.min.js", (req, res) => {
-        res.sendFile(`${__dirname}/node_modules/timeago.js/dist/timeago.min.js`);
-    });
-
-    app.get("/js/common/clipboard.min.js", (req, res) => {
-        res.sendFile(`${__dirname}/node_modules/clipboard/dist/clipboard.min.js`);
-    });
-
-    app.get("/js/common/chart.js", (req, res) => {
-        res.sendFile(`${__dirname}/node_modules/chart.js/dist/chart.umd.js`);
-    });
-
-    // Setup JS/CSS handlers.
-    app.get("/css", minify.cssHandler);
-    app.get("/js", minify.jsHandler);
-
-    // Setup dynamic routing.
-    app.use("/", router);
-
-    // 404 remaining pages.
-    app.use((req, res, next) => {
-        req.method = "GET";
-        req.url = "/404";
-        router(req, res, next);
-    });
-
-    // 500 errors.
-    app.use((err, req, res, next) => {
-        if (!err.code || err.code !== "ECONNABORTED") {
-            Log.exception("Unhandled error has occurred.", err);
+            return;
         }
-        req.method = "GET";
-        req.url = "/500";
-        router(req, res, next);
+
+        res.status(200).contentType(redirect.contentType).sendFile(`${redirect.path}`);
+    });
+
+    // Setup hot-router.
+    const router = new HotRouter.Router();
+    router.on("error", (data) => {
+        Log.error(data.message, {err: data.err, req: data.req});
+    });
+    try {
+        app.use("/", await router.getRouter(path.join(__dirname, "web"), {hot: false}));
+    } catch (err) {
+        Log.critical("Could not set up routes.", {err});
+    }
+
+    app.use((err, req, res, next) => {
+        router.error(err, req, res, next);
     });
 
     // Startup webserver.
-    const port = process.env.PORT || settings.express.port;
+    const port = process.env.PORT || 3030;
 
-    app.listen(port, () => {
-        console.log(`Web server and websockets listening on port ${port}.`);
-    });
+    app.listen(port);
+
+    Log.info(`Server PID ${process.pid} listening on port ${port}.`);
 }());
-
-process.on("unhandledRejection", (reason) => {
-    Log.exception("Unhandled promise rejection caught.", reason);
-});

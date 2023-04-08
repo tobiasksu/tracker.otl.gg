@@ -28,18 +28,18 @@ class GameView {
             </div>
             <div id="top">
                 <div id="game">
-                    ${GameView.DetailsView.get(game, false)}
+                    ${GameView.CommonDetailsView.get(game, false)}
                 </div>
                 <div id="players" class="game">
-                    ${GameView.PlayersView.get(game)}
+                    ${GameView.CommonPlayersView.get(game)}
                 </div>
             </div>
             <div id="bottom">
                 <div id="events">
-                    ${GameView.EventsView.get(game)}
+                    ${GameView.CommonEventsView.get(game)}
                 </div>
                 <div id="settings">
-                    ${GameView.SettingsView.get(game)}
+                    ${GameView.CommonSettingsView.get(game)}
                 </div>
             </div>
             <script>
@@ -49,15 +49,28 @@ class GameView {
     }
 }
 
+/** @type {typeof import("./common/details")} */
 // @ts-ignore
-GameView.DetailsView = typeof DetailsView === "undefined" ? require("./common/details") : DetailsView; // eslint-disable-line no-undef
-// @ts-ignore
-GameView.PlayersView = typeof PlayersView === "undefined" ? require("./common/players") : PlayersView; // eslint-disable-line no-undef
-// @ts-ignore
-GameView.EventsView = typeof EventsView === "undefined" ? require("./common/events") : EventsView; // eslint-disable-line no-undef
-// @ts-ignore
-GameView.SettingsView = typeof SettingsView === "undefined" ? require("./common/settings") : SettingsView; // eslint-disable-line no-undef
+GameView.CommonDetailsView = typeof CommonDetailsView === "undefined" ? require("./common/details") : CommonDetailsView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
+/** @type {typeof import("./common/players")} */
+// @ts-ignore
+GameView.CommonPlayersView = typeof CommonPlayersView === "undefined" ? require("./common/players") : CommonPlayersView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/events")} */
+// @ts-ignore
+GameView.CommonEventsView = typeof CommonEventsView === "undefined" ? require("./common/events") : CommonEventsView; // eslint-disable-line no-undef
+
+/** @type {typeof import("./common/settings")} */
+// @ts-ignore
+GameView.CommonSettingsView = typeof CommonSettingsView === "undefined" ? require("./common/settings") : CommonSettingsView; // eslint-disable-line no-undef
+
+/** @type {typeof import("../js/game")} */
+// @ts-ignore
+GameView.GameJs = typeof GameJs === "undefined" ? require("../js/game") : GameJs; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.GameView = GameView;
+} else {
     module.exports = GameView; // eslint-disable-line no-undef
 }

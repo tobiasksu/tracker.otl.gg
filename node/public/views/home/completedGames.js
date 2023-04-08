@@ -1,16 +1,16 @@
-//   ###                         ##            #                #   ###                               #   #    #
-//  #   #                         #            #                #  #   #                              #   #
-//  #       ###   ## #   # ##     #     ###   ####    ###    ## #  #       ###   ## #    ###    ###   #   #   ##     ###   #   #
-//  #      #   #  # # #  ##  #    #    #   #   #     #   #  #  ##  #          #  # # #  #   #  #       # #     #    #   #  #   #
-//  #      #   #  # # #  ##  #    #    #####   #     #####  #   #  #  ##   ####  # # #  #####   ###    # #     #    #####  # # #
-//  #   #  #   #  # # #  # ##     #    #       #  #  #      #  ##  #   #  #   #  # # #  #          #   # #     #    #      # # #
-//   ###    ###   #   #  #       ###    ###     ##    ###    ## #   ###    ####  #   #   ###   ####     #     ###    ###    # #
-//                       #
-//                       #
+//  #   #                        ###                         ##            #                #   ###                               #   #    #
+//  #   #                       #   #                         #            #                #  #   #                              #   #
+//  #   #   ###   ## #    ###   #       ###   ## #   # ##     #     ###   ####    ###    ## #  #       ###   ## #    ###    ###   #   #   ##     ###   #   #
+//  #####  #   #  # # #  #   #  #      #   #  # # #  ##  #    #    #   #   #     #   #  #  ##  #          #  # # #  #   #  #       # #     #    #   #  #   #
+//  #   #  #   #  # # #  #####  #      #   #  # # #  ##  #    #    #####   #     #####  #   #  #  ##   ####  # # #  #####   ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  #      #   #  #   #  # # #  # ##     #    #       #  #  #      #  ##  #   #  #   #  # # #  #          #   # #     #    #      # # #
+//  #   #   ###   #   #   ###    ###    ###   #   #  #       ###    ###     ##    ###    ## #   ###    ####  #   #   ###   ####     #     ###    ###    # #
+//                                                   #
+//                                                   #
 /**
  * A class that represents the completed games view.
  */
-class CompletedGamesView {
+class HomeCompletedGamesView {
     //              #
     //              #
     //  ###   ##   ###
@@ -27,16 +27,19 @@ class CompletedGamesView {
         return /* html */`
             ${Object.keys(games).map((s) => /* html */`
                 <div class="game" id="completed-${games[s].id}">
-                    ${CompletedGamesView.CompletedDetailsView.get(games[s].data, true, games[s].id)}
+                    ${HomeCompletedGamesView.CommonCompletedDetailsView.get(games[s].data, true, games[s].id)}
                 </div>
             `).join("")}
         `;
     }
 }
 
+/** @type {typeof import("../common/completedDetails")} */
 // @ts-ignore
-CompletedGamesView.CompletedDetailsView = typeof CompletedDetailsView === "undefined" ? require("../common/completedDetails") : CompletedDetailsView; // eslint-disable-line no-undef
+HomeCompletedGamesView.CommonCompletedDetailsView = typeof CommonCompletedDetailsView === "undefined" ? require("../common/completedDetails") : CommonCompletedDetailsView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = CompletedGamesView; // eslint-disable-line no-undef
+if (typeof module === "undefined") {
+    window.HomeCompletedGamesView = HomeCompletedGamesView;
+} else {
+    module.exports = HomeCompletedGamesView; // eslint-disable-line no-undef
 }

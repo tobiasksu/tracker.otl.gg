@@ -1,10 +1,11 @@
-const Common = require("../includes/common"),
-    LinksView = require("../../public/views/links");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    LinksView = require("../../public/views/links"),
+    RouterBase = require("hot-router").RouterBase;
 
 //  #        #           #
 //  #                    #
@@ -16,7 +17,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the links page.
  */
-class Links {
+class Links extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/links";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -34,9 +53,5 @@ class Links {
         res.status(200).send(await Common.page("", {}, LinksView.get(), req));
     }
 }
-
-Links.route = {
-    path: "/links"
-};
 
 module.exports = Links;

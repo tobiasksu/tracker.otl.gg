@@ -1,16 +1,16 @@
-//   ###           #      #       #                         #   #    #
-//  #   #          #      #                                 #   #
-//  #       ###   ####   ####    ##    # ##    ## #   ###   #   #   ##     ###   #   #
-//   ###   #   #   #      #       #    ##  #  #  #   #       # #     #    #   #  #   #
-//      #  #####   #      #       #    #   #   ##     ###    # #     #    #####  # # #
-//  #   #  #       #  #   #  #    #    #   #  #          #   # #     #    #      # # #
-//   ###    ###     ##     ##    ###   #   #   ###   ####     #     ###    ###    # #
-//                                            #   #
-//                                             ###
+//   ###                                       ###           #      #       #                         #   #    #
+//  #   #                                     #   #          #      #                                 #   #
+//  #       ###   ## #   ## #    ###   # ##   #       ###   ####   ####    ##    # ##    ## #   ###   #   #   ##     ###   #   #
+//  #      #   #  # # #  # # #  #   #  ##  #   ###   #   #   #      #       #    ##  #  #  #   #       # #     #    #   #  #   #
+//  #      #   #  # # #  # # #  #   #  #   #      #  #####   #      #       #    #   #   ##     ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  # # #  #   #  #   #  #   #  #       #  #   #  #    #    #   #  #          #   # #     #    #      # # #
+//   ###    ###   #   #  #   #   ###   #   #   ###    ###     ##     ##    ###   #   #   ###   ####     #     ###    ###    # #
+//                                                                                      #   #
+//                                                                                       ###
 /**
  * A class that represents the settings view.
  */
-class SettingsView {
+class CommonSettingsView {
     //              #
     //              #
     //  ###   ##   ###
@@ -151,9 +151,8 @@ class SettingsView {
     }
 }
 
-// @ts-ignore
-SettingsView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
-
-if (typeof module !== "undefined") {
-    module.exports = SettingsView; // eslint-disable-line no-undef
+if (typeof module === "undefined") {
+    window.CommonSettingsView = CommonSettingsView;
+} else {
+    module.exports = CommonSettingsView; // eslint-disable-line no-undef
 }

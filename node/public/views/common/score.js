@@ -1,14 +1,14 @@
-//   ###                               #   #    #
-//  #   #                              #   #
-//  #       ###    ###   # ##    ###   #   #   ##     ###   #   #
-//   ###   #   #  #   #  ##  #  #   #   # #     #    #   #  #   #
-//      #  #      #   #  #      #####   # #     #    #####  # # #
-//  #   #  #   #  #   #  #      #       # #     #    #      # # #
-//   ###    ###    ###   #       ###     #     ###    ###    # #
+//   ###                                       ###                               #   #    #
+//  #   #                                     #   #                              #   #
+//  #       ###   ## #   ## #    ###   # ##   #       ###    ###   # ##    ###   #   #   ##     ###   #   #
+//  #      #   #  # # #  # # #  #   #  ##  #   ###   #   #  #   #  ##  #  #   #   # #     #    #   #  #   #
+//  #      #   #  # # #  # # #  #   #  #   #      #  #      #   #  #      #####   # #     #    #####  # # #
+//  #   #  #   #  # # #  # # #  #   #  #   #  #   #  #   #  #   #  #      #       # #     #    #      # # #
+//   ###    ###   #   #  #   #   ###   #   #   ###    ###    ###   #       ###     #     ###    ###    # #
 /**
  * A class that represents the score view.
  */
-class ScoreView {
+class CommonScoreView {
     //              #
     //              #
     //  ###   ##   ###
@@ -46,16 +46,19 @@ class ScoreView {
 
         return /* html */`
             ${Object.keys(scores).sort((a, b) => scores[b] - scores[a]).map((player) => /* html */`
-                <div class="player">${ScoreView.Common.htmlEncode(player)}</div>
+                <div class="player">${CommonScoreView.Encoding.htmlEncode(player)}</div>
                 <div class="score">${scores[player]}</div>
             `).join("")}
         `;
     }
 }
 
+/** @type {typeof import("../../js/common/encoding")} */
 // @ts-ignore
-ScoreView.Common = typeof Common === "undefined" ? require("../../../web/includes/common") : Common; // eslint-disable-line no-undef
+CommonScoreView.Encoding = typeof Encoding === "undefined" ? require("../../js/common/encoding") : Encoding; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = ScoreView; // eslint-disable-line no-undef
+if (typeof module === "undefined") {
+    window.CommonScoreView = CommonScoreView;
+} else {
+    module.exports = CommonScoreView; // eslint-disable-line no-undef
 }

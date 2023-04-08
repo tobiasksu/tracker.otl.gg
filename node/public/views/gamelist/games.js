@@ -1,14 +1,14 @@
-//   ###                               #   #    #
-//  #   #                              #   #
-//  #       ###   ## #    ###    ###   #   #   ##     ###   #   #
-//  #          #  # # #  #   #  #       # #     #    #   #  #   #
-//  #  ##   ####  # # #  #####   ###    # #     #    #####  # # #
-//  #   #  #   #  # # #  #          #   # #     #    #      # # #
-//   ###    ####  #   #   ###   ####     #     ###    ###    # #
+//   ###                        #        #            #      ###                               #   #    #
+//  #   #                       #                     #     #   #                              #   #
+//  #       ###   ## #    ###   #       ##     ###   ####   #       ###   ## #    ###    ###   #   #   ##     ###   #   #
+//  #          #  # # #  #   #  #        #    #       #     #          #  # # #  #   #  #       # #     #    #   #  #   #
+//  #  ##   ####  # # #  #####  #        #     ###    #     #  ##   ####  # # #  #####   ###    # #     #    #####  # # #
+//  #   #  #   #  # # #  #      #        #        #   #  #  #   #  #   #  # # #  #          #   # #     #    #      # # #
+//   ###    ####  #   #   ###   #####   ###   ####     ##    ###    ####  #   #   ###   ####     #     ###    ###    # #
 /**
  * A class that represents the archived games view.
  */
-class GamesView {
+class GameListGamesView {
     //              #
     //              #
     //  ###   ##   ###
@@ -28,14 +28,17 @@ class GamesView {
             <div class="header">Match Mode</div>
             <div class="header">Map</div>
             <div class="header">Score</div>
-            ${games.games.map(GamesView.GameView.get).join("")}
+            ${games.games.map(GameListGamesView.GameListGameView.get).join("")}
         `;
     }
 }
 
+/** @type {typeof import("./game")} */
 // @ts-ignore
-GamesView.GameView = typeof GameView === "undefined" ? require("./game") : GameView; // eslint-disable-line no-undef
+GameListGamesView.GameListGameView = typeof GameListGameView === "undefined" ? require("./game") : GameListGameView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
-    module.exports = GamesView; // eslint-disable-line no-undef
+if (typeof module === "undefined") {
+    window.GameListGamesView = GameListGamesView;
+} else {
+    module.exports = GameListGamesView; // eslint-disable-line no-undef
 }

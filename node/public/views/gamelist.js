@@ -35,15 +35,18 @@ class GameListView {
                 </select>
             </div>
             <div id="games">
-                ${GameListView.GamesView.get(gameList)}
+                ${GameListView.GameListGamesView.get(gameList)}
             </div>
         `;
     }
 }
 
+/** @type {typeof import("./gamelist/games")} */
 // @ts-ignore
-GameListView.GamesView = typeof GamesView === "undefined" ? require("./gamelist/games") : GamesView; // eslint-disable-line no-undef
+GameListView.GameListGamesView = typeof GameListGamesView === "undefined" ? require("./gamelist/games") : GameListGamesView; // eslint-disable-line no-undef
 
-if (typeof module !== "undefined") {
+if (typeof module === "undefined") {
+    window.GameListView = GameListView;
+} else {
     module.exports = GameListView; // eslint-disable-line no-undef
 }

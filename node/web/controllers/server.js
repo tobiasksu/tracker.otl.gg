@@ -1,10 +1,11 @@
-const Common = require("../includes/common"),
-    ServerView = require("../../public/views/server");
-
 /**
  * @typedef {import("express").Request} express.Request
  * @typedef {import("express").Response} express.Response
  */
+
+const Common = require("../includes/common"),
+    RouterBase = require("hot-router").RouterBase,
+    ServerView = require("../../public/views/server");
 
 //   ###
 //  #   #
@@ -16,7 +17,25 @@ const Common = require("../includes/common"),
 /**
  * A class that represents the server setup page.
  */
-class Server {
+class Server extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/server";
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -34,9 +53,5 @@ class Server {
         res.status(200).send(await Common.page("", {}, ServerView.get(), req));
     }
 }
-
-Server.route = {
-    path: "/server"
-};
 
 module.exports = Server;

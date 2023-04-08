@@ -1,21 +1,41 @@
-const Servers = require("../../src/models/servers");
+const express = require("express"),
+    Log = require("@roncli/node-application-insights-logger"),
+    RouterBase = require("hot-router").RouterBase,
+    Servers = require("../../src/models/servers");
 
-/**
- * @typedef {import("express").Request} express.Request
- * @typedef {import("express").Response} express.Response
- */
-
-//   ###              #
-//    #               #
-//    #    # ##    ## #   ###   #   #
-//    #    ##  #  #  ##  #   #   # #
-//    #    #   #  #   #  #####    #
-//    #    #   #  #  ##  #       # #
-//   ###   #   #   ## #   ###   #   #
+//   ###              #                  #             #
+//    #               #                 # #
+//    #    # ##    ## #   ###   #   #  #   #  # ##    ##
+//    #    ##  #  #  ##  #   #   # #   #   #  ##  #    #
+//    #    #   #  #   #  #####    #    #####  ##  #    #
+//    #    #   #  #  ##  #       # #   #   #  # ##     #
+//   ###   #   #   ## #   ###   #   #  #   #  #       ###
+//                                            #
+//                                            #
 /**
  * A class that handles calls to the website's base API.
  */
-class Index {
+class IndexApi extends RouterBase {
+    //                    #
+    //                    #
+    // ###    ##   #  #  ###    ##
+    // #  #  #  #  #  #   #    # ##
+    // #     #  #  #  #   #    ##
+    // #      ##    ###    ##   ##
+    /**
+     * Retrieves the route parameters for the class.
+     * @returns {RouterBase.Route} The route parameters.
+     */
+    static get route() {
+        const route = {...super.route};
+
+        route.path = "/api";
+
+        route.middleware = [express.json()];
+
+        return route;
+    }
+
     //              #
     //              #
     //  ###   ##   ###
@@ -30,14 +50,19 @@ class Index {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const servers = {},
-            data = await Servers.getVisible();
+        try {
+            const servers = {},
+                data = await Servers.getVisible();
 
-        data.forEach((s) => {
-            servers[s.ip] = s;
-        });
+            data.forEach((s) => {
+                servers[s.ip] = s;
+            });
 
-        res.status(200).json(servers);
+            res.status(200).json(servers);
+        } catch (err) {
+            res.status(500).json({error: "Server error."});
+            Log.error(`An error occurred while posting to ${req.method} ${IndexApi.route.path}.`, {err});
+        }
     }
 
     //                     #
@@ -58,8 +83,4 @@ class Index {
     }
 }
 
-Index.route = {
-    path: "/api"
-};
-
-module.exports = Index;
+module.exports = IndexApi;
