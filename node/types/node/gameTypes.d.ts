@@ -4,7 +4,7 @@ declare namespace GameTypes {
     type GameData = {
         ip: string
         settings?: {
-            friendlyFire: boolean
+            friendlyFire?: boolean
             matchMode: string
         }
         server?: string
