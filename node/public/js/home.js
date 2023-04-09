@@ -210,10 +210,6 @@ HomeJs.Game = typeof Game === "undefined" ? require("./common/game") : Game; // 
 // @ts-ignore
 HomeJs.HomeServersView = typeof HomeServersView === "undefined" ? require("../views/home/servers") : HomeServersView; // eslint-disable-line no-undef
 
-/** @type {typeof import("./common/player")} */
-// @ts-ignore
-HomeJs.Player = typeof Player === "undefined" ? require("./common/player") : Player; // eslint-disable-line no-undef
-
 /** @type {typeof import("./common/time")} */
 // @ts-ignore
 HomeJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef

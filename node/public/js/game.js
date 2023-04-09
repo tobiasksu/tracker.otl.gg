@@ -156,10 +156,6 @@ GameJs.Countdown = typeof Countdown === "undefined" ? require("./common/countdow
 // @ts-ignore
 GameJs.Elapsed = typeof Elapsed === "undefined" ? require("./common/elapsed") : Elapsed; // eslint-disable-line no-undef
 
-/** @type {typeof import("./common/player")} */
-// @ts-ignore
-GameJs.Player = typeof Player === "undefined" ? require("./common/player") : Player; // eslint-disable-line no-undef
-
 /** @type {typeof import("./common/time")} */
 // @ts-ignore
 GameJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef
