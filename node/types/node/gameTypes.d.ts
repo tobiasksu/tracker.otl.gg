@@ -6,6 +6,15 @@ declare namespace GameTypes {
         settings?: {
             friendlyFire?: boolean
             matchMode: string
+            timeLimit?: number
+            scoreLimit?: number
+            suddenDeath?: boolean
+            maxPlayers?: number
+            level?: string
+            joinInProgress?: boolean
+            hasPassword?: boolean
+            matchNotes?: string
+            creator?: string
         }
         server?: string
         start?: Date
@@ -17,13 +26,16 @@ declare namespace GameTypes {
             defender: string
             defenderTeam: string
             assisted: string
+            assistedTeam: string
             time: number
+            weapon: string
         }[]
         goals?: {
             blunder: boolean
             scorer: string
             scorerTeam: string
             assisted: string
+            assistedTeam: string
             time: number
         }[]
         flagStats?: {
@@ -32,7 +44,10 @@ declare namespace GameTypes {
             scorerTeam: string
             time: number
         }[]
-        events?: object[]
+        events?: {
+            time: number
+            description: string
+        }[]
         damage?: {
             attacker: string
             defender: string
@@ -42,8 +57,16 @@ declare namespace GameTypes {
         teamScore?: {
             [x: string]: number
         }
-        teamChanges?: object[]
+        startTime?: Date
+        projectedEnd?: Date
         countdown?: number
+        elapsed?: number
+        inLobby?: boolean
+        teamChanges?: {
+            playerName: string
+            previousTeam: string
+            currentTeam: string
+        }[]
     }
 }
 

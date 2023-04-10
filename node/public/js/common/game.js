@@ -36,10 +36,48 @@ class Game {
         this.events = data.events || [];
         this.damage = data.damage || [];
         this.teamScore = data.teamScore || {};
-        this.teamChanges = data.teamChanges || [];
+        this.startTime = data.startTime;
+        this.projectedEnd = data.projectedEnd;
         this.countdown = data.countdown;
-        this.elapsed = /** @type {number} */(void 0); // eslint-disable-line no-extra-parens
-        this.inLobby = /** @type {boolean} */(void 0); // eslint-disable-line no-extra-parens
+        this.elapsed = data.elapsed;
+        this.inLobby = data.inLobby;
+        this.lastUpdate = new Date();
+        this.teamChanges = data.teamChanges || [];
+    }
+
+    //              #     ##   ##    ##
+    //              #    #  #   #     #
+    //  ###   ##   ###   #  #   #     #
+    // #  #  # ##   #    ####   #     #
+    //  ##   ##     #    #  #   #     #
+    // #      ##     ##  #  #  ###   ###
+    //  ###
+    /**
+     * Gets the list of current games, except for games that haven't received a ping in more than 5 minutes.
+     * @returns {Game[]} The list of games.
+     */
+    static getAll() {
+        return Game.games.filter((g) => new Date().getTime() - g.lastUpdate.getTime() < 5 * 60 * 1000 && (
+            !g.settings || !g.settings.suddenDeath || g.teamScore.BLUE !== g.teamScore.ORANGE || !g.countdown || g.countdown >= -10000
+        ) && (
+            !g.settings || g.settings.suddenDeath || !g.countdown || g.countdown >= -10000
+        ));
+    }
+
+    //              #    ###         ###
+    //              #    #  #         #
+    //  ###   ##   ###   ###   #  #   #    ###
+    // #  #  # ##   #    #  #  #  #   #    #  #
+    //  ##   ##     #    #  #   # #   #    #  #
+    // #      ##     ##  ###     #   ###   ###
+    //  ###                     #          #
+    /**
+     * Gets the game data for the specified IP.
+     * @param {string} ip The IP to get the game data for.
+     * @returns {Game} The game data.
+     */
+    static getByIp(ip) {
+        return this.games.find((g) => g.ip === ip);
     }
 
     //              #     ##
@@ -60,6 +98,8 @@ class Game {
             Game.games.push(game = new Game({ip}));
         }
 
+        game.lastUpdate = new Date();
+
         return game;
     }
 
@@ -71,7 +111,7 @@ class Game {
     // ###   ###    ###  #  #   ###   ##   #
     /**
      * Adds a blunder.
-     * @param {{time: number, scorer: string, scorerTeam: string, blunder: boolean, assisted: string}} data The blunder data.
+     * @param {{time: number, scorer: string, scorerTeam: string, blunder: boolean, assisted: string, assistedTeam: string, description: string}} data The blunder data.
      * @returns {void}
      */
     blunder(data) {
@@ -89,14 +129,16 @@ class Game {
             this.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
-        this.events.push(data);
         this.goals.push(data);
+
+        const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+
+        data.description = `BLUNDER! ${scorer} own goals for ${otherTeam}!`;
+        this.events.push(data);
 
         const scorerPlayer = this.getPlayer(scorer);
         scorerPlayer.team = scorerTeam;
         scorerPlayer.blunders++;
-
-        const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
 
         if (this.teamScore[otherTeam]) {
             this.teamScore[otherTeam]++;
@@ -119,8 +161,13 @@ class Game {
     connect(data) {
         const player = this.getPlayer(data.player);
 
+        // If the player is invalid, bail.
+        if (!player) {
+            return;
+        }
+
         player.disconnected = false;
-        player.connected = true;
+        player.connected = data.time;
         data.description = `${data.player} connected.`;
         this.events.push(data);
     }
@@ -133,7 +180,7 @@ class Game {
     //  ##     ##   #
     /**
      * Adds a CTF stat.
-     * @param {{time: number, event: string, scorer: string, scorerTeam: string}} data The CTF data.
+     * @param {{time: number, event: string, scorer: string, scorerTeam: string, description: string}} data The CTF data.
      * @returns {void}
      */
     ctf(data) {
@@ -151,36 +198,47 @@ class Game {
             this.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
-        this.flagStats.push(data);
-        this.events.push(data);
-
         if (event === "Return" && !scorer) {
+            this.flagStats.push(data);
+            data.description = `The ${scorerTeam} flag has been automatically returned.`;
+            this.events.push(data);
             return;
         }
 
         const scorerPlayer = this.getPlayer(scorer);
         scorerPlayer.team = scorerTeam;
 
+        this.flagStats.push(data);
+
         switch (event) {
             case "Return":
+                data.description = `${scorer} returned the ${scorerTeam} flag.`;
                 scorerPlayer.returns++;
                 break;
-            case "Pickup":
+            case "Pickup": {
+                const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+                data.description = `${scorer} picked up the ${otherTeam} flag.`;
                 scorerPlayer.pickups++;
                 break;
+            }
             case "Capture":
+                data.description = `${scorer} scores for ${scorerTeam}!`;
                 scorerPlayer.captures++;
-
                 if (this.teamScore[scorerTeam]) {
                     this.teamScore[scorerTeam]++;
                 } else {
                     this.teamScore[scorerTeam] = 1;
                 }
                 break;
-            case "CarrierKill":
+            case "CarrierKill": {
+                const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
+                data.description = `${scorer} killed the ${otherTeam} flag carrier!`;
                 scorerPlayer.carrierKills++;
                 break;
+            }
         }
+
+        this.events.push(data);
     }
 
     //    #   #                                                #
@@ -197,9 +255,14 @@ class Game {
     disconnect(data) {
         const player = this.getPlayer(data.player);
 
+        // If the player is invalid, bail.
+        if (!player) {
+            return;
+        }
+
         if (!this.end) {
             player.disconnected = true;
-            player.connected = false;
+            player.connected = void 0;
             data.description = `${data.player} disconnected.`;
             this.events.push(data);
         }
@@ -213,11 +276,11 @@ class Game {
     //  ##   #  #   ###   ###   # #  #  #   ##
     /**
      * Ends the game.
-     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], players: object[], teamScore: object}} data The end game data.
+     * @param {{start: Date, end: Date, damage: object[], kills: object[], goals: object[], flagStats: object[], players: object[], teamScore: object, teamChanges: object[]}} data The end game data.
      * @returns {void}
      */
     endGame(data) {
-        const {start, end, damage, kills, goals, flagStats, players, teamScore} = data;
+        const {start, end, damage, kills, goals, flagStats, players, teamScore, teamChanges} = data;
 
         this.start = new Date(start);
         this.end = new Date(end);
@@ -227,6 +290,38 @@ class Game {
         this.flagStats = flagStats;
         this.players = players;
         this.teamScore = teamScore;
+        this.teamChanges = teamChanges;
+    }
+
+    //              #     ##                  #   #     #     #
+    //              #    #  #                 #         #
+    //  ###   ##   ###   #      ##   ###    ###  ##    ###   ##     ##   ###
+    // #  #  # ##   #    #     #  #  #  #  #  #   #     #     #    #  #  #  #
+    //  ##   ##     #    #  #  #  #  #  #  #  #   #     #     #    #  #  #  #
+    // #      ##     ##   ##    ##   #  #   ###  ###     ##  ###    ##   #  #
+    //  ###
+    /**
+     * Gets the condition that will end the game.
+     * @returns {string} The condition that will end the game.
+     */
+    getCondition() {
+        let condition = "";
+
+        if (this.settings) {
+            if (this.settings.scoreLimit) {
+                condition = `${condition}First to ${this.settings.scoreLimit}`;
+
+                if (this.settings.timeLimit) {
+                    condition = `${condition}, `;
+                }
+            }
+
+            if (this.settings.timeLimit) {
+                condition = `${condition}${Math.round(this.settings.timeLimit / 60)}:00 time limit`;
+            }
+        }
+
+        return condition;
     }
 
     //              #    ###   ##
@@ -239,18 +334,18 @@ class Game {
     /**
      * Retrieves a player from a game.
      * @param {string} name The name of the player.
+     * @param {string} [team] The team the player is currently on.
      * @returns {InstanceType<Game.Player>} The player. // TODO: Fix return type.
      */
-    getPlayer(name) {
+    getPlayer(name, team) {
         if (!name) {
             return void 0;
         }
 
-        const players = this.players.find((p) => p.name === name);
-
-        if (!players) {
-            const player = new Game.Player({
+        if (!this.players.find((p) => p.name === name)) {
+            this.players.push(new Game.Player({
                 name,
+                team,
                 kills: 0,
                 assists: 0,
                 deaths: 0,
@@ -260,13 +355,12 @@ class Game {
                 returns: 0,
                 pickups: 0,
                 captures: 0,
-                carrierKills: 0
-            });
-            this.players.push(player);
-            return player;
+                carrierKills: 0,
+                connected: 0
+            }));
         }
 
-        return void 0;
+        return this.players.find((p) => p.name === name);
     }
 
     //                   ##
@@ -278,7 +372,7 @@ class Game {
     //  ###
     /**
      * Add a goal.
-     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, blunder: boolean}} data The goal data.
+     * @param {{time: number, scorer: string, scorerTeam: string, assisted: string, assistedTeam: string, blunder: boolean, description: string}} data The goal data.
      * @returns {void}
      */
     goal(data) {
@@ -296,8 +390,9 @@ class Game {
             this.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
-        this.events.push(data);
         this.goals.push(data);
+        data.description = `GOAL! ${scorer} scored for ${scorerTeam}!${assisted ? ` Assisted by ${assisted}.` : ""}`;
+        this.events.push(data);
 
         const scorerPlayer = this.getPlayer(scorer),
             assistedPlayer = this.getPlayer(assisted);
@@ -327,11 +422,11 @@ class Game {
     // #  #  ###   ###   ###
     /**
      * Adds a kill.
-     * @param {{time: number, attacker: string, attackerTeam: string, defender: string, defenderTeam: string, assisted: string, assistedTeam: string, weapon: string}} data The kill data.
+     * @param {{time: number, attacker: string, attackerTeam: string, defender: string, defenderTeam: string, assisted: string, assistedTeam: string, weapon: string, description: string}} data The kill data.
      * @returns {void}
      */
     kill(data) {
-        const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam} = data;
+        const {attacker, attackerTeam, defender, defenderTeam, assisted, assistedTeam, weapon} = data;
 
         if (!this.settings) {
             this.settings = {matchMode: "ANARCHY"};
@@ -349,12 +444,9 @@ class Game {
             this.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
-        this.events.push(data);
-        this.kills.push(data);
-
-        const attackerPlayer = this.getPlayer(attacker),
-            defenderPlayer = this.getPlayer(defender),
-            assistedPlayer = this.getPlayer(assisted);
+        const attackerPlayer = this.getPlayer(attacker, attackerTeam),
+            defenderPlayer = this.getPlayer(defender, defenderTeam),
+            assistedPlayer = this.getPlayer(assisted, assistedTeam);
 
         attackerPlayer.team = attackerTeam;
         defenderPlayer.team = defenderTeam;
@@ -396,6 +488,10 @@ class Game {
                 }
             }
         }
+
+        this.kills.push(data);
+        data.description = `${attacker} killed ${defender} with ${weapon}.${assisted ? ` Assisted by ${assisted}.` : ""}`;
+        this.events.push(data);
     }
 
     // ###    ##   # #    ##   # #    ##
@@ -437,8 +533,18 @@ class Game {
      * @returns {void}
      */
     startGame(data) {
-        this.server = data.server;
-        this.settings = data;
+        if (data.timeLimit && data.timeLimit === 2147483647) {
+            delete data.timeLimit;
+        }
+
+        if (data.server) {
+            this.server = data.server;
+        }
+
+        if (data.settings) {
+            this.settings = data;
+        }
+
         this.inLobby = data.type === "LobbyStatus";
         this.players = data.players && data.players.map((player) => new Game.Player({
             name: player,
@@ -454,8 +560,35 @@ class Game {
             carrierKills: 0,
             connected: data.time
         })) || [];
-        this.countdown = data.countdown;
-        this.elapsed = data.elapsed;
+
+        if (data.condition) {
+            this.condition = data.condition;
+        } else {
+            this.condition = this.getCondition();
+        }
+
+        if (!this.inLobby) {
+            if (["CTF", "MONSTERBALL"].indexOf(this.settings.matchMode) !== -1) {
+                this.teamScore = {"BLUE": 0, "ORANGE": 0};
+            }
+
+            if (this.settings.timeLimit) {
+                this.projectedEnd = new Date();
+                this.projectedEnd.setSeconds(this.projectedEnd.getSeconds() + this.settings.timeLimit);
+                if (data.countdown) {
+                    this.countdown = data.countdown;
+                } else {
+                    this.countdown = this.settings.timeLimit * 1000;
+                }
+            } else {
+                this.startTime = new Date();
+                if (data.elapsed) {
+                    this.elapsed = data.elapsed;
+                } else {
+                    this.elapsed = 0;
+                }
+            }
+        }
     }
 
     //  #                       ##   #
@@ -467,15 +600,18 @@ class Game {
     //                                                  ###
     /**
      * Adds a team change.
-     * @param {{time: number, playerName: string, previousTeam: string, currentTeam: string}} data The teamChange data.
+     * @param {{time: number, playerName: string, previousTeam: string, currentTeam: string, description: string}} data The teamChange data.
      * @returns {void}
      */
     teamChange(data) {
-        this.events.push(data);
-        this.teamChanges.push(data);
+        const {playerName, previousTeam, currentTeam} = data;
 
-        const player = this.getPlayer(data.playerName);
-        player.team = data.currentTeam;
+        this.teamChanges.push(data);
+        data.description = `${playerName} changed from ${previousTeam} to ${currentTeam} team`;
+        this.events.push(data);
+
+        const player = this.getPlayer(playerName);
+        player.team = currentTeam;
     }
 }
 

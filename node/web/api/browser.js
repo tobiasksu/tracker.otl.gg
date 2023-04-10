@@ -3,7 +3,7 @@
  * @typedef {import("express").Response} express.Response
  */
 
-const Game = require("../../src/models/game"),
+const Game = require("../../public/js/common/game"),
     Log = require("@roncli/node-application-insights-logger"),
     RouterBase = require("hot-router").RouterBase,
     Servers = require("../../src/models/servers");

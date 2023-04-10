@@ -39,7 +39,8 @@ class Player {
         this.captures = data.captures;
         this.carrierKills = data.carrierKills;
         this.connected = data.connected;
-        this.disconnected = data.disconnected;
+        this.disconnected = data.disconnected || false;
+        this.timeInGame = data.timeInGame;
     }
 }
 

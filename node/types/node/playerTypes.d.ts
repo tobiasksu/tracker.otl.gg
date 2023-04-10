@@ -12,8 +12,9 @@ declare namespace PlayerTypes {
         pickups: number
         captures: number
         carrierKills: number
-        connected?: boolean
+        connected?: number
         disconnected?: boolean
+        timeInGame?: number
     }
 }
 

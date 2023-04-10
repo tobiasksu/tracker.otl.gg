@@ -3,7 +3,7 @@
  */
 
 const Db = require("../database/completed"),
-    Game = require("./game"),
+    Game = require("../../public/js/common/game"),
     ServersDb = require("../database/servers");
 
 //   ###                         ##            #                #
