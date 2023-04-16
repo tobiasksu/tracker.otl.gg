@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../js/common/game")} Game
+ */
+
 //   ###                        #        #            #     #   #    #
 //  #   #                       #                     #     #   #
 //  #       ###   ## #    ###   #       ##     ###   ####   #   #   ##     ###   #   #
@@ -18,7 +22,7 @@ class GameListView {
     //  ###
     /**
      * Gets the rendered game list page template.
-     * @param {{games: {id: number, ip: string, data: object, date: Date}[], count: number}} gameList The games to display.
+     * @param {{games: Game[], count: number}} gameList The games to display.
      * @returns {string} An HTML string of the rendered game list template.
      */
     static get(gameList) {

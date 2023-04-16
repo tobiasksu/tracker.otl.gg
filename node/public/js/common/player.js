@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../../types/node/playerTypes").PlayerData} PlayerTypes.PlayerData
+ * @typedef {import("../../../types/playerTypes").PlayerData} PlayerTypes.PlayerData
  */
 
 //  ####    ##

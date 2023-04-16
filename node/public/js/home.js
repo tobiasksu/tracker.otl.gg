@@ -1,3 +1,8 @@
+/**
+ * @typedef {import("../../types/messageTypes").MessageData} MessageTypes.MessageData
+ * @typedef {import("../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ */
+
 //  #   #                         ###
 //  #   #                           #
 //  #   #   ###   ## #    ###       #   ###
@@ -43,11 +48,14 @@ class HomeJs {
     //                                              ###
     /**
      * Handles incoming messages.
-     * @param {MessageEvent} ev The data received.
+     * @param {MessageEvent<string>} ev The data received.
      * @returns {void}
      */
     static onmessage(ev) {
-        const {ip, data} = JSON.parse(ev.data),
+        /** @type {MessageTypes.MessageData} */
+        const msg = JSON.parse(ev.data);
+
+        const {ip, data} = msg,
             game = HomeJs.Game.getGame(ip);
 
         let gameEl = document.getElementById(`game-${ip}`);
@@ -115,6 +123,7 @@ class HomeJs {
                         break;
                     case "TeamChange":
                         game.teamChange(data);
+                        break;
                 }
 
                 gameEl = document.getElementById(`game-${ip}`);
@@ -172,7 +181,7 @@ class HomeJs {
 
 document.addEventListener("DOMContentLoaded", HomeJs.DOMContentLoaded);
 
-/** @type {object[]} */
+/** @type {ServerTypes.LocalServer[]} */
 HomeJs.servers = null;
 
 /** @type {import("./common/websocketclient")} */

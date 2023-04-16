@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //   ###                                       ###                         ##            #                #  ####    ##                                       #   #    #
 //  #   #                                     #   #                         #            #                #  #   #    #                                       #   #
 //  #       ###   ## #   ## #    ###   # ##   #       ###   ## #   # ##     #     ###   ####    ###    ## #  #   #    #     ###   #   #   ###   # ##    ###   #   #   ##     ###   #   #
@@ -20,7 +24,7 @@ class CommonCompletedPlayersView {
     //  ###
     /**
      * Gets the rendered players template.
-     * @param {object} game The game to display.
+     * @param {Game} game The game to display.
      * @returns {string} An HTML string of the rendered players template.
      */
     static get(game) {

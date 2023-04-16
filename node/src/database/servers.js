@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ */
+
 const Db = require("@roncli/node-database"),
     db = require("./index");
 
@@ -22,7 +26,7 @@ class ServersDb {
     /**
      * Gets a server by its IP address.
      * @param {string} ip The IP Address.
-     * @returns {Promise<object>} The server data.
+     * @returns {Promise<ServerTypes.LocalServer>} The server data.
      */
     static async getByIp(ip) {
 
@@ -45,7 +49,7 @@ class ServersDb {
     //  ###
     /**
      * Gets the list of visible servers.
-     * @returns {Promise<object[]>} A promise that resolves with the list of servers.
+     * @returns {Promise<ServerTypes.LocalServer[]>} A promise that resolves with the list of servers.
      */
     static async getVisible() {
 
@@ -74,7 +78,7 @@ class ServersDb {
     //       #
     /**
      * Updates a server.
-     * @param {object} server The server to update.
+     * @param {ServerTypes.LocalServer} server The server to update.
      * @param {boolean} [visible] Whether the server should be visible.
      * @returns {Promise} A promise that resolves when the server has been updated.
      */

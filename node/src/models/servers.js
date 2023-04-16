@@ -1,7 +1,13 @@
+/**
+ * @typedef {import("../../types/serverTypes").Server} ServerTypes.Server
+ * @typedef {import("../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ */
+
 const Db = require("../database/servers"),
-    Game = require("./game"),
+    Game = require("../../public/js/common/game"),
     Websocket = require("../websocket");
 
+/** @type {ServerTypes.LocalServer[]} */
 let servers = [];
 
 //   ###
@@ -24,7 +30,7 @@ class Servers {
     //  ###
     /**
      * Gets the list of visible servers.
-     * @returns {Promise<object[]>} A promise that resolves with the servers.
+     * @returns {Promise<ServerTypes.LocalServer[]>} A promise that resolves with the servers.
      */
     static async getVisible() {
         const now = new Date();
@@ -33,6 +39,7 @@ class Servers {
             servers = await Db.getVisible();
         }
 
+        /** @type {ServerTypes.LocalServer[]} */
         const serverInfo = JSON.parse(JSON.stringify(servers));
 
         serverInfo.forEach((server) => {
@@ -76,11 +83,12 @@ class Servers {
     /**
      * Updates the data for a server.
      * @param {string} ip The IP address of the server to update.
-     * @param {object} data The data to update the server with.
+     * @param {ServerTypes.Server} data The data to update the server with.
      * @param {boolean} [visible] Whether the server should be visible.
      * @returns {Promise} A promise that resolves when the server has been updated.
      */
     static async update(ip, data, visible) {
+        /** @type {ServerTypes.LocalServer} */
         let server = servers.find((s) => s.ip === ip);
 
         if (!server) {

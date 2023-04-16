@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //   ###                                      ####           #              #     ##           #   #    #
 //  #   #                                      #  #          #                     #           #   #
 //  #       ###   ## #   ## #    ###   # ##    #  #   ###   ####    ###    ##      #     ###   #   #   ##     ###   #   #
@@ -18,7 +22,7 @@ class CommonDetailsView {
     //  ###
     /**
      * Gets the rendered details template.
-     * @param {object} game The game to display.
+     * @param {Game} game The game to display.
      * @param {boolean} addLink Add a link to the game page.
      * @returns {string} An HTML string of the rendered details template.
      */
@@ -57,8 +61,8 @@ class CommonDetailsView {
                     ${game.settings ? /* html */`
                         <div class="map">${CommonDetailsView.Encoding.htmlEncode(game.settings.matchMode)}${game.settings.level && ` - ${CommonDetailsView.Encoding.htmlEncode(game.settings.level)}` || ""}</div>
                     ` : ""}
-                    ${game.settings && game.settings.condition ? /* html */`
-                        <div class="condition">${game.settings.condition}</div>
+                    ${game.condition ? /* html */`
+                        <div class="condition">${game.condition}</div>
                     ` : ""}
                 </div>
             </div>

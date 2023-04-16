@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //  #   #                        ###                         ##            #                #   ###                               #   #    #
 //  #   #                       #   #                         #            #                #  #   #                              #   #
 //  #   #   ###   ## #    ###   #       ###   ## #   # ##     #     ###   ####    ###    ## #  #       ###   ## #    ###    ###   #   #   ##     ###   #   #
@@ -20,7 +24,7 @@ class HomeCompletedGamesView {
     //  ###
     /**
      * Gets the rendered completed games template.
-     * @param {object[]} games The games to display.
+     * @param {Game[]} games The games to display.
      * @returns {string} An HTML string of the rendered completed games template.
      */
     static get(games) {

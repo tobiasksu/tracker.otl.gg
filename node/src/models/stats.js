@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../types/messageTypes").Message} MessageTypes.Message
+ */
+
 const Db = require("../database/completed"),
     Game = require("../../public/js/common/game"),
     ServersDb = require("../database/servers"),
@@ -25,33 +29,36 @@ class Stats {
     /**
      * Processes a stat sent from a server.
      * @param {string} ip The IP address of the server to update.
-     * @param {object} data The stat data.
+     * @param {MessageTypes.Message} data The stat data.
      * @returns {Promise} A promise that resolves when the stat has been processed.
      */
     static async processStat(ip, data) {
-        let game = Game.getByIp(ip);
+        if (data.name === "Stats") {
+            let game = Game.getByIp(ip);
 
-        if (!game && data.type !== "StartGame" && data.type !== "LobbyStatus") {
-            if (data.type === "LobbyExit" || data.type === "Disconnect") {
-                return;
+            if (!game && data.type !== "StartGame" && data.type !== "LobbyStatus") {
+                if (data.type === "LobbyExit" || data.type === "Disconnect") {
+                    return;
+                }
+
+                game = Game.getGame(ip);
+
+                game.startGame({
+                    type: "StartGame",
+                    matchMode: "ANARCHY"
+                });
+
+                Websocket.broadcast({ip, data: {
+                    matchMode: "ANARCHY",
+                    name: "Stats",
+                    type: "StartGame"
+                }});
             }
 
-            game = Game.getGame(ip);
+            if (!game.server) {
+                game.server = await ServersDb.getByIp(ip);
+            }
 
-            game.startGame({settings: {matchMode: "ANARCHY"}});
-
-            Websocket.broadcast({ip, data: {
-                matchMode: "ANARCHY",
-                name: "Stats",
-                type: "StartGame"
-            }});
-        }
-
-        if (!game.server) {
-            game.server = await ServersDb.getByIp(ip);
-        }
-
-        if (data.name === "Stats") {
             switch (data.type) {
                 case "StartGame":
                 case "LobbyStatus":

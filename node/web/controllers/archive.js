@@ -5,7 +5,7 @@
 
 const Common = require("../includes/common"),
     Completed = require("../../src/models/completed"),
-    ArchiveView = require("../../public/views/archive.js"),
+    ArchiveView = require("../../public/views/archive"),
     NotFoundView = require("../../public/views/404"),
     RouterBase = require("hot-router").RouterBase,
     Weapon = require("../../src/models/weapon");

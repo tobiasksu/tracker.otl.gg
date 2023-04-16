@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ */
+
 //  #   #                        ###                                             #   #    #
 //  #   #                       #   #                                            #   #
 //  #   #   ###   ## #    ###   #       ###   # ##   #   #   ###   # ##    ###   #   #   ##     ###   #   #
@@ -18,7 +22,7 @@ class HomeServersView {
     //  ###
     /**
      * Gets the rendered servers template.
-     * @param {object[]} servers The servers to display.
+     * @param {ServerTypes.LocalServer[]} servers The servers to display.
      * @returns {string} An HTML string of the rendered servers template.
      */
     static get(servers) {

@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //   ###                                      #####                        #            #   #    #
 //  #   #                                     #                            #            #   #
 //  #       ###   ## #   ## #    ###   # ##   #      #   #   ###   # ##   ####    ###   #   #   ##     ###   #   #
@@ -18,7 +22,7 @@ class CommonEventsView {
     //  ###
     /**
      * Gets the rendered events template.
-     * @param {object} game The game to display.
+     * @param {Game} game The game to display.
      * @returns {string} An HTML string of the rendered events template.
      */
     static get(game) {

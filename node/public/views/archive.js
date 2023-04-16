@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../js/common/game")} Game
+ */
+
 //    #                  #        #                  #   #    #
 //   # #                 #                           #   #
 //  #   #  # ##    ###   # ##    ##    #   #   ###   #   #   ##     ###   #   #
@@ -18,7 +22,7 @@ class ArchiveView {
     //  ###
     /**
      * Gets the rendered archive template.
-     * @param {object} game The game to display.
+     * @param {Game} game The game to display.
      * @param {string[]} weapons The list of weapons used in the game.
      * @returns {string} An HTML string of the rendered archive template.
      */

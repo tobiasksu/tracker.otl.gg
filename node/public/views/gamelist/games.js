@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //   ###                        #        #            #      ###                               #   #    #
 //  #   #                       #                     #     #   #                              #   #
 //  #       ###   ## #    ###   #       ##     ###   ####   #       ###   ## #    ###    ###   #   #   ##     ###   #   #
@@ -18,7 +22,7 @@ class GameListGamesView {
     //  ###
     /**
      * Gets the rendered archived games template.
-     * @param {{games: object[]}} games The games to display.
+     * @param {{games: Game[]}} games The games to display.
      * @returns {string} An HTML string of the rendered archived games template.
      */
     static get(games) {

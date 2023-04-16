@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //   ###                                      ####    ##                                 ###                         #     #   #    #
 //  #   #                                     #   #    #                                #   #                        #     #   #
 //  #       ###   ## #   ## #    ###   # ##   #   #    #     ###   #   #   ###   # ##   #       ###   #   #  # ##   ####   #   #   ##     ###   #   #
@@ -20,7 +24,7 @@ class CommonPlayerCountView {
     //  ###
     /**
      * Gets the rendered player count template.
-     * @param {object} game The game to display.
+     * @param {Game} game The game to display.
      * @returns {string} An HTML string of the rendered details template.
      */
     static get(game) {

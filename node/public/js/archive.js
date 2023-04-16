@@ -1,4 +1,5 @@
 /**
+ * @typedef {import("../../types/archiveTypes").DifferentialDataset} ArchiveTypes.DifferentialDataset
  * @typedef {import("chart.js").ChartEvent} ChartJs.ChartEvent
  * @typedef {typeof import("chart.js").Chart} ChartJs.Chart
  * @typedef {import("./common/game")} Game
@@ -1163,8 +1164,10 @@ class ArchiveJs {
                 });
             }
             case "differential": {
-                const data = {},
-                    numPlayers = ArchiveJs.game.players.length;
+                /** @type {ArchiveTypes.DifferentialDataset} */
+                const data = {};
+
+                const numPlayers = ArchiveJs.game.players.length;
 
                 let max = 0,
                     datasets;
@@ -1768,12 +1771,14 @@ class ArchiveJs {
     //  ###
     /**
      * Gets the differential stats from a dataset.
-     * @param {object} data The dataset.
-     * @returns {object} The differential dataset.
+     * @param {ArchiveTypes.DifferentialDataset} data The dataset.
+     * @returns {ArchiveTypes.DifferentialDataset} The differential dataset.
      */
     static getDifferential(data) {
+        /** @type {ArchiveTypes.DifferentialDataset} */
+        const differential = {};
+
         const entities = Object.keys(data),
-            differential = {},
             index = {};
         let time = 0;
 

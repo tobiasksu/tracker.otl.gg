@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //   ###                                       ###           #      #       #                         #   #    #
 //  #   #                                     #   #          #      #                                 #   #
 //  #       ###   ## #   ## #    ###   # ##   #       ###   ####   ####    ##    # ##    ## #   ###   #   #   ##     ###   #   #
@@ -20,7 +24,7 @@ class CommonSettingsView {
     //  ###
     /**
      * Gets the rendered settings template.
-     * @param {object} game The game with the settings to display.
+     * @param {Game} game The game with the settings to display.
      * @returns {string} An HTML string of the rendered settings template.
      */
     static get(game) {

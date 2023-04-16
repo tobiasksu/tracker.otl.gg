@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../js/common/game")} Game
+ */
+
 //   ###                                       ###                               #   #    #
 //  #   #                                     #   #                              #   #
 //  #       ###   ## #   ## #    ###   # ##   #       ###    ###   # ##    ###   #   #   ##     ###   #   #
@@ -18,7 +22,7 @@ class CommonScoreView {
     //  ###
     /**
      * Gets the rendered score template.
-     * @param {object} game The game with the scores to display.
+     * @param {Game} game The game with the scores to display.
      * @returns {string} An HTML string of the rendered score template.
      */
     static get(game) {

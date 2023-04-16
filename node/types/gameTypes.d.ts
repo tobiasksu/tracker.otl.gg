@@ -1,22 +1,43 @@
-import Player from "../../public/js/common/player"
+import Player from "../public/js/common/player"
+import ServerTypes from "./serverTypes"
 
 declare namespace GameTypes {
     type GameData = {
         ip: string
         settings?: {
+            creator?: string
+            forceModifier1?: string
+            forceModifier2?: string
+            forceMissile1?: string
+            forceMissile2?: string
+            forceWeapon1?: string
+            forceWeapon2?: string
+            forceLoadout?: string
+            powerupFilterBitmask?: number
+            powerupBigSpawn?: string
+            powerupInitial?: string
+            turnSpeedLimit?: string
+            powerupSpawn?: string
             friendlyFire?: boolean
             matchMode: string
+            maxPlayers?: number
+            showEnemyNames?: string
             timeLimit?: number
             scoreLimit?: number
-            suddenDeath?: boolean
-            maxPlayers?: number
+            respawnTimeSeconds?: number
+            respawnShieldTimeSeconds?: number
             level?: string
             joinInProgress?: boolean
+            rearViewAllowed?: boolean
+            teamCount?: number
+            players?: string[]
             hasPassword?: boolean
             matchNotes?: string
-            creator?: string
+            classicSpawnsEnabled?: boolean
+            ctfCarrierBoostEnabled?: boolean
+            suddenDeath?: boolean
         }
-        server?: string
+        server?: ServerTypes.LocalServer
         start?: Date
         end?: Date
         players?: Player[]
@@ -34,8 +55,8 @@ declare namespace GameTypes {
             blunder: boolean
             scorer: string
             scorerTeam: string
-            assisted: string
-            assistedTeam: string
+            assisted?: string
+            assistedTeam?: string
             time: number
         }[]
         flagStats?: {
@@ -46,7 +67,9 @@ declare namespace GameTypes {
         }[]
         events?: {
             time: number
+            type: string
             description: string
+            player?: string
         }[]
         damage?: {
             attacker: string
@@ -67,6 +90,9 @@ declare namespace GameTypes {
             previousTeam: string
             currentTeam: string
         }[]
+        remaining?: number
+        id?: number
+        date?: Date
     }
 }
 

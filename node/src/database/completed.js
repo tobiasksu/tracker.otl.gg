@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../public/js/game")} Game
+ */
+
 const Db = require("@roncli/node-database"),
     db = require("./index"),
     FtsQuery = require("full-text-search-query"),
@@ -25,7 +29,7 @@ class CompletedDb {
     /**
      * Adds a completed game to the database.
      * @param {string} ip The IP address.
-     * @param {object} saveData The data to save.
+     * @param {Game} saveData The data to save.
      * @returns {Promise<number>} A promise that resolves when the completed game is added.
      */
     static async add(ip, saveData) {
@@ -75,7 +79,7 @@ class CompletedDb {
     /**
      * Gets a completed game by ID.
      * @param {number} id The Game ID.
-     * @returns {Promise<{id: number, ip: string, data: object, date: Date}>} A promise that resolves with the game.
+     * @returns {Promise<{id: number, ip: string, data: string, date: Date}>} A promise that resolves with the game.
      */
     static async getById(id) {
         /**
@@ -103,7 +107,7 @@ class CompletedDb {
      * Gets the paginated list of games.
      * @param {number} page The page number.
      * @param {number} pageSize The size of the page.
-     * @returns {Promise<{games: {id: number, ip: string, data: object, date: Date}[], count: number}>} A promise that resolves with the recent games.
+     * @returns {Promise<{games: {id: number, ip: string, data: string, date: Date}[], count: number}>} A promise that resolves with the recent games.
      */
     static async getList(page, pageSize) {
         /**
@@ -144,7 +148,7 @@ class CompletedDb {
     //  ###
     /**
      * Gets the games that completed within the past hour.
-     * @returns {Promise<{id: number, ip: string, data: object, date: Date}[]>} A promise that resolves with the recent games.
+     * @returns {Promise<{id: number, ip: string, data: string, date: Date}[]>} A promise that resolves with the recent games.
      */
     static async getRecent() {
         /**
@@ -172,7 +176,7 @@ class CompletedDb {
      * @param {string} query The query.
      * @param {number} page The page number.
      * @param {number} pageSize The size of the page.
-     * @returns {Promise<{games: {id: number, ip: string, data: object, date: Date}[], count: number}>} A promise that resolves with the recent games.
+     * @returns {Promise<{games: {id: number, ip: string, data: string, date: Date}[], count: number}>} A promise that resolves with the recent games.
      */
     static async search(query, page, pageSize) {
         const transformedQuery = ftsQuery.transform(query);
@@ -210,30 +214,6 @@ class CompletedDb {
             })),
             count: data.recordsets[1][0].Games
         } || {games: [], count: 0};
-    }
-
-    //                #         #
-    //                #         #
-    // #  #  ###    ###   ###  ###    ##
-    // #  #  #  #  #  #  #  #   #    # ##
-    // #  #  #  #  #  #  # ##   #    ##
-    //  ###  ###    ###   # #    ##   ##
-    //       #
-    /**
-     * Updates a completed game.
-     * @param {number} id The completed ID.
-     * @param {object} data The data to save.
-     * @param {Date} start The start date of the match.
-     * @returns {Promise} A promise that resolves when the update is complete.
-     */
-    static async update(id, data, start) {
-        await db.query(/* sql */`
-            UPDATE tblCompleted SET Data = @data, CrDate = CASE WHEN @start IS NULL THEN CrDate ELSE @start END WHERE CompletedId = @id
-        `, {
-            id: {type: Db.INT, value: id},
-            data: {type: Db.NTEXT, value: JSON.stringify(data)},
-            start: {type: Db.DATETIME, value: start}
-        });
     }
 }
 

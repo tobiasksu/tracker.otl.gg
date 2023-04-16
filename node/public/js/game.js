@@ -1,3 +1,7 @@
+/**
+ * @typedef {import("../../types/messageTypes").Message} MessageTypes.Message
+ */
+
 //   ###                          ###
 //  #   #                           #
 //  #       ###   ## #    ###       #   ###
@@ -44,10 +48,13 @@ class GameJs {
     /**
      * Handles incoming messages.
      * @param {MessageEvent} ev The data received.
-     * @returns {object} The return.
+     * @returns {void}
      */
     static onmessage(ev) {
-        const {data} = JSON.parse(ev.data),
+        /** @type {{data: MessageTypes.Message}} */
+        const msg = JSON.parse(ev.data);
+
+        const {data} = msg,
             map = /** @type {HTMLDivElement} */(document.querySelector(".map")); // eslint-disable-line no-extra-parens
 
         switch (data.name) {
@@ -105,7 +112,7 @@ class GameJs {
                     case "EndGame":
                         window.location.replace(`/archive/${data.id}`);
                         return;
-                    case "ExitGame":
+                    case "LobbyExit":
                         window.location.replace("/");
                         return;
                     case "TeamChange":

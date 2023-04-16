@@ -4,8 +4,8 @@
  */
 
 const Common = require("../includes/common"),
-    GameModel = require("../../src/models/game"),
-    GameView = require("../../public/views/game.js"),
+    GameModel = require("../../public/js/common/game"),
+    GameView = require("../../public/views/game"),
     NotFoundView = require("../../public/views/404"),
     RouterBase = require("hot-router").RouterBase;
 
@@ -55,6 +55,7 @@ class Game extends RouterBase {
         const ip = req.params.ip,
             gameModel = GameModel.getByIp(ip);
 
+        /** @type {GameModel} */
         let game;
         try {
             game = JSON.parse(JSON.stringify(gameModel));

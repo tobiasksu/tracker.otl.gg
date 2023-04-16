@@ -1,3 +1,8 @@
+/**
+ * @typedef {import("../js/common/game")} Game
+ * @typedef {import("../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ */
+
 //  #   #                       #   #    #
 //  #   #                       #   #
 //  #   #   ###   ## #    ###   #   #   ##     ###   #   #
@@ -18,9 +23,9 @@ class HomeView {
     //  ###
     /**
      * Gets the rendered home page template.
-     * @param {object[]} completed The completed games to display.
-     * @param {object[]} games The in-progress games to display.
-     * @param {object[]} servers The servers to display.
+     * @param {Game[]} completed The completed games to display.
+     * @param {Game[]} games The in-progress games to display.
+     * @param {ServerTypes.LocalServer[]} servers The servers to display.
      * @returns {string} An HTML string of the home page.
      */
     static get(completed, games, servers) {

@@ -5,7 +5,7 @@
 
 const Common = require("../includes/common"),
     Completed = require("../../src/models/completed"),
-    Game = require("../../src/models/game"),
+    Game = require("../../public/js/common/game"),
     RouterBase = require("hot-router").RouterBase,
     Servers = require("../../src/models/servers"),
     SummaryView = require("../../public/views/summary");
@@ -55,9 +55,12 @@ class Summary extends RouterBase {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const completed = await Completed.getRecent(),
-            games = JSON.parse(JSON.stringify(Game.getAll())),
-            servers = (await Servers.getVisible()).filter((s) => s.name);
+        const completed = await Completed.getRecent();
+
+        /** @type {Game[]} */
+        const games = JSON.parse(JSON.stringify(Game.getAll()));
+
+        const servers = (await Servers.getVisible()).filter((s) => s.name);
 
         games.forEach((game) => {
             if (game.projectedEnd) {
@@ -74,9 +77,7 @@ class Summary extends RouterBase {
         });
 
         completed.forEach((game) => {
-            game.remaining = Math.max(new Date(game.data.end).getTime() + 3600000 - new Date().getTime(), 1000);
-
-            game.data.condition = Game.getCondition(game.data);
+            game.condition = Game.getCondition(game);
         });
 
         res.setHeader("Cache-Control", "no-cache, max-age=0, must-revalidate, no-store");
