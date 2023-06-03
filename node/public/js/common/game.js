@@ -188,7 +188,7 @@ class Game {
         }
 
         player.disconnected = false;
-        player.connected = data.time;
+        player.connected = true;
 
         this.events.push({
             time: data.time,
@@ -300,7 +300,7 @@ class Game {
 
         if (!this.end) {
             player.disconnected = true;
-            player.connected = void 0;
+            player.connected = false;
 
             this.events.push({
                 time: data.time,
@@ -620,7 +620,7 @@ class Game {
             pickups: 0,
             captures: 0,
             carrierKills: 0,
-            connected: data.time
+            connected: true
         })) || [];
 
         this.condition = Game.getCondition(this);

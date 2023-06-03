@@ -43,16 +43,16 @@ declare namespace GameTypes {
         players?: Player[]
         kills?: {
             attacker: string
-            attackerTeam: string
+            attackerTeam?: string
             defender: string
-            defenderTeam: string
-            assisted: string
-            assistedTeam: string
+            defenderTeam?: string
+            assisted?: string
+            assistedTeam?: string
             time: number
             weapon: string
         }[]
         goals?: {
-            blunder: boolean
+            blunder?: boolean
             scorer: string
             scorerTeam: string
             assisted?: string

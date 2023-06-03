@@ -75,7 +75,7 @@ class BrowserApi extends RouterBase {
                 if (game) {
                     result.game = {
                         gameStarted: s.gameStarted,
-                        currentPlayers: game.players.filter((p) => p.connected).length,
+                        currentPlayers: game.players.filter((p) => p).length,
                         maxPlayers: game.settings && game.settings.maxPlayers || 0,
                         matchLength: game.settings && game.settings.timeLimit && game.settings.timeLimit || 0,
                         mapName: game.settings && game.settings.level || "",
