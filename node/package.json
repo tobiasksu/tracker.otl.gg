@@ -32,7 +32,6 @@
         "hot-router": "1.0.1",
         "html-minifier-terser": "7.1.0",
         "mongodb": "5.6.0",
-        "morgan": "1.10.0",
         "terser": "5.16.8",
         "timeago.js": "4.0.2"
     },
