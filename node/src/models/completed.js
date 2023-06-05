@@ -1,5 +1,8 @@
+/**
+ * @typedef {import("../../public/js/common/game")} Game
+ */
+
 const Db = require("../database/completed"),
-    Game = require("../../public/js/common/game"),
     ServersDb = require("../database/servers");
 
 //   ###                         ##            #                #
@@ -15,64 +18,23 @@ const Db = require("../database/completed"),
  * A class that represents completed games.
  */
 class Completed {
-    //              #     ##   ##    ##    ###      #
-    //              #    #  #   #     #     #       #
-    //  ###   ##   ###   #  #   #     #     #     ###   ###
-    // #  #  # ##   #    ####   #     #     #    #  #  ##
-    //  ##   ##     #    #  #   #     #     #    #  #    ##
-    // #      ##     ##  #  #  ###   ###   ###    ###  ###
+    //              #
+    //              #
+    //  ###   ##   ###
+    // #  #  # ##   #
+    //  ##   ##     #
+    // #      ##     ##
     //  ###
-    /**
-     * Gets all IDs for completed games.
-     * @returns {Promise<number[]>} A promise that resolves with the list of completed IDs.
-     */
-    static getAllIds() {
-        return Db.getAllIds();
-    }
-
-    //              #    ###         ###      #
-    //              #    #  #         #       #
-    //  ###   ##   ###   ###   #  #   #     ###
-    // #  #  # ##   #    #  #  #  #   #    #  #
-    //  ##   ##     #    #  #   # #   #    #  #
-    // #      ##     ##  ###     #   ###    ###
-    //  ###                     #
     /**
      * Gets a completed game by ID.
      * @param {number} id The Game ID.
      * @param {boolean} [includeServer] Whether to include server information.  Defaults to true.
      * @returns {Promise<Game>} A promise that resolves with the game.
      */
-    static async getById(id, includeServer = true) {
-        const completedGame = await Db.getById(id);
+    static async get(id, includeServer = true) {
+        const game = await Db.get(id);
 
-        /**
-         * @type {Game}
-         */
-        let game;
-
-        if (completedGame) {
-            const data = JSON.parse(completedGame.data);
-
-            game = new Game({
-                id: completedGame.id,
-                date: completedGame.date,
-                ip: completedGame.ip,
-                server: includeServer ? await ServersDb.getByIp(completedGame.ip) : void 0,
-                settings: data.settings,
-                start: data.start,
-                end: data.end,
-                players: data.players,
-                kills: data.kills,
-                goals: data.goals,
-                flagStats: data.flagStats,
-                events: data.events,
-                damage: data.damage,
-                teamScore: data.teamScore,
-                teamChanges: data.teamChanges,
-                remaining: data.date ? 3600000 + data.date.getTime() - new Date().getTime() : void 0
-            });
-
+        if (game) {
             if (game.events) {
                 game.events.sort((a, b) => a.time - b.time);
             }
@@ -104,22 +66,6 @@ class Completed {
         return game;
     }
 
-    //              #    ###               ###         ###      #
-    //              #    #  #              #  #         #       #
-    //  ###   ##   ###   #  #   ###  #  #  ###   #  #   #     ###
-    // #  #  # ##   #    ###   #  #  #  #  #  #  #  #   #    #  #
-    //  ##   ##     #    # #   # ##  ####  #  #   # #   #    #  #
-    // #      ##     ##  #  #   # #  ####  ###     #   ###    ###
-    //  ###                                       #
-    /**
-     * Gets a completed game's raw data by ID.
-     * @param {number} id The Game ID.
-     * @returns {Promise<object>} A promise that resolves with the raw game data.
-     */
-    static getRawById(id) {
-        return Db.getById(id);
-    }
-
     //              #    #      #            #
     //              #    #                   #
     //  ###   ##   ###   #     ##     ###   ###
@@ -135,27 +81,7 @@ class Completed {
     static async getList(page) {
         const gamesList = await Db.getList(page, 25);
 
-        const games = gamesList.games.map((completedGame) => {
-            const data = JSON.parse(completedGame.data);
-
-            const game = new Game({
-                id: completedGame.id,
-                date: completedGame.date,
-                ip: completedGame.ip,
-                settings: data.settings,
-                start: data.start,
-                end: data.end,
-                players: data.players,
-                kills: data.kills,
-                goals: data.goals,
-                flagStats: data.flagStats,
-                events: data.events,
-                damage: data.damage,
-                teamScore: data.teamScore,
-                teamChanges: data.teamChanges,
-                remaining: data.date ? 3600000 + data.date.getTime() - new Date().getTime() : void 0
-            });
-
+        const games = gamesList.games.map((game) => {
             if (game.events) {
                 game.events.sort((a, b) => a.time - b.time);
             }
@@ -212,27 +138,7 @@ class Completed {
     static async getRecent() {
         const gamesList = await Db.getRecent();
 
-        const games = gamesList.map((completedGame) => {
-            const data = JSON.parse(completedGame.data);
-
-            const game = new Game({
-                id: completedGame.id,
-                date: completedGame.date,
-                ip: completedGame.ip,
-                settings: data.settings,
-                start: data.start,
-                end: data.end,
-                players: data.players,
-                kills: data.kills,
-                goals: data.goals,
-                flagStats: data.flagStats,
-                events: data.events,
-                damage: data.damage,
-                teamScore: data.teamScore,
-                teamChanges: data.teamChanges,
-                remaining: data.date ? 3600000 + data.date.getTime() - new Date().getTime() : void 0
-            });
-
+        const games = gamesList.map((game) => {
             if (game.events) {
                 game.events.sort((a, b) => a.time - b.time);
             }
@@ -284,27 +190,7 @@ class Completed {
     static async search(query, page) {
         const gamesList = await Db.search(query, page, 25);
 
-        const games = gamesList.games.map((completedGame) => {
-            const data = JSON.parse(completedGame.data);
-
-            const game = new Game({
-                id: completedGame.id,
-                date: completedGame.date,
-                ip: completedGame.ip,
-                settings: data.settings,
-                start: data.start,
-                end: data.end,
-                players: data.players,
-                kills: data.kills,
-                goals: data.goals,
-                flagStats: data.flagStats,
-                events: data.events,
-                damage: data.damage,
-                teamScore: data.teamScore,
-                teamChanges: data.teamChanges,
-                remaining: data.date ? 3600000 + data.date.getTime() - new Date().getTime() : void 0
-            });
-
+        const games = gamesList.games.map((game) => {
             if (game.events) {
                 game.events.sort((a, b) => a.time - b.time);
             }

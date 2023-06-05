@@ -1,6 +1,6 @@
 /**
- * @typedef {import("../../types/messageTypes").MessageData} MessageTypes.MessageData
- * @typedef {import("../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ * @typedef {import("../../types/node/messageTypes").MessageData} MessageTypes.MessageData
+ * @typedef {import("../../types/node/serverTypes").LocalServer} ServerTypes.LocalServer
  */
 
 //  #   #                         ###
@@ -226,3 +226,9 @@ HomeJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // 
 /** @type {typeof import("./common/websocketclient")} */
 // @ts-ignore
 HomeJs.WebSocketClient = typeof WebSocketClient === "undefined" ? require("./common/websocketclient") : WebSocketClient; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.HomeJs = HomeJs;
+} else {
+    module.exports = HomeJs; // eslint-disable-line no-undef
+}

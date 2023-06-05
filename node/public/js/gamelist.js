@@ -79,3 +79,9 @@ GameListJs.Template = typeof Template === "undefined" ? require("./common/templa
 /** @type {typeof import("./common/time")} */
 // @ts-ignore
 GameListJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.GameListJs = GameListJs;
+} else {
+    module.exports = GameListJs; // eslint-disable-line no-undef
+}

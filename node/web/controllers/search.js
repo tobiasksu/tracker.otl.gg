@@ -51,7 +51,7 @@ class Search extends RouterBase {
      * @returns {Promise} A promise that resolves when the request is complete.
      */
     static async get(req, res) {
-        const q = (`${req.query.q}` || "").substr(0, 100);
+        const q = (`${req.query.q}` || "").substring(0, 100);
 
         let games, count;
         if (!q || q.trim().length === 0) {

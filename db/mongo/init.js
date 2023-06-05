@@ -305,7 +305,7 @@ tracker.createCollection("completed", {
                                         bsonType: "string"
                                     },
                                     time: {
-                                        bsonType: "decimal"
+                                        bsonType: "double"
                                     },
                                     weapon: {
                                         bsonType: "string"
@@ -339,7 +339,7 @@ tracker.createCollection("completed", {
                                         bsonType: "string"
                                     },
                                     time: {
-                                        bsonType: "decimal"
+                                        bsonType: "double"
                                     }
                                 }
                             }
@@ -364,7 +364,7 @@ tracker.createCollection("completed", {
                                         bsonType: "string"
                                     },
                                     time: {
-                                        bsonType: "decimal"
+                                        bsonType: "double"
                                     }
                                 }
                             }
@@ -380,7 +380,7 @@ tracker.createCollection("completed", {
                                 additionalProperties: true,
                                 properties: {
                                     time: {
-                                        bsonType: "decimal"
+                                        bsonType: "double"
                                     },
                                     type: {
                                         bsonType: "string"
@@ -411,7 +411,7 @@ tracker.createCollection("completed", {
                                         bsonType: "string"
                                     },
                                     damage: {
-                                        bsonType: "decimal"
+                                        bsonType: "double"
                                     },
                                     weapon: {
                                         bsonType: "string"
@@ -483,6 +483,8 @@ tracker.createCollection("completed", {
     }
 });
 
+tracker.createIndex({"$**": "text"});
+
 // Create server collection.
 tracker.createCollection("server", {
     validator: {
@@ -506,6 +508,9 @@ tracker.createCollection("server", {
                     properties: {
                         ip: {
                             bsonType: "string"
+                        },
+                        keepListed: {
+                            bsonType: "bool"
                         },
                         name: {
                             bsonType: "string"

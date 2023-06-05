@@ -7,6 +7,6 @@
     },
     "include": [
         "**/*.js",
-        "../types/*.d.ts"
-, "../types/archiveTypes.d.ts"    ]
+        "../types/browser/*.d.ts",
+    ]
 }

@@ -65,7 +65,7 @@ class Archive extends RouterBase {
             return;
         }
 
-        const game = await Completed.getById(Number.parseInt(req.params.id, 10));
+        const game = await Completed.get(Number.parseInt(req.params.id, 10));
 
         if (!game) {
             res.status(404).send(await Common.page(

@@ -1,6 +1,6 @@
 /**
  * @typedef {import("../js/common/game")} Game
- * @typedef {import("../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ * @typedef {import("../../types/node/serverTypes").LocalServer} ServerTypes.LocalServer
  */
 
 //  #   #                       #   #    #

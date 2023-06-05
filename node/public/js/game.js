@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../types/messageTypes").Message} MessageTypes.Message
+ * @typedef {import("../../types/node/messageTypes").Message} MessageTypes.Message
  */
 
 //   ###                          ###
@@ -170,3 +170,9 @@ GameJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // 
 /** @type {typeof import("./common/websocketclient")} */
 // @ts-ignore
 GameJs.WebSocketClient = typeof WebSocketClient === "undefined" ? require("./common/websocketclient") : WebSocketClient; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.GameJs = GameJs;
+} else {
+    module.exports = GameJs; // eslint-disable-line no-undef
+}

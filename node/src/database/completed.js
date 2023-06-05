@@ -1,11 +1,6 @@
-/**
- * @typedef {import("../../public/js/game")} Game
- */
-
-const Db = require("@roncli/node-database"),
-    db = require("./index"),
-    FtsQuery = require("full-text-search-query"),
-    ftsQuery = new FtsQuery(true);
+const Db = require("."),
+    Game = require("../../public/js/common/game"),
+    MongoDb = require("mongodb");
 
 //   ###                         ##            #                #  ####   #
 //  #   #                         #            #                #   #  #  #
@@ -30,70 +25,187 @@ class CompletedDb {
      * Adds a completed game to the database.
      * @param {string} ip The IP address.
      * @param {Game} saveData The data to save.
-     * @returns {Promise<number>} A promise that resolves when the completed game is added.
+     * @returns {Promise<number>} A promise that returns the ID of the completed game.
      */
     static async add(ip, saveData) {
-        /**
-         * @type {{recordsets: [{CompletedId: number}[]]}}
-         */
-        const data = await db.query(/* sql */`
-            INSERT INTO tblCompleted (IPAddress, Data) VALUES (@ip, @data)
+        const db = await Db.get();
 
-            SELECT SCOPE_IDENTITY() CompletedId
-        `, {
-            ip: {type: Db.VARCHAR(15), value: ip},
-            data: {type: Db.NTEXT, value: JSON.stringify(saveData)}
-        });
+        const game = {
+            _id: MongoDb.Long.ZERO,
+            ipAddress: saveData.ip,
+            dateAdded: new Date(),
+            data: {
+                ip: saveData.ip,
+                settings: saveData.settings,
+                server: saveData.server,
+                start: saveData.start,
+                end: saveData.end,
+                players: saveData.players ? saveData.players.map((player) => ({
+                    name: player.name,
+                    team: player.team,
+                    kills: player.kills,
+                    assists: player.assists,
+                    deaths: player.deaths,
+                    goals: player.goals,
+                    goalAssists: player.goalAssists,
+                    blunders: player.blunders,
+                    returns: player.returns,
+                    pickups: player.pickups,
+                    captures: player.captures,
+                    carrierKills: player.carrierKills,
+                    connected: player.connected,
+                    disconnected: player.disconnected,
+                    timeInGame: Db.toDouble(player.timeInGame)
+                })) : void 0,
+                kills: saveData.kills ? saveData.kills.map((kill) => ({
+                    attacker: kill.attacker,
+                    attackerTeam: kill.attackerTeam,
+                    defender: kill.defender,
+                    defenderTeam: kill.defenderTeam,
+                    assisted: kill.assisted,
+                    assistedTeam: kill.assistedTeam,
+                    time: Db.toDouble(kill.time),
+                    weapon: kill.weapon
+                })) : void 0,
+                goals: saveData.goals ? saveData.goals.map((goal) => ({
+                    blunder: goal.blunder,
+                    scorer: goal.scorer,
+                    scorerTeam: goal.scorerTeam,
+                    assisted: goal.assisted,
+                    assistedTeam: goal.assistedTeam,
+                    time: Db.toDouble(goal.time)
+                })) : void 0,
+                flagStats: saveData.flagStats ? saveData.flagStats.map((stat) => ({
+                    event: stat.event,
+                    scorer: stat.scorer,
+                    scorerTeam: stat.scorerTeam,
+                    time: Db.toDouble(stat.time)
+                })) : void 0,
+                events: saveData.events ? saveData.events.map((event) => ({
+                    time: Db.toDouble(event.time),
+                    type: event.type,
+                    description: event.description,
+                    player: event.player
+                })) : void 0,
+                damage: saveData.damage ? saveData.damage.map((stat) => ({
+                    attacker: stat.attacker,
+                    defender: stat.defender,
+                    damage: Db.toDouble(stat.damage),
+                    weapon: stat.weapon
+                })) : void 0,
+                teamScore: saveData.teamScore,
+                startTime: saveData.startTime,
+                projectedEnd: saveData.projectedEnd,
+                countdown: saveData.countdown,
+                elapsed: saveData.countdown,
+                inLobby: saveData.inLobby,
+                teamChanges: saveData.teamChanges,
+                remaining: saveData.remaining,
+                id: saveData.id,
+                date: saveData.date
+            }
+        };
 
-        return data && data.recordsets && data.recordsets[0] && data.recordsets[0][0] && data.recordsets[0][0].CompletedId || void 0;
+        Db.id(game, "completed");
+
+        await db.collection("completed").insertOne(game);
+
+        saveData.id = Db.fromLong(game._id);
+
+        return Db.fromLong(game._id);
     }
 
-    //              #     ##   ##    ##    ###      #
-    //              #    #  #   #     #     #       #
-    //  ###   ##   ###   #  #   #     #     #     ###   ###
-    // #  #  # ##   #    ####   #     #     #    #  #  ##
-    //  ##   ##     #    #  #   #     #     #    #  #    ##
-    // #      ##     ##  #  #  ###   ###   ###    ###  ###
+    //              #
+    //              #
+    //  ###   ##   ###
+    // #  #  # ##   #
+    //  ##   ##     #
+    // #      ##     ##
     //  ###
-    /**
-     * Gets all IDs for completed games.
-     * @returns {Promise<number[]>} A promise that resolves with the list of completed IDs.
-     */
-    static async getAllIds() {
-        /**
-         * @type {{recordsets: [{CompletedId: number}[]]}}
-         */
-        const data = await db.query(/* sql */`
-            SELECT CompletedId FROM tblCompleted ORDER BY CompletedId
-        `);
-        return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => row.CompletedId) || [];
-    }
-
-    //              #    ###         ###      #
-    //              #    #  #         #       #
-    //  ###   ##   ###   ###   #  #   #     ###
-    // #  #  # ##   #    #  #  #  #   #    #  #
-    //  ##   ##     #    #  #   # #   #    #  #
-    // #      ##     ##  ###     #   ###    ###
-    //  ###                     #
     /**
      * Gets a completed game by ID.
      * @param {number} id The Game ID.
-     * @returns {Promise<{id: number, ip: string, data: string, date: Date}>} A promise that resolves with the game.
+     * @returns {Promise<Game>} A promise that returns the completed game.
      */
-    static async getById(id) {
-        /**
-         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[]]}}
-         */
-        const data = await db.query(/* sql */`
-            SELECT CompletedId, IPAddress, Data, CrDate FROM tblCompleted WHERE CompletedId = @id
-        `, {id: {type: Db.INT, value: id}});
-        return data && data.recordsets && data.recordsets[0] && data.recordsets[0][0] && {
-            id: data.recordsets[0][0].CompletedId,
-            ip: data.recordsets[0][0].IPAddress,
-            data: data.recordsets[0][0].Data,
-            date: data.recordsets[0][0].CrDate
-        } || void 0;
+    static async get(id) {
+        const db = await Db.get();
+
+        const game = await db.collection("completed").findOne({_id: new MongoDb.Long(id)});
+
+        if (!game) {
+            return void 0;
+        }
+
+        return new Game({
+            ip: game.ipAddress,
+            settings: game.data.settings,
+            server: game.data.server,
+            start: game.data.start,
+            end: game.data.end,
+            players: game.data.players ? game.data.players.map((player) => ({
+                name: player.name,
+                team: player.team,
+                kills: player.kills,
+                assists: player.assists,
+                deaths: player.deaths,
+                goals: player.goals,
+                goalAssists: player.goalAssists,
+                blunders: player.blunders,
+                returns: player.returns,
+                pickups: player.pickups,
+                captures: player.captures,
+                carrierKills: player.carrierKills,
+                connected: player.connected,
+                disconnected: player.disconnected,
+                timeInGame: Db.fromDouble(player.timeInGame)
+            })) : void 0,
+            kills: game.data.kills ? game.data.kills.map((kill) => ({
+                attacker: kill.attacker,
+                attackerTeam: kill.attackerTeam,
+                defender: kill.defender,
+                defenderTeam: kill.defenderTeam,
+                assisted: kill.assisted,
+                assistedTeam: kill.assistedTeam,
+                time: Db.fromDouble(kill.time),
+                weapon: kill.weapon
+            })) : void 0,
+            goals: game.data.goals ? game.data.goals.map((goal) => ({
+                blunder: goal.blunder,
+                scorer: goal.scorer,
+                scorerTeam: goal.scorerTeam,
+                assisted: goal.assisted,
+                assistedTeam: goal.assistedTeam,
+                time: Db.fromDouble(goal.time)
+            })) : void 0,
+            flagStats: game.data.flagStats ? game.data.flagStats.map((stat) => ({
+                event: stat.event,
+                scorer: stat.scorer,
+                scorerTeam: stat.scorerTeam,
+                time: Db.fromDouble(stat.time)
+            })) : void 0,
+            events: game.data.events ? game.data.events.map((event) => ({
+                time: Db.fromDouble(event.time),
+                type: event.type,
+                description: event.description,
+                player: event.player
+            })) : void 0,
+            damage: game.data.damage ? game.data.damage.map((stat) => ({
+                attacker: stat.attacker,
+                defender: stat.defender,
+                damage: Db.fromDouble(stat.damage),
+                weapon: stat.weapon
+            })) : void 0,
+            teamScore: game.data.teamScore,
+            startTime: game.data.startTime,
+            projectedEnd: game.data.projectedEnd,
+            countdown: game.data.countdown,
+            elapsed: game.data.elapsed,
+            inLobby: game.data.inLobby,
+            teamChanges: game.data.teamChanges,
+            remaining: game.data.remaining,
+            id: Db.fromLong(game._id),
+            date: game.dateAdded
+        });
     }
 
     //              #    #      #            #
@@ -107,36 +219,90 @@ class CompletedDb {
      * Gets the paginated list of games.
      * @param {number} page The page number.
      * @param {number} pageSize The size of the page.
-     * @returns {Promise<{games: {id: number, ip: string, data: string, date: Date}[], count: number}>} A promise that resolves with the recent games.
+     * @returns {Promise<{games: Game[], count: number}>} A promise that returns the recent completed games.
      */
     static async getList(page, pageSize) {
-        /**
-         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[], {Games: number}[]]}}
-         */
-        const data = await db.query(/* sql */`
-            WITH g AS (
-                SELECT ROW_NUMBER() OVER (ORDER BY CompletedId DESC) RowNum, CompletedId, IPAddress, Data, CrDate
-                FROM tblCompleted
-            )
-            SELECT CompletedId, IPAddress, Data, CrDate
-            FROM g
-            WHERE RowNum BETWEEN (@page - 1) * @pageSize + 1 AND @page * @pageSize
-            ORDER BY CompletedId DESC
+        const db = await Db.get();
 
-            SELECT COUNT(CompletedId) Games FROM tblCompleted
-        `, {
-            page: {type: Db.INT, value: page},
-            pageSize: {type: Db.INT, value: pageSize}
-        });
-        return data && data.recordsets && data.recordsets.length === 2 && {
-            games: data.recordsets[0].map((row) => ({
-                id: row.CompletedId,
-                ip: row.IPAddress,
-                data: row.Data,
-                date: row.CrDate
-            })),
-            count: data.recordsets[1][0].Games
-        } || {games: [], count: 0};
+        const games = await db.collection("completed").find({}, {sort: {_id: -1}, skip: (page - 1) * pageSize, limit: pageSize}).toArray(),
+            count = await db.collection("completed").countDocuments();
+
+        if (!games) {
+            return {games: [], count: 0};
+        }
+
+        const completed = games.map((game) => new Game({
+            ip: game.ipAddress,
+            settings: game.data.settings,
+            server: game.data.server,
+            start: game.data.start,
+            end: game.data.end,
+            players: game.data.players ? game.data.players.map((player) => ({
+                name: player.name,
+                team: player.team,
+                kills: player.kills,
+                assists: player.assists,
+                deaths: player.deaths,
+                goals: player.goals,
+                goalAssists: player.goalAssists,
+                blunders: player.blunders,
+                returns: player.returns,
+                pickups: player.pickups,
+                captures: player.captures,
+                carrierKills: player.carrierKills,
+                connected: player.connected,
+                disconnected: player.disconnected,
+                timeInGame: Db.fromDouble(player.timeInGame)
+            })) : void 0,
+            kills: game.data.kills ? game.data.kills.map((kill) => ({
+                attacker: kill.attacker,
+                attackerTeam: kill.attackerTeam,
+                defender: kill.defender,
+                defenderTeam: kill.defenderTeam,
+                assisted: kill.assisted,
+                assistedTeam: kill.assistedTeam,
+                time: Db.fromDouble(kill.time),
+                weapon: kill.weapon
+            })) : void 0,
+            goals: game.data.goals ? game.data.goals.map((goal) => ({
+                blunder: goal.blunder,
+                scorer: goal.scorer,
+                scorerTeam: goal.scorerTeam,
+                assisted: goal.assisted,
+                assistedTeam: goal.assistedTeam,
+                time: Db.fromDouble(goal.time)
+            })) : void 0,
+            flagStats: game.data.flagStats ? game.data.flagStats.map((stat) => ({
+                event: stat.event,
+                scorer: stat.scorer,
+                scorerTeam: stat.scorerTeam,
+                time: Db.fromDouble(stat.time)
+            })) : void 0,
+            events: game.data.events ? game.data.events.map((event) => ({
+                time: Db.fromDouble(event.time),
+                type: event.type,
+                description: event.description,
+                player: event.player
+            })) : void 0,
+            damage: game.data.damage ? game.data.damage.map((stat) => ({
+                attacker: stat.attacker,
+                defender: stat.defender,
+                damage: Db.fromDouble(stat.damage),
+                weapon: stat.weapon
+            })) : void 0,
+            teamScore: game.data.teamScore,
+            startTime: game.data.startTime,
+            projectedEnd: game.data.projectedEnd,
+            countdown: game.data.countdown,
+            elapsed: game.data.elapsed,
+            inLobby: game.data.inLobby,
+            teamChanges: game.data.teamChanges,
+            remaining: game.data.remaining,
+            id: Db.fromLong(game._id),
+            date: game.dateAdded
+        }));
+
+        return {games: completed, count};
     }
 
     //              #    ###                            #
@@ -148,21 +314,87 @@ class CompletedDb {
     //  ###
     /**
      * Gets the games that completed within the past hour.
-     * @returns {Promise<{id: number, ip: string, data: string, date: Date}[]>} A promise that resolves with the recent games.
+     * @returns {Promise<Game[]>} A promise that resolves with the recent games.
      */
     static async getRecent() {
-        /**
-         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[]]}}
-         */
-        const data = await db.query(/* sql */`
-            SELECT CompletedId, IPAddress, Data, CrDate FROM tblCompleted WHERE CrDate >= DATEADD(hour, -1, GETUTCDATE()) ORDER BY CrDate, CompletedId
-        `);
-        return data && data.recordsets && data.recordsets[0] && data.recordsets[0].map((row) => ({
-            id: row.CompletedId,
-            ip: row.IPAddress,
-            data: row.Data,
-            date: row.CrDate
-        })) || [];
+        const db = await Db.get();
+
+        const games = await db.collection("completed").find({dateAdded: {$gt: new Date(Date.now() - 3600000)}}, {sort: {dateAdded: 1}}).toArray();
+
+        if (!games) {
+            return [];
+        }
+
+        return games.map((game) => new Game({
+            ip: game.ipAddress,
+            settings: game.data.settings,
+            server: game.data.server,
+            start: game.data.start,
+            end: game.data.end,
+            players: game.data.players ? game.data.players.map((player) => ({
+                name: player.name,
+                team: player.team,
+                kills: player.kills,
+                assists: player.assists,
+                deaths: player.deaths,
+                goals: player.goals,
+                goalAssists: player.goalAssists,
+                blunders: player.blunders,
+                returns: player.returns,
+                pickups: player.pickups,
+                captures: player.captures,
+                carrierKills: player.carrierKills,
+                connected: player.connected,
+                disconnected: player.disconnected,
+                timeInGame: Db.fromDouble(player.timeInGame)
+            })) : void 0,
+            kills: game.data.kills ? game.data.kills.map((kill) => ({
+                attacker: kill.attacker,
+                attackerTeam: kill.attackerTeam,
+                defender: kill.defender,
+                defenderTeam: kill.defenderTeam,
+                assisted: kill.assisted,
+                assistedTeam: kill.assistedTeam,
+                time: Db.fromDouble(kill.time),
+                weapon: kill.weapon
+            })) : void 0,
+            goals: game.data.goals ? game.data.goals.map((goal) => ({
+                blunder: goal.blunder,
+                scorer: goal.scorer,
+                scorerTeam: goal.scorerTeam,
+                assisted: goal.assisted,
+                assistedTeam: goal.assistedTeam,
+                time: Db.fromDouble(goal.time)
+            })) : void 0,
+            flagStats: game.data.flagStats ? game.data.flagStats.map((stat) => ({
+                event: stat.event,
+                scorer: stat.scorer,
+                scorerTeam: stat.scorerTeam,
+                time: Db.fromDouble(stat.time)
+            })) : void 0,
+            events: game.data.events ? game.data.events.map((event) => ({
+                time: Db.fromDouble(event.time),
+                type: event.type,
+                description: event.description,
+                player: event.player
+            })) : void 0,
+            damage: game.data.damage ? game.data.damage.map((stat) => ({
+                attacker: stat.attacker,
+                defender: stat.defender,
+                damage: Db.fromDouble(stat.damage),
+                weapon: stat.weapon
+            })) : void 0,
+            teamScore: game.data.teamScore,
+            startTime: game.data.startTime,
+            projectedEnd: game.data.projectedEnd,
+            countdown: game.data.countdown,
+            elapsed: game.data.elapsed,
+            inLobby: game.data.inLobby,
+            teamChanges: game.data.teamChanges,
+            remaining: game.data.remaining,
+            id: Db.fromLong(game._id),
+            date: game.dateAdded
+        }));
     }
 
     //                                #
@@ -176,44 +408,90 @@ class CompletedDb {
      * @param {string} query The query.
      * @param {number} page The page number.
      * @param {number} pageSize The size of the page.
-     * @returns {Promise<{games: {id: number, ip: string, data: string, date: Date}[], count: number}>} A promise that resolves with the recent games.
+     * @returns {Promise<{games: Game[], count: number}>} A promise that returns the searched completed games.
      */
     static async search(query, page, pageSize) {
-        const transformedQuery = ftsQuery.transform(query);
+        const db = await Db.get();
 
-        if (!transformedQuery || transformedQuery.length === 0) {
+        const games = await db.collection("completed").find({"$text": {"$search": query}}, {sort: {_id: -1}, skip: (page - 1) * pageSize, limit: pageSize}).toArray(),
+            count = await db.collection("completed").countDocuments();
+
+        if (!games) {
             return {games: [], count: 0};
         }
 
-        /**
-         * @type {{recordsets: [{CompletedId: number, IPAddress: string, Data: string, CrDate: Date}[], {Games: number}[]]}}
-         */
-        const data = await db.query(/* sql */`
-            WITH g AS (
-                SELECT ROW_NUMBER() OVER (ORDER BY CompletedId DESC) RowNum, CompletedId, IPAddress, Data, CrDate
-                FROM tblCompleted
-                WHERE CONTAINS(tblCompleted.Data, @query)
-            )
-            SELECT CompletedId, IPAddress, Data, CrDate
-            FROM g
-            WHERE RowNum BETWEEN (@page - 1) * @pageSize + 1 AND @page * @pageSize
-            ORDER BY CompletedId DESC
+        const completed = games.map((game) => new Game({
+            ip: game.ipAddress,
+            settings: game.data.settings,
+            server: game.data.server,
+            start: game.data.start,
+            end: game.data.end,
+            players: game.data.players ? game.data.players.map((player) => ({
+                name: player.name,
+                team: player.team,
+                kills: player.kills,
+                assists: player.assists,
+                deaths: player.deaths,
+                goals: player.goals,
+                goalAssists: player.goalAssists,
+                blunders: player.blunders,
+                returns: player.returns,
+                pickups: player.pickups,
+                captures: player.captures,
+                carrierKills: player.carrierKills,
+                connected: player.connected,
+                disconnected: player.disconnected,
+                timeInGame: Db.fromDouble(player.timeInGame)
+            })) : void 0,
+            kills: game.data.kills ? game.data.kills.map((kill) => ({
+                attacker: kill.attacker,
+                attackerTeam: kill.attackerTeam,
+                defender: kill.defender,
+                defenderTeam: kill.defenderTeam,
+                assisted: kill.assisted,
+                assistedTeam: kill.assistedTeam,
+                time: Db.fromDouble(kill.time),
+                weapon: kill.weapon
+            })) : void 0,
+            goals: game.data.goals ? game.data.goals.map((goal) => ({
+                blunder: goal.blunder,
+                scorer: goal.scorer,
+                scorerTeam: goal.scorerTeam,
+                assisted: goal.assisted,
+                assistedTeam: goal.assistedTeam,
+                time: Db.fromDouble(goal.time)
+            })) : void 0,
+            flagStats: game.data.flagStats ? game.data.flagStats.map((stat) => ({
+                event: stat.event,
+                scorer: stat.scorer,
+                scorerTeam: stat.scorerTeam,
+                time: Db.fromDouble(stat.time)
+            })) : void 0,
+            events: game.data.events ? game.data.events.map((event) => ({
+                time: Db.fromDouble(event.time),
+                type: event.type,
+                description: event.description,
+                player: event.player
+            })) : void 0,
+            damage: game.data.damage ? game.data.damage.map((stat) => ({
+                attacker: stat.attacker,
+                defender: stat.defender,
+                damage: Db.fromDouble(stat.damage),
+                weapon: stat.weapon
+            })) : void 0,
+            teamScore: game.data.teamScore,
+            startTime: game.data.startTime,
+            projectedEnd: game.data.projectedEnd,
+            countdown: game.data.countdown,
+            elapsed: game.data.elapsed,
+            inLobby: game.data.inLobby,
+            teamChanges: game.data.teamChanges,
+            remaining: game.data.remaining,
+            id: Db.fromLong(game._id),
+            date: game.dateAdded
+        }));
 
-            SELECT COUNT(CompletedId) Games FROM tblCompleted WHERE CONTAINS(tblCompleted.Data, @query)
-        `, {
-            query: {type: Db.NVARCHAR(4000), value: transformedQuery},
-            page: {type: Db.INT, value: page},
-            pageSize: {type: Db.INT, value: pageSize}
-        });
-        return data && data.recordsets && data.recordsets.length === 2 && {
-            games: data.recordsets[0].map((row) => ({
-                id: row.CompletedId,
-                ip: row.IPAddress,
-                data: row.Data,
-                date: row.CrDate
-            })),
-            count: data.recordsets[1][0].Games
-        } || {games: [], count: 0};
+        return {games: completed, count};
     }
 }
 

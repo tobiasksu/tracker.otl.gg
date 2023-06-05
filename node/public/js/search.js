@@ -79,3 +79,9 @@ SearchJs.Template = typeof Template === "undefined" ? require("./common/template
 /** @type {typeof import("./common/time")} */
 // @ts-ignore
 SearchJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.SearchJs = SearchJs;
+} else {
+    module.exports = SearchJs; // eslint-disable-line no-undef
+}

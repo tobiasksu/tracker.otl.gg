@@ -1,15 +1,15 @@
 /**
- * @typedef {import("../../../types/gameTypes").GameData} GameTypes.GameData
- * @typedef {import("../../../types/messageTypes").MessageTypeBlunder} MessageTypes.MessageTypeBlunder
- * @typedef {import("../../../types/messageTypes").MessageTypeConnect} MessageTypes.MessageTypeConnect
- * @typedef {import("../../../types/messageTypes").MessageTypeCTF} MessageTypes.MessageTypeCTF
- * @typedef {import("../../../types/messageTypes").MessageTypeDisconnect} MessageTypes.MessageTypeDisconnect
- * @typedef {import("../../../types/messageTypes").MessageTypeEndGame} MessageTypes.MessageTypeEndGame
- * @typedef {import("../../../types/messageTypes").MessageTypeGoal} MessageTypes.MessageTypeGoal
- * @typedef {import("../../../types/messageTypes").MessageTypeKill} MessageTypes.MessageTypeKill
- * @typedef {import("../../../types/messageTypes").MessageTypeStartGame} MessageTypes.MessageTypeStartGame
- * @typedef {import("../../../types/messageTypes").MessageTypeTeamChange} MessageTypes.MessageTypeTeamChange
- * @typedef {import("../../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ * @typedef {import("../../../types/node/gameTypes").GameData} GameTypes.GameData
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeBlunder} MessageTypes.MessageTypeBlunder
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeConnect} MessageTypes.MessageTypeConnect
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeCTF} MessageTypes.MessageTypeCTF
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeDisconnect} MessageTypes.MessageTypeDisconnect
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeEndGame} MessageTypes.MessageTypeEndGame
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeGoal} MessageTypes.MessageTypeGoal
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeKill} MessageTypes.MessageTypeKill
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeStartGame} MessageTypes.MessageTypeStartGame
+ * @typedef {import("../../../types/node/messageTypes").MessageTypeTeamChange} MessageTypes.MessageTypeTeamChange
+ * @typedef {import("../../../types/node/serverTypes").LocalServer} ServerTypes.LocalServer
  */
 
 //   ###
@@ -400,7 +400,7 @@ class Game {
                 pickups: 0,
                 captures: 0,
                 carrierKills: 0,
-                connected: 0
+                connected: false
             }));
         }
 

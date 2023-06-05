@@ -58,7 +58,7 @@ class GameApi extends RouterBase {
                 return;
             }
 
-            const game = await Completed.getById(Number.parseInt(req.params.id, 10), false);
+            const game = await Completed.get(Number.parseInt(req.params.id, 10), false);
 
             if (!game) {
                 res.status(404).json({error: "Game not found."});

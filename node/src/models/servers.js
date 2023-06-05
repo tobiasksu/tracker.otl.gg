@@ -1,6 +1,6 @@
 /**
- * @typedef {import("../../types/serverTypes").Server} ServerTypes.Server
- * @typedef {import("../../types/serverTypes").LocalServer} ServerTypes.LocalServer
+ * @typedef {import("../../types/node/serverTypes").Server} ServerTypes.Server
+ * @typedef {import("../../types/node/serverTypes").LocalServer} ServerTypes.LocalServer
  */
 
 const Db = require("../database/servers"),

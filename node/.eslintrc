@@ -131,6 +131,14 @@
             }
         },
         {
+            "env": {
+                "es6": true,
+                "node": false,
+                "browser": true
+            },
+            "parserOptions": {
+                "sourceType": "script"
+            },
             "files": ["public/views/**/*.js"],
             "rules": {
                 "no-implicit-globals": "off"

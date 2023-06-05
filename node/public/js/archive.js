@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../types/archiveTypes").DifferentialDataset} ArchiveTypes.DifferentialDataset
+ * @typedef {import("../../types/node/archiveTypes").DifferentialDataset} ArchiveTypes.DifferentialDataset
  * @typedef {import("chart.js").ChartEvent} ChartJs.ChartEvent
  * @typedef {typeof import("chart.js").Chart} ChartJs.Chart
  * @typedef {import("./common/game")} Game
@@ -1916,3 +1916,9 @@ ArchiveJs.Chart = typeof Chart === "undefined" ? require("../../node_modules/cha
 /** @type {typeof import("./common/time")} */
 // @ts-ignore
 ArchiveJs.Time = typeof Time === "undefined" ? require("./common/time") : Time; // eslint-disable-line no-undef
+
+if (typeof module === "undefined") {
+    window.ArchiveJs = ArchiveJs;
+} else {
+    module.exports = ArchiveJs; // eslint-disable-line no-undef
+}

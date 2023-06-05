@@ -1,4 +1,4 @@
-import Player from "../public/js/common/player"
+import Player from "../../public/js/common/player"
 import ServerTypes from "./serverTypes"
 
 declare namespace MessageTypes {

@@ -1,4 +1,20 @@
+import MongoDb from "mongodb"
+
 declare namespace ServerTypes {
+    type ServerMongoData = {
+        _id: MongoDb.ObjectId
+        ipAddress: string
+        visible: boolean
+        data: {
+            ip?: string
+            keepListed?: boolean
+            name?: string
+            notes?: string
+            version?: string
+            lastSeen?: Date
+        }
+    }
+
     type Server = {
         keepListed: boolean
         name: string

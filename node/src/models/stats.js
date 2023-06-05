@@ -1,5 +1,5 @@
 /**
- * @typedef {import("../../types/messageTypes").Message} MessageTypes.Message
+ * @typedef {import("../../types/node/messageTypes").Message} MessageTypes.Message
  */
 
 const Db = require("../database/completed"),

@@ -1,6 +1,6 @@
 /**
+ * @typedef {import("../../types/node/commonTypes").Files} CommonTypes.Files
  * @typedef {import("express").Request} Express.Request
- * @typedef {{js?: string[], css?: string[]}} Files
  */
 
 const url = require("url"),
@@ -52,7 +52,7 @@ class Common extends RouterBase {
     /**
      * Generates a webpage from the provided HTML using a common template.
      * @param {string} head The HTML to insert into the header.
-     * @param {Files} files The files to combine and minify.
+     * @param {CommonTypes.Files} files The files to combine and minify.
      * @param {string} html The HTML to make a full web page from.
      * @param {Express.Request} req The request of the page.
      * @returns {Promise<string>} The HTML of the full web page.
