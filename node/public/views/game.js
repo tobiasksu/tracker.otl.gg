@@ -69,10 +69,6 @@ GameView.CommonEventsView = typeof CommonEventsView === "undefined" ? require(".
 // @ts-ignore
 GameView.CommonSettingsView = typeof CommonSettingsView === "undefined" ? require("./common/settings") : CommonSettingsView; // eslint-disable-line no-undef
 
-/** @type {typeof import("../js/game")} */
-// @ts-ignore
-GameView.GameJs = typeof GameJs === "undefined" ? require("../js/game") : GameJs; // eslint-disable-line no-undef
-
 if (typeof module === "undefined") {
     window.GameView = GameView;
 } else {

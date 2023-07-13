@@ -208,7 +208,7 @@ tracker.createCollection("completed", {
                                     bsonType: "date"
                                 },
                                 old: {
-                                    bsontype: "bool"
+                                    bsonType: "bool"
                                 }
                             }
                         },
@@ -483,7 +483,7 @@ tracker.createCollection("completed", {
     }
 });
 
-tracker.createIndex({"$**": "text"});
+tracker.completed.createIndex({"$**": "text"});
 
 // Create server collection.
 tracker.createCollection("server", {

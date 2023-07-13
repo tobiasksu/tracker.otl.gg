@@ -1,8 +1,5 @@
 # Get mongo latest.
-FROM mongo:6.0.3
-
-# Get packages.
-RUN apt-get update && apt-get -y install cifs-utils && apt-get -y install keyutils
+FROM mongo:6.0.6
 
 # Create /docker-entrypoint-initdb.d directory.
 RUN mkdir -p /docker-entrypoint-initdb.d
