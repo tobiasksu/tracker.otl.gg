@@ -156,6 +156,7 @@ declare namespace MessageTypes {
         classicSpawnsEnabled?: boolean
         ctfCarrierBoostEnabled?: boolean
         suddenDeath?: boolean
+        server?: ServerTypes.LocalServer
     }
 
     type MessageTypeTeamChange = {

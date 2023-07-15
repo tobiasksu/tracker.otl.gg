@@ -38,7 +38,7 @@ class HomeGamesView {
 
 /** @type {typeof import("../common/details")} */
 // @ts-ignore
-HomeGamesView.CommonDetailsView = typeof DetailsView === "undefined" ? require("../common/details") : CommonDetailsView; // eslint-disable-line no-undef
+HomeGamesView.CommonDetailsView = typeof CommonDetailsView === "undefined" ? require("../common/details") : CommonDetailsView; // eslint-disable-line no-undef
 
 if (typeof module === "undefined") {
     window.HomeGamesView = HomeGamesView;

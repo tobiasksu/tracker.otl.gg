@@ -36,23 +36,25 @@ class Stats {
         if (data.name === "Stats") {
             let game = Game.getByIp(ip);
 
-            if (!game && data.type !== "StartGame" && data.type !== "LobbyStatus") {
-                if (data.type === "LobbyExit" || data.type === "Disconnect") {
-                    return;
-                }
+            if (!game && (data.type === "LobbyExit" || data.type === "Disconnect")) {
+                return;
+            }
 
+            if (!game) {
                 game = Game.getGame(ip);
 
-                game.startGame({
-                    type: "StartGame",
-                    matchMode: "ANARCHY"
-                });
+                if (data.type !== "StartGame" && data.type !== "LobbyStatus") {
+                    game.startGame({
+                        type: "StartGame",
+                        matchMode: "ANARCHY"
+                    });
 
-                Websocket.broadcast({ip, data: {
-                    matchMode: "ANARCHY",
-                    name: "Stats",
-                    type: "StartGame"
-                }});
+                    Websocket.broadcast({ip, data: {
+                        matchMode: "ANARCHY",
+                        name: "Stats",
+                        type: "StartGame"
+                    }});
+                }
             }
 
             if (!game.server) {
@@ -62,6 +64,7 @@ class Stats {
             switch (data.type) {
                 case "StartGame":
                 case "LobbyStatus":
+                    data.server = game.server;
                     game.startGame(data);
                     break;
                 case "Kill":

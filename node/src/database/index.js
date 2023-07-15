@@ -33,7 +33,7 @@ class Db {
      * @returns {number} The number.
      */
     static fromDouble(val) {
-        return typeof val === "number" ? val : val.value;
+        return val ? typeof val === "number" ? val : val.value : void 0;
     }
 
     //   #                     #
@@ -49,7 +49,7 @@ class Db {
      * @returns {number} The number.
      */
     static fromLong(val) {
-        return typeof val === "number" ? val : val.toNumber();
+        return val ? typeof val === "number" ? val : val.toNumber() : void 0;
     }
 
     //  #          ###               #     ##
@@ -99,7 +99,8 @@ class Db {
             client = new MongoDb.MongoClient(`mongodb://web_tracker:${process.env.WEB_TRACKER_PASSWORD}@db:27017/tracker`, {
                 authMechanism: "SCRAM-SHA-256",
                 authSource: "admin",
-                promoteLongs: false
+                promoteLongs: false,
+                ignoreUndefined: true
             });
         }
 

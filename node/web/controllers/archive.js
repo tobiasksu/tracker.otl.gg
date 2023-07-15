@@ -144,6 +144,9 @@ class Archive extends RouterBase {
                 js: [
                     "/js/common/timeago.min.js",
                     "/js/common/chart.js",
+                    "/js/common/encoding.js",
+                    "/js/common/time.js",
+                    "/js/common/countdown.js",
                     "/views/common/score.js",
                     "/views/common/playerCount.js",
                     "/views/common/completedDetails.js",

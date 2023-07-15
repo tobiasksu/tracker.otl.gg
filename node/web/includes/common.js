@@ -86,8 +86,8 @@ class Common extends RouterBase {
         }
 
         head = /* html */`
-            <script>Time.live=${live !== "off"};${live === "off" ? "if(window.location.href.indexOf(\"?live=off\")===-1)history.replaceState(null,\"\",window.location.href+(window.location.href.indexOf(\"?\")===-1?\"?\":\"&\")+\"live=off\");" : ""}</script>
-            ${head}${Minify.combine(files.js, "js")}${Minify.combine(files.css, "css")}
+            <script>window.timeLive=${live !== "off"};${live === "off" ? "if(window.location.href.indexOf(\"?live=off\")===-1)history.replaceState(null,\"\",window.location.href+(window.location.href.indexOf(\"?\")===-1?\"?\":\"&\")+\"live=off\");" : ""}</script>
+            ${head}${files.js.length === 0 ? "" : Minify.combine(files.js, "js")}${files.css.length === 0 ? "" : Minify.combine(files.css, "css")}
         `;
 
         return HtmlMinifierTerser.minify(

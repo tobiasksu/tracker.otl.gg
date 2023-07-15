@@ -111,12 +111,10 @@ class Servers {
         }
 
         Object.keys(data).forEach((key) => {
-            if (data[key]) {
-                if (key === "gameStarted") {
-                    server[key] = new Date();
-                } else {
-                    server[key] = data[key];
-                }
+            if (key === "gameStarted") {
+                server[key] = new Date();
+            } else {
+                server[key] = data[key];
             }
         });
 

@@ -95,6 +95,7 @@ declare global {
         SummaryView: typeof SummaryView
         Template: typeof Template
         Time: typeof Time
+        timeLive: boolean
         WebSocketClient: typeof WebSocketClient
     }
 }

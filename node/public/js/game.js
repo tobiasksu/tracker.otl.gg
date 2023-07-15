@@ -30,7 +30,7 @@ class GameJs {
 
         if (GameJs.Time.live) {
             GameJs.ws = new GameJs.WebSocketClient(`ws${window.location.protocol === "https:" ? "s" : ""}://${window.location.host}/game/${GameJs.game.ip}`);
-            GameJs.ws.instance.onmessage = GameJs.onmessage;
+            GameJs.ws.onmessage = GameJs.onmessage;
             GameJs.ws.open();
             el.innerText = "Disable Live Updates";
             el.href = `${window.location.href.replace(/[?&]live=on/, "")}${window.location.href.replace(/[?&]live=on/, "").indexOf("?") === -1 ? "?" : "&"}live=off`;

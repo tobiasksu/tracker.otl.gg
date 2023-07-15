@@ -81,47 +81,15 @@ class Completed {
     static async getList(page) {
         const gamesList = await Db.getList(page, 25);
 
-        const games = gamesList.games.map((game) => {
-            if (game.events) {
-                game.events.sort((a, b) => a.time - b.time);
-            }
-
-            const damage = [];
-
-            game.damage.forEach((dmg) => {
-                const stat = damage.find((d) => d.attacker === dmg.attacker && d.defender === dmg.defender && d.weapon === dmg.weapon);
-
-                if (stat) {
-                    stat.damage += dmg.damage;
-                } else {
-                    damage.push({
-                        attacker: dmg.attacker,
-                        defender: dmg.defender,
-                        weapon: dmg.weapon,
-                        damage: dmg.damage
-                    });
-                }
-            });
-
-            game.damage = damage;
-
-            return game;
-        });
-
         const count = gamesList.count,
             servers = {};
 
-        for (const game of games) {
-            Object.keys(game).forEach((key) => {
-                if (["settings", "teamScore", "players"].indexOf(key) === -1) {
-                    delete game[key];
-                }
-            });
+        for (const game of gamesList.games) {
             servers[game.ip] ||= await ServersDb.getByIp(game.ip);
             game.server = servers[game.ip];
         }
 
-        return {games, count};
+        return {games: gamesList.games, count};
     }
 
     //              #    ###                            #
@@ -190,42 +158,15 @@ class Completed {
     static async search(query, page) {
         const gamesList = await Db.search(query, page, 25);
 
-        const games = gamesList.games.map((game) => {
-            if (game.events) {
-                game.events.sort((a, b) => a.time - b.time);
-            }
-
-            const damage = [];
-
-            game.damage.forEach((dmg) => {
-                const stat = damage.find((d) => d.attacker === dmg.attacker && d.defender === dmg.defender && d.weapon === dmg.weapon);
-
-                if (stat) {
-                    stat.damage += dmg.damage;
-                } else {
-                    damage.push({
-                        attacker: dmg.attacker,
-                        defender: dmg.defender,
-                        weapon: dmg.weapon,
-                        damage: dmg.damage
-                    });
-                }
-            });
-
-            game.damage = damage;
-
-            return game;
-        });
-
         const count = gamesList.count,
             servers = {};
 
-        for (const game of games) {
+        for (const game of gamesList.games) {
             servers[game.ip] ||= await ServersDb.getByIp(game.ip);
             game.server = servers[game.ip];
         }
 
-        return {games, count};
+        return {games: gamesList.games, count};
     }
 }
 

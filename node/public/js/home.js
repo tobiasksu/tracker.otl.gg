@@ -31,7 +31,7 @@ class HomeJs {
 
         if (HomeJs.Time.live) {
             HomeJs.ws = new HomeJs.WebSocketClient(`ws${window.location.protocol === "https:" ? "s" : ""}://${window.location.host}`);
-            HomeJs.ws.instance.onmessage = HomeJs.onmessage;
+            HomeJs.ws.onmessage = HomeJs.onmessage;
             HomeJs.ws.open();
             el.innerText = "Disable Live Updates";
             el.href = `${window.location.href.replace(/[?&]live=on/, "")}${window.location.href.replace(/[?&]live=on/, "").indexOf("?") === -1 ? "?" : "&"}live=off`;
@@ -67,6 +67,8 @@ class HomeJs {
                 switch (data.type) {
                     case "StartGame":
                     case "LobbyStatus": {
+                        game.server ||= data.server;
+
                         game.startGame(data);
 
                         if (!gameEl) {

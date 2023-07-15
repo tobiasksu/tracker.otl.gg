@@ -111,7 +111,7 @@ class Time {
     }
 }
 
-Time.live = true;
+Time.live = typeof module === "undefined" ? window.timeLive : true;
 
 /** @type {import("../../../node_modules/timeago.js/lib/index")} */
 // @ts-ignore

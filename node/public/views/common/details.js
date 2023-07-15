@@ -41,12 +41,12 @@ class CommonDetailsView {
                     </a>${game.inLobby || game.settings && game.settings.joinInProgress ? /* html */`<br />Join at ${game.ip} <button class="copy" data-clipboard-text="${game.ip}">&#x1F4CB;</button>` : ""}
                 ` : ""}</div>
                 <div class="scores">
-                    ${CommonDetailsView.ScoreView.get(game)}
+                    ${CommonDetailsView.CommonScoreView.get(game)}
                 </div>
                 <div class="info">
                     <div class="time">
                         <span class="playerCount">
-                            ${CommonDetailsView.PlayerCountView.get(game)}
+                            ${CommonDetailsView.CommonPlayerCountView.get(game)}
                         </span>
                         <span class="timer">
                             ${game.inLobby ? /* html */`
@@ -80,11 +80,11 @@ CommonDetailsView.Encoding = typeof Encoding === "undefined" ? require("../../js
 
 /** @type {typeof import("./playerCount")} */
 // @ts-ignore
-CommonDetailsView.PlayerCountView = typeof PlayerCountView === "undefined" ? require("./playerCount") : PlayerCountView; // eslint-disable-line no-undef
+CommonDetailsView.CommonPlayerCountView = typeof CommonPlayerCountView === "undefined" ? require("./playerCount") : CommonPlayerCountView; // eslint-disable-line no-undef
 
 /** @type {typeof import("./score")} */
 // @ts-ignore
-CommonDetailsView.ScoreView = typeof ScoreView === "undefined" ? require("./score") : ScoreView; // eslint-disable-line no-undef
+CommonDetailsView.CommonScoreView = typeof CommonScoreView === "undefined" ? require("./score") : CommonScoreView; // eslint-disable-line no-undef
 
 if (typeof module === "undefined") {
     window.CommonDetailsView = CommonDetailsView;

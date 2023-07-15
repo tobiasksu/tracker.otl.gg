@@ -40,7 +40,7 @@ class HomeServersView {
 
 /** @type {typeof import("./server")} */
 // @ts-ignore
-HomeServersView.HomeServerView = typeof ServerView === "undefined" ? require("./server") : HomeServerView; // eslint-disable-line no-undef
+HomeServersView.HomeServerView = typeof HomeServerView === "undefined" ? require("./server") : HomeServerView; // eslint-disable-line no-undef
 
 if (typeof module === "undefined") {
     window.HomeServersView = HomeServersView;

@@ -44,7 +44,7 @@ class CommonCompletedDetailsView {
                     </a>
                 ` : ""}</div>
                 <div class="scores">
-                    ${CommonCompletedDetailsView.ScoreView.get(game)}
+                    ${CommonCompletedDetailsView.CommonScoreView.get(game)}
                 </div>
                 <div class="info">
                     <div class="time">
@@ -72,7 +72,7 @@ CommonCompletedDetailsView.Encoding = typeof Encoding === "undefined" ? require(
 
 /** @type {typeof import("./score")} */
 // @ts-ignore
-CommonCompletedDetailsView.ScoreView = typeof ScoreView === "undefined" ? require("./score") : ScoreView; // eslint-disable-line no-undef
+CommonCompletedDetailsView.CommonScoreView = typeof CommonScoreView === "undefined" ? require("./score") : CommonScoreView; // eslint-disable-line no-undef
 
 if (typeof module === "undefined") {
     window.CommonCompletedDetailsView = CommonCompletedDetailsView;

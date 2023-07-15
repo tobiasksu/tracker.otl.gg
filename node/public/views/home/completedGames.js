@@ -31,7 +31,7 @@ class HomeCompletedGamesView {
         return /* html */`
             ${Object.keys(games).map((s) => /* html */`
                 <div class="game" id="completed-${games[s].id}">
-                    ${HomeCompletedGamesView.CommonCompletedDetailsView.get(games[s].data, true, games[s].id)}
+                    ${HomeCompletedGamesView.CommonCompletedDetailsView.get(games[s], true, games[s].id)}
                 </div>
             `).join("")}
         `;

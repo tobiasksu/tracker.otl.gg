@@ -50,18 +50,18 @@ class Home extends RouterBase {
         WS.unregister(ws);
     }
 
-    //  #           #     #
-    //                    #
-    // ##    ###   ##    ###
-    //  #    #  #   #     #
-    //  #    #  #   #     #
-    // ###   #  #  ###     ##
+    //                                      #     #
+    //                                      #
+    //  ##    ##   ###   ###    ##    ##   ###   ##     ##   ###
+    // #     #  #  #  #  #  #  # ##  #      #     #    #  #  #  #
+    // #     #  #  #  #  #  #  ##    #      #     #    #  #  #  #
+    //  ##    ##   #  #  #  #   ##    ##     ##  ###    ##   #  #
     /**
      * Initializes the websocket.
      * @param {WebSocket} ws The websocket.
      * @returns {void}
      */
-    static init(ws) {
+    static connection(ws) {
         WS.register(ws);
     }
 }

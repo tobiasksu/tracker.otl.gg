@@ -36,6 +36,11 @@ http {
         ~\\\.([0-9]+)\$ \$1;
     }
 
+    map \$http_upgrade \$connection_upgrade {
+        default upgrade;
+        \'\' close;
+    }
+
     log_format fullformat \'\$remote_addr - \$remote_user [\$time_iso8601_p1.\$millisec+\$time_iso8601_p2] \$server_name \$server_port \\\"\$request\\\" \$status \$body_bytes_sent \$request_time \\\"\$http_referer\\\" \\\"\$http_user_agent\\\"\';
     access_log /var/log/nginx/access.log fullformat;
 
@@ -66,6 +71,8 @@ http {
         location / {
             proxy_http_version 1.1;
             proxy_pass http://node:$PROXY_PORT/;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection \$connection_upgrade;
             proxy_set_header Host \$http_host;
             proxy_set_header X-Real-IP \$remote_addr;
             proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;

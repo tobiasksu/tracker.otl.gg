@@ -53,7 +53,7 @@ class Game {
         this.inLobby = data.inLobby;
         this.lastUpdate = new Date();
         this.teamChanges = data.teamChanges || [];
-        this.remaining = data.remaining || void 0;
+        this.remaining = data.remaining || (data.id ? 3600000 + data.date.getTime() - Date.now() : void 0);
         this.id = data.id || void 0;
         this.date = data.date || void 0;
     }

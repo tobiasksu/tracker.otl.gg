@@ -86,7 +86,14 @@ class Home extends RouterBase {
                 js: [
                     "/js/common/timeago.min.js",
                     "/js/common/clipboard.min.js",
+                    "/js/common/encoding.js",
                     "/js/common/clipboardHandler.js",
+                    "/js/common/websocketclient.js",
+                    "/js/common/time.js",
+                    "/js/common/countdown.js",
+                    "/js/common/elapsed.js",
+                    "/js/common/player.js",
+                    "/js/common/game.js",
                     "/views/common/score.js",
                     "/views/common/playerCount.js",
                     "/views/common/details.js",
@@ -95,11 +102,6 @@ class Home extends RouterBase {
                     "/views/home/completedGames.js",
                     "/views/home/server.js",
                     "/views/home/servers.js",
-                    "/js/common/websocketclient.js",
-                    "/js/common/countdown.js",
-                    "/js/common/elapsed.js",
-                    "/js/common/player.js",
-                    "/js/common/game.js",
                     "/js/home.js"
                 ],
                 css: ["/css/home.css"]

@@ -57,6 +57,10 @@ class GameList extends RouterBase {
             "",
             {
                 js: [
+                    "/js/common/timeago.min.js",
+                    "/js/common/encoding.js",
+                    "/js/common/template.js",
+                    "/js/common/time.js",
                     "/views/gamelist/game.js",
                     "/views/gamelist/games.js",
                     "/js/gamelist.js"
