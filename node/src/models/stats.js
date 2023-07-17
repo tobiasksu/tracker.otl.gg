@@ -91,14 +91,69 @@ class Stats {
 
                     game.settings ||= {matchMode: "ANARCHY"};
 
+                    // Set weapons.
                     game.damage.forEach((stat) => {
                         stat.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(stat.weapon)];
                     });
 
-                    // Regenerate players and teamScore arrays in case our data is out of sync from the server due to dropped packets, restarted tracker, etc.
-                    game.players = [];
+                    game.kills.forEach((kill) => {
+                        kill.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(stat.weapon)];
+                    });
+
+                    // Remove duplicates from arrays that can have them.
+                    const kills = [];
+                    for (const kill of game.kills) {
+                        if (kill.attacker && kill.defender && !kills.find((k) => k.time === kill.time && k.attacker === kill.attacker && k.attackerTeam === kill.attackerTeam && k.defender === kill.defender && k.defenderTeam === kill.defenderTeam && k.assisted === kill.assisted && k.assistedTeam === kill.assistedTeam && k.weapon === kill.weapon)) {
+                            kills.push(kill);
+                        }
+                    }
+                    game.kills = kills;
+
+                    const flags = [];
+                    for (const stat of game.flagStats) {
+                        if (stat.scorer && !flags.find((f) => f.time === stat.time && f.event === stat.event && f.scorer === stat.scorer && f.scorerTeam === stat.scorerTeam)) {
+                            flags.push(stat);
+                        }
+                    }
+                    game.flagStats = flags;
 
                     const hasEvents = game.events.length > 0;
+                    if (hasEvents) {
+                        const events = [];
+                        for (const ev of game.events) {
+                            const event = {
+                                time: ev.time,
+                                type: ev.type,
+                                description: ev.description,
+                                player: ev.player
+                            };
+                            if (!events.find((e) => e.time === event.time && e.type === event.type && e.description === ev.description && e.player === ev.player)) {
+                                events.push(event);
+                            }
+                        }
+                        game.events = events;
+                    }
+
+                    const damage = [];
+                    for (const stat of game.damage) {
+                        if (stat.attacker && stat.defender) {
+                            const dmg = damage.find((d) => d.attacker === stat.attacker && d.defender === stat.defender && d.weapon === stat.weapon);
+                            if (dmg) {
+                                dmg.damage += stat.damage;
+                            } else {
+                                damage.push({
+                                    attacker: stat.attacker,
+                                    defender: stat.defender,
+                                    weapon: stat.weapon,
+                                    damage: stat.damage
+                                });
+                            }
+                        }
+                    }
+                    game.damage = damage;
+
+                    // Regenerate players and teamScore arrays in case our data is out of sync from the server due to dropped packets, restarted tracker, etc.
+                    game.players = [];
 
                     game.kills.forEach((kill) => {
                         const attackerPlayer = game.getPlayer(kill.attacker, kill.attackerTeam),
@@ -258,6 +313,44 @@ class Stats {
                         });
                     }
 
+                    // Clean up data.
+                    if (!game.settings.matchNotes) {
+                        game.settings.matchNotes = void 0;
+                    }
+
+                    if (game.server && !game.server.ip) {
+                        game.server.ip = game.ip;
+                    }
+
+                    if (game.server && game.server.gameStarted) {
+                        game.server.gameStarted = new Date(game.server.gameStarted);
+                    }
+
+                    if (game.server && game.server.lastSeen) {
+                        game.server.lastSeen = new Date(game.server.lastSeen);
+                    }
+
+                    if (game.start) {
+                        game.start = new Date(game.start);
+                    }
+
+                    if (game.end) {
+                        game.end = new Date(game.end);
+                    }
+
+                    if (game.startTime) {
+                        game.startTime = new Date(game.startTime);
+                    }
+
+                    if (game.projectedEnd) {
+                        game.projectedEnd = new Date(game.projectedEnd);
+                    }
+
+                    if (game.date) {
+                        game.date = new Date(game.date);
+                    }
+
+                    // Save game.
                     if (game.events.length > 0 && game.players.length > 0) {
                         data.id = await Db.add(ip, game);
                     }
