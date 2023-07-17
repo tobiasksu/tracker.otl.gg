@@ -106,7 +106,7 @@ class CompletedDb {
             }
         };
 
-        Db.id(game, "completed");
+        await Db.id(game, "completed");
 
         await db.collection("completed").insertOne(game);
 
@@ -225,7 +225,7 @@ class CompletedDb {
         const db = await Db.get();
 
         const games = await db.collection("completed").find({}, {
-            sort: {_id: -1},
+            sort: {dateAdded: -1},
             skip: (page - 1) * pageSize,
             limit: pageSize
         }).project({
@@ -379,7 +379,7 @@ class CompletedDb {
         const db = await Db.get();
 
         const games = await db.collection("completed").find({"$text": {"$search": query}}, {
-            sort: {_id: -1},
+            sort: {score: {"$meta": "textScore"}, dateAdded: -1},
             skip: (page - 1) * pageSize, limit: pageSize
         }).project({
             _id: 1,

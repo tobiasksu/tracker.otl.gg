@@ -1,8 +1,5 @@
-/**
- * @typedef {import("../../public/js/common/game")} Game
- */
-
 const Db = require("../database/completed"),
+    Game = require("../../public/js/common/game"),
     ServersDb = require("../database/servers");
 
 //   ###                         ##            #                #
@@ -35,6 +32,10 @@ class Completed {
         const game = await Db.get(id);
 
         if (game) {
+            if (includeServer) {
+                game.server = await ServersDb.getByIp(game.ip);
+            }
+
             if (game.events) {
                 game.events.sort((a, b) => a.time - b.time);
             }
@@ -57,6 +58,8 @@ class Completed {
             });
 
             game.damage = damage;
+
+            game.condition = Game.getCondition(game);
 
             if (!includeServer) {
                 delete game.server;

@@ -118,6 +118,7 @@ declare namespace CompletedTypes {
             elapsed?: number
             inLobby?: boolean
             teamChanges?: {
+                time: number
                 playerName: string
                 previousTeam: string
                 currentTeam: string

@@ -37,6 +37,7 @@ class IndexView {
                     <meta name="og:url" content="${protocol}://${host}${encodeURI(originalUrl)}" />
                     <meta name="twitter:card" content="summary" />
                     <meta name="twitter:creator" content="@roncli" />
+                    <link rel="shortcut icon" href="data:image/x-icon;," type="image/x-icon"> 
                     ${head}
                 </head>
                 <body>

@@ -121,17 +121,21 @@ class Stats {
                         defenderPlayer.deaths++;
 
                         if (!hasEvents) {
-                            const ev = JSON.parse(JSON.stringify(kill));
-                            ev.description = `${kill.attacker} killed ${kill.defender} with ${kill.weapon}.${kill.assisted ? ` Assisted by ${kill.assisted}.` : ""}`;
-                            game.events.push(ev);
+                            game.events.push({
+                                time: kill.time,
+                                type: "Kill",
+                                description: `${kill.attacker} killed ${kill.defender} with ${kill.weapon}.${kill.assisted ? ` Assisted by ${kill.assisted}.` : ""}`
+                            });
                         }
                     });
 
                     game.teamChanges.forEach((teamChange) => {
                         if (!hasEvents) {
-                            const ev = JSON.parse(JSON.stringify(teamChange));
-                            ev.description = `${teamChange.playerName} changed from ${teamChange.previousTeam} to ${teamChange.currentTeam} team`;
-                            game.events.push(ev);
+                            game.events.push({
+                                time: teamChange.time,
+                                type: "TeamChange",
+                                description: `${teamChange.playerName} changed from ${teamChange.previousTeam} to ${teamChange.currentTeam} team`
+                            });
                         }
                     });
 
@@ -176,7 +180,11 @@ class Stats {
                                         ev.description = `GOAL! ${goal.scorer} scored for ${goal.scorerTeam}!${goal.assisted ? ` Assisted by ${goal.assisted}.` : ""}`;
                                     }
 
-                                    game.events.push(ev);
+                                    game.events.push({
+                                        time: goal.time,
+                                        type: goal.blunder ? "Blunder" : "Goal",
+                                        description: ev.description
+                                    });
                                 }
                             });
 
@@ -210,27 +218,31 @@ class Stats {
                                 }
 
                                 if (!hasEvents) {
-                                    const ev = JSON.parse(JSON.stringify(flag));
+                                    let description;
 
                                     switch (flag.event) {
                                         case "Return":
-                                            ev.description = `${flag.scorer} returned the ${flag.scorerTeam} flag.`;
+                                            description = `${flag.scorer} returned the ${flag.scorerTeam} flag.`;
                                             break;
                                         case "Pickup": {
                                             const otherTeam = flag.scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
-                                            ev.description = `${flag.scorer} picked up the ${otherTeam} flag.`;
+                                            description = `${flag.scorer} picked up the ${otherTeam} flag.`;
                                             break;
                                         } case "Capture":
-                                            ev.description = `${flag.scorer} scores for ${flag.scorerTeam}!`;
+                                            description = `${flag.scorer} scores for ${flag.scorerTeam}!`;
                                             break;
                                         case "CarrierKill": {
                                             const otherTeam = flag.scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
-                                            ev.description = `${flag.scorer} killed the ${otherTeam} flag carrier!`;
+                                            description = `${flag.scorer} killed the ${otherTeam} flag carrier!`;
                                             break;
                                         }
                                     }
 
-                                    game.events.push(ev);
+                                    game.events.push({
+                                        time: flag.time,
+                                        type: "CTF",
+                                        description
+                                    });
                                 }
                             });
 

@@ -391,7 +391,10 @@ class ArchiveJs {
 
         ArchiveJs.damageChartObj = ArchiveJs.damageDoneChart(damageChart, "all");
         ArchiveJs.gameChartObj = ArchiveJs.gameGraphChart(gameChart, "score");
-        ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, /** @type {HTMLAnchorElement}*/(document.querySelector("a.weapon-graph")).title); // eslint-disable-line no-extra-parens
+        const weaponGraph = document.querySelector("a.weapon-graph");
+        if (weaponGraph) {
+            ArchiveJs.weaponChartObj = ArchiveJs.weaponGraphChart(weaponChart, /** @type {HTMLAnchorElement}*/(weaponGraph).title); // eslint-disable-line no-extra-parens
+        }
         ArchiveJs.playerChartObj = ArchiveJs.playerGraphChart(playerChart, /** @type {HTMLAnchorElement}*/(document.querySelector("a.player-graph")).title); // eslint-disable-line no-extra-parens
         /** @type {HTMLAnchorElement}*/(document.querySelector("a.stats")).click(); // eslint-disable-line no-extra-parens
     }
@@ -1043,7 +1046,7 @@ class ArchiveJs {
                     }
 
                     for (const flag of ArchiveJs.game.flagStats.sort((a, b) => a.time - b.time)) {
-                        if (flag.event === "Capture") {
+                        if (flag.event === "Capture" && data[flag.scorerTeam]) {
                             data[flag.scorerTeam].push({x: flag.time / 60, y: data[flag.scorerTeam][data[flag.scorerTeam].length - 1].y + 1});
                         }
                         max = Math.max(max, flag.time);
@@ -1073,8 +1076,10 @@ class ArchiveJs {
                     for (const goal of ArchiveJs.game.goals.sort((a, b) => a.time - b.time)) {
                         if (goal.blunder) {
                             const team = Object.keys(ArchiveJs.game.teamScore).find((s) => s !== goal.scorerTeam);
-                            data[team].push({x: goal.time / 60, y: data[team][data[team].length - 1].y + 1});
-                        } else {
+                            if (data[team]) {
+                                data[team].push({x: goal.time / 60, y: data[team][data[team].length - 1].y + 1});
+                            }
+                        } else if (data[goal.scorerTeam]) {
                             data[goal.scorerTeam].push({x: goal.time / 60, y: data[goal.scorerTeam][data[goal.scorerTeam].length - 1].y + 1});
                             if (goal.assisted) {
                                 data[`${goal.scorerTeam} ASSISTS`].push({x: goal.time / 60, y: data[`${goal.scorerTeam} ASSISTS`][data[`${goal.scorerTeam} ASSISTS`].length - 1].y + 1});
@@ -1243,7 +1248,7 @@ class ArchiveJs {
                     }
 
                     for (const flag of ArchiveJs.game.flagStats.sort((a, b) => a.time - b.time)) {
-                        if (flag.event === "Capture") {
+                        if (flag.event === "Capture" && data[flag.scorerTeam]) {
                             data[flag.scorerTeam].push({x: flag.time / 60, y: data[flag.scorerTeam][data[flag.scorerTeam].length - 1].y + 1});
                         }
                         max = Math.max(max, flag.time);
@@ -1274,8 +1279,10 @@ class ArchiveJs {
                     for (const goal of ArchiveJs.game.goals.sort((a, b) => a.time - b.time)) {
                         if (goal.blunder) {
                             const team = Object.keys(ArchiveJs.game.teamScore).find((s) => s !== goal.scorerTeam);
-                            data[team].push({x: goal.time / 60, y: data[team][data[team].length - 1].y + 1});
-                        } else {
+                            if (data[team]) {
+                                data[team].push({x: goal.time / 60, y: data[team][data[team].length - 1].y + 1});
+                            }
+                        } else if (data[goal.scorerTeam]) {
                             data[goal.scorerTeam].push({x: goal.time / 60, y: data[goal.scorerTeam][data[goal.scorerTeam].length - 1].y + 1});
                         }
                         max = Math.max(max, goal.time);

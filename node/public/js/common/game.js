@@ -142,6 +142,13 @@ class Game {
             this.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
+        const scorerPlayer = this.getPlayer(scorer);
+
+        // If the player is invalid, bail.
+        if (!scorerPlayer) {
+            return;
+        }
+
         this.goals.push({
             blunder: true,
             scorer: data.scorer,
@@ -157,7 +164,6 @@ class Game {
             description: `BLUNDER! ${scorer} own goals for ${otherTeam}!`
         });
 
-        const scorerPlayer = this.getPlayer(scorer);
         scorerPlayer.team = scorerTeam;
         scorerPlayer.blunders++;
 
@@ -224,14 +230,6 @@ class Game {
             this.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
-        this.flagStats.push({
-            time,
-            event: data.event,
-            scorer: data.scorer,
-            scorerTeam: data.scorerTeam
-        });
-
-
         /** @type {InstanceType<Game.Player>} */
         let scorerPlayer = void 0;
         if (scorer) {
@@ -250,12 +248,22 @@ class Game {
                 }
                 break;
             case "Pickup": {
+                // If the player is invalid, bail.
+                if (!scorerPlayer) {
+                    return;
+                }
+
                 const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
                 description = `${scorer} picked up the ${otherTeam} flag.`;
                 scorerPlayer.pickups++;
                 break;
             }
             case "Capture":
+                // If the player is invalid, bail.
+                if (!scorerPlayer) {
+                    return;
+                }
+
                 description = `${scorer} scores for ${scorerTeam}!`;
                 scorerPlayer.captures++;
                 if (this.teamScore[scorerTeam]) {
@@ -265,12 +273,24 @@ class Game {
                 }
                 break;
             case "CarrierKill": {
+                // If the player is invalid, bail.
+                if (!scorerPlayer) {
+                    return;
+                }
+
                 const otherTeam = scorerTeam === "BLUE" ? "ORANGE" : "BLUE";
                 description = `${scorer} killed the ${otherTeam} flag carrier!`;
                 scorerPlayer.carrierKills++;
                 break;
             }
         }
+
+        this.flagStats.push({
+            time,
+            event: data.event,
+            scorer: data.scorer,
+            scorerTeam: data.scorerTeam
+        });
 
         this.events.push({
             time,
@@ -434,23 +454,13 @@ class Game {
             this.teamScore = {"BLUE": 0, "ORANGE": 0};
         }
 
-        this.goals.push({
-            time,
-            scorer: data.scorer,
-            scorerTeam: data.scorerTeam,
-            assisted: data.assisted,
-            assistedTeam: data.assistedTeam,
-            blunder: false
-        });
-
-        this.events.push({
-            time,
-            type: "GOAL",
-            description: `GOAL! ${scorer} scored for ${scorerTeam}!${assisted ? ` Assisted by ${assisted}.` : ""}`
-        });
-
         const scorerPlayer = this.getPlayer(scorer),
             assistedPlayer = this.getPlayer(assisted);
+
+        // If the player is invalid, bail.
+        if (!scorerPlayer) {
+            return;
+        }
 
         scorerPlayer.team = scorerTeam;
         if (assistedPlayer) {
@@ -467,6 +477,21 @@ class Game {
         } else {
             this.teamScore[scorerTeam] = 1;
         }
+
+        this.goals.push({
+            time,
+            scorer: data.scorer,
+            scorerTeam: data.scorerTeam,
+            assisted: data.assisted,
+            assistedTeam: data.assistedTeam,
+            blunder: false
+        });
+
+        this.events.push({
+            time,
+            type: "Goal",
+            description: `GOAL! ${scorer} scored for ${scorerTeam}!${assisted ? ` Assisted by ${assisted}.` : ""}`
+        });
     }
 
     // #      #    ##    ##
@@ -502,6 +527,11 @@ class Game {
         const attackerPlayer = this.getPlayer(attacker, attackerTeam),
             defenderPlayer = this.getPlayer(defender, defenderTeam),
             assistedPlayer = this.getPlayer(assisted, assistedTeam);
+
+        // If there is no attacker or defender, bail out.
+        if (!attackerPlayer || !defenderPlayer) {
+            return;
+        }
 
         attackerPlayer.team = attackerTeam;
         defenderPlayer.team = defenderTeam;
@@ -656,7 +686,17 @@ class Game {
     teamChange(data) {
         const {playerName, previousTeam, currentTeam, time} = data;
 
+        const player = this.getPlayer(playerName);
+
+        // If the player is invalid, bail.
+        if (!player) {
+            return;
+        }
+
+        player.team = currentTeam;
+
         this.teamChanges.push({
+            time,
             playerName,
             previousTeam,
             currentTeam
@@ -667,9 +707,6 @@ class Game {
             type: "TeamChange",
             description: `${playerName} changed from ${previousTeam} to ${currentTeam} team`
         });
-
-        const player = this.getPlayer(playerName);
-        player.team = currentTeam;
     }
 }
 

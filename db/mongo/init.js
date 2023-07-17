@@ -397,7 +397,7 @@ tracker.createCollection("completed", {
                         damage: {
                             bsonType: "array",
                             minItems: 0,
-                            uniqueItems: true,
+                            uniqueItems: false,
                             additionalProperties: false,
                             items: {
                                 bsonType: "object",
@@ -420,15 +420,9 @@ tracker.createCollection("completed", {
                             }
                         },
                         teamScore: {
-                            bsonType: "array",
-                            minItems: 0,
-                            uniqueItems: true,
-                            additionalProperties: false,
-                            items: {
-                                bsonType: "object",
-                                additionalProperties: true,
-                                properties: {}
-                            }
+                            bsonType: "object",
+                            additionalProperties: true,
+                            items: {}
                         },
                         startTime: {
                             bsonType: "date"
