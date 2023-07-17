@@ -97,7 +97,7 @@ class Stats {
                     });
 
                     game.kills.forEach((kill) => {
-                        kill.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(stat.weapon)];
+                        kill.weapon = Weapon.weaponNames[Weapon.weapons.indexOf(kill.weapon)];
                     });
 
                     // Remove duplicates from arrays that can have them.
