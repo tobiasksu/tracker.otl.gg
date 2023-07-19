@@ -1,6 +1,6 @@
 {
     "name": "tracker.otl.gg-logging",
-    "version": "3.0.0-alpha.1",
+    "version": "3.0.0-beta.1",
     "description": "gelf logging for tracker.otl.gg.",
     "homepage": "https://github.com/overload-development-community/tracker.otl.gg",
     "bugs": {

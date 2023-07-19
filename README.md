@@ -4,97 +4,31 @@ The source code for the website at https://tracker.otl.gg.
 
 ## Running Locally
 
-To run this locally, you need to be a running a Microsoft SQL Server instance.  You also need to do two things.  First, create a settings.js in the root of the project.
+To run this locally, you first need to be running Docker with Docker Compose.
 
-Here is a minimal settings.js file, but you will need to modify the SQL Server information.  Ignore the redis and logger sections, that can remain disabled for local development.
+Next, replace docker-compose.yml with docker-compose.local.yml.  This is a commented-out version of the docker-compose.yml file that removes unnecessary containers and disables unnecessary volumes.
 
-```
-module.exports = {
-    express: {
-        port: 3030
-    },
-    database: {
-        server: "your.sql.server.address",
-        port: 1433,
-        user: "web_oltracker",
-        password: "secure_password",
-        database: "oltrackertest",
-        pool: {
-            max: 50,
-            min: 0,
-            idleTimeoutMillis: 30000
-        },
-        options: {
-            trustServerCertificate: true
-        }
-    },
-    redis: {
-        host: "",
-        port: 6379,
-        password: ""
-    },
-    redisPrefix: "",
-    disableRedis: true,
-    htmlMinifier: {
-        collapseBooleanAttributes: true,
-        collapseWhitespace: true,
-        conservativeCollapse: true,
-        decodeEntities: true,
-        html5: true,
-        removeAttributeQuotes: true,
-        removeComments: true,
-        removeEmptyAttributes: true,
-        removeOptionalTags: true,
-        removeRedundantAttributes: true,
-        useShortDoctype: true
-    },
-    logger: {
-        key: "",
-        url: ""
-    },
-    disableLogger: true,
-    minify: {
-        enabled: true,
-        cache: false
-    }
-};
-```
+Finally, you must create the `/secrets` directory with the following files (no extensions):
 
-Second, your SQL server will need the tables required for the tracker to store its information.  Here is a script to run to create those tables.  You will need to create the `web_oltracker` user through the UI.
+* `APPINSIGHTS_INSTRUMENTATIONKEY` - Leave this blank.
+* `MONGO_INITDB_ROOT_PASSWORD_FILE` - This should be a strong password.  Its only use is to initialize the MongoDB instance.
+* `MONGO_INITDB_ROOT_USERNAME_FILE` - This should be `admin`.
+* `REDIS_PASSWORD_FILE` - This should be a strong password.  Redis is used by the website to cache minified resources.
+* `WEB_TRACKER_PASSWORD_FILE` - This is the password that the website uses to connect to the MongoDB database.  Once your containers are started, you can use MongoDB compass to connect directly to the database using Username/Password authentication.  Username is `web_tracker` and the contents of this file is the password.  No authentication database is necessary, and you should use the Default authentication mechanism.
 
-```
-CREATE TABLE [dbo].[tblCompleted](
-    [CompletedId] [int] IDENTITY(1,1) NOT NULL,
-    [IPAddress] [varchar](15) NOT NULL,
-    [Data] [text] NOT NULL,
-    [CrDate] [datetime] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-    [CompletedId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
+Simply running `docker compose up --build` in the root directory of the repository should get the site up and running for you.  You can test the website by running `https://localhost`.
 
-ALTER TABLE [dbo].[tblCompleted] ADD  DEFAULT (getutcdate()) FOR [CrDate]
-GO
-
-CREATE TABLE [dbo].[tblServers](
-    [ServerId] [int] IDENTITY(1,1) NOT NULL,
-    [IPAddress] [varchar](15) NOT NULL,
-    [Visible] [bit] NOT NULL,
-    [Data] [text] NOT NULL,
-PRIMARY KEY CLUSTERED 
-(
-    [ServerId] ASC
-)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
-) ON [PRIMARY] TEXTIMAGE_ON [PRIMARY]
-GO
-
-ALTER TABLE [dbo].[tblServers] ADD  DEFAULT ((1)) FOR [Visible]
-GO
-```
+To connect to your server from an olmod server, edit olmodsettings.json so that the `isServer` is `true` and the `trackerBaseUrl` is `https://localhost`, or use `https://` with the IP address of the computer if connecting from across a network.
 
 ## Version History
+
+### v3.0.0 Beta 1 - 7/18/2023
+
+* Now uses Docker containers for easier setup.
+* Replace SQL Server with MongoDB.
+* Refactor views.
+* When a game ends, the tracker will now redirect to the archive page created by the game.
+* Fixed a number of bugs with the website.
 
 ### v2.2.0 - 12/10/2022
 
