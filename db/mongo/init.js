@@ -478,6 +478,7 @@ tracker.createCollection("completed", {
 });
 
 tracker.completed.createIndex({"$**": "text"});
+tracker.completed.createIndex({dateAdded: -1})
 
 // Create server collection.
 tracker.createCollection("server", {

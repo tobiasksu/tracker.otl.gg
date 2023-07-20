@@ -235,7 +235,7 @@ class CompletedDb {
             dateAdded: 1
         }).toArray();
 
-        const count = await db.collection("completed").countDocuments();
+        const count = await db.collection("completed").countDocuments({_id: {$gt: 0}});
 
         if (!games) {
             return {games: [], count: 0};
