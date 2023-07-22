@@ -138,23 +138,24 @@ class HomeJs {
 
                     gameEl.parentNode.removeChild(gameEl);
 
-                    const gameId = `completed-${data.id}`;
+                    if (game.id) {
+                        const gameId = `completed-${data.id}`;
 
-                    document.getElementById("completed").insertAdjacentHTML("beforeend", /* html */`
-                        <div class="game" id="${gameId}">
-                            ${HomeJs.CommonCompletedDetailsView.get(game, true, data.id)}
-                        </div>
-                    `);
+                        document.getElementById("completed").insertAdjacentHTML("beforeend", /* html */`
+                            <div class="game" id="${gameId}">
+                                ${HomeJs.CommonCompletedDetailsView.get(game, true, data.id)}
+                            </div>
+                        `);
 
-                    HomeJs.Time.loadTimeAgo();
+                        HomeJs.Time.loadTimeAgo();
+
+                        setTimeout(() => {
+                            const completedEl = document.getElementById(gameId);
+                            completedEl.parentNode.removeChild(completedEl);
+                        }, 3600000);
+                    }
 
                     game.remove();
-
-                    setTimeout(() => {
-                        const completedEl = document.getElementById(gameId);
-                        completedEl.parentNode.removeChild(completedEl);
-                    }, 3600000);
-
                 }
                 if (data.type === "LobbyExit") {
                     gameEl.parentNode.removeChild(gameEl);
