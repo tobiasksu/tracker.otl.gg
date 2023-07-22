@@ -102,6 +102,9 @@ class Stats {
 
                     // Remove duplicates from arrays that can have them.
                     const kills = [];
+                    if (!game.kills) {
+                        game.kills = [];
+                    }
                     for (const kill of game.kills) {
                         if (kill.attacker && kill.defender && !kills.find((k) => k.time === kill.time && k.attacker === kill.attacker && k.attackerTeam === kill.attackerTeam && k.defender === kill.defender && k.defenderTeam === kill.defenderTeam && k.assisted === kill.assisted && k.assistedTeam === kill.assistedTeam && k.weapon === kill.weapon)) {
                             kills.push(kill);
@@ -110,6 +113,9 @@ class Stats {
                     game.kills = kills;
 
                     const flags = [];
+                    if (!game.flagStats) {
+                        game.flagStats = [];
+                    }
                     for (const stat of game.flagStats) {
                         if (stat.scorer && !flags.find((f) => f.time === stat.time && f.event === stat.event && f.scorer === stat.scorer && f.scorerTeam === stat.scorerTeam)) {
                             flags.push(stat);
@@ -117,6 +123,20 @@ class Stats {
                     }
                     game.flagStats = flags;
 
+                    const goals = [];
+                    if (!game.goals) {
+                        game.goals = [];
+                    }
+                    for (const goal of game.goals) {
+                        if (goal.scorer && !goals.find((g) => g.time === goal.time && g.scorer === goal.scorer && g.scorerTeam === goal.scorerTeam && g.assisted === goal.assisted && g.assistedTeam === goal.assistedTeam && g.blunder === goal.blunder)) {
+                            goals.push(goal);
+                        }
+                    }
+                    game.goals = goals;
+
+                    if (!game.events) {
+                        game.events = [];
+                    }
                     const hasEvents = game.events.length > 0;
                     if (hasEvents) {
                         const events = [];
@@ -135,6 +155,9 @@ class Stats {
                     }
 
                     const damage = [];
+                    if (!game.damage) {
+                        game.damage = [];
+                    }
                     for (const stat of game.damage) {
                         if (stat.attacker && stat.defender) {
                             const dmg = damage.find((d) => d.attacker === stat.attacker && d.defender === stat.defender && d.weapon === stat.weapon);
@@ -184,6 +207,9 @@ class Stats {
                         }
                     });
 
+                    if (!game.teamChanges) {
+                        game.teamChanges = [];
+                    }
                     game.teamChanges.forEach((teamChange) => {
                         if (!hasEvents) {
                             game.events.push({
