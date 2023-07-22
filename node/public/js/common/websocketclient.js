@@ -56,7 +56,9 @@ class WebSocketClient {
             clearInterval(this.interval);
         }
         this.interval = setInterval(() => {
-            wsc.instance.send(WebSocketClient.pingFrame);
+            if (wsc.instance) {
+                wsc.instance.send(WebSocketClient.pingFrame);
+            }
         }, 55000);
 
         // Try to reconnect if it wasn't a normal closure.
