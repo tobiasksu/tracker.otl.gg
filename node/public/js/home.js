@@ -138,7 +138,7 @@ class HomeJs {
 
                     gameEl.parentNode.removeChild(gameEl);
 
-                    if (game.id) {
+                    if (data.id) {
                         const gameId = `completed-${data.id}`;
 
                         document.getElementById("completed").insertAdjacentHTML("beforeend", /* html */`
