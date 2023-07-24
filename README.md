@@ -22,6 +22,10 @@ To connect to your server from an olmod server, edit olmodsettings.json so that 
 
 ## Version History
 
+### v3.0.2 - 7/24/2023
+
+* Fix bug with suicides counting as kills while game is ongoing.  Suicides still count correctly in the archive.
+
 ### v3.0.1 - 7/24/2023
 
 * Fix bug with games disappearing when there is activity on them.
