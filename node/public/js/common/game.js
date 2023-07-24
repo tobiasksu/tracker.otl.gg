@@ -547,7 +547,7 @@ class Game {
             this.teamScore[defenderTeam] = 0;
         }
 
-        if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam) {
+        if (attackerTeam && attackerTeam !== "ANARCHY" && attackerTeam === defenderTeam || attacker === defender) {
             attackerPlayer.kills--;
             defenderPlayer.deaths++;
 
