@@ -65,6 +65,3 @@ secrets/**
 
 # Madge graph.svg
 graph.svg
-
-# Settings
-/node/settings.js
