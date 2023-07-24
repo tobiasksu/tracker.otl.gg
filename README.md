@@ -22,6 +22,11 @@ To connect to your server from an olmod server, edit olmodsettings.json so that 
 
 ## Version History
 
+### v3.0.1 - 7/24/2023
+
+* Fix bug with games disappearing when there is activity on them.
+* Package updates.
+
 ### v3.0.0 - 7/23/2023
 
 * Now uses Docker containers for easier setup.
