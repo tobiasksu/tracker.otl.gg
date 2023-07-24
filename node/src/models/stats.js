@@ -56,6 +56,7 @@ class Stats {
                     }});
                 }
             }
+            game.lastUpdate = new Date();
 
             if (!game.server) {
                 game.server = await ServersDb.getByIp(ip);
