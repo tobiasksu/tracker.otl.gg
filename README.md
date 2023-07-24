@@ -22,7 +22,7 @@ To connect to your server from an olmod server, edit olmodsettings.json so that 
 
 ## Version History
 
-### v3.0.0 Beta 1 - 7/18/2023
+### v3.0.0 - 7/23/2023
 
 * Now uses Docker containers for easier setup.
 * Replace SQL Server with MongoDB.
