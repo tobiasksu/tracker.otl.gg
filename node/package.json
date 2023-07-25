@@ -22,7 +22,7 @@
         "@roncli/node-minify": "roncli/node-minify#v1.1.15",
         "@roncli/node-redis": "roncli/node-redis#v0.1.18",
         "@root/request": "1.9.2",
-        "chart.js": "4.3.0",
+        "chart.js": "4.3.1",
         "clipboard": "2.0.11",
         "compression": "1.7.4",
         "csso": "5.0.5",
