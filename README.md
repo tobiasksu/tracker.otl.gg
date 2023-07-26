@@ -22,6 +22,10 @@ To connect to your server from an olmod server, edit olmodsettings.json so that 
 
 ## Version History
 
+### v3.0.3 - 7/26/2023
+
+* Increase max allowed size posted to `/api/stats` from 100 KB to 1 MB.
+
 ### v3.0.2 - 7/24/2023
 
 * Fix bug with suicides counting as kills while game is ongoing.  Suicides still count correctly in the archive.
