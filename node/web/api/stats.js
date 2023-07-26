@@ -31,7 +31,7 @@ class StatsApi extends RouterBase {
 
         route.path = "/api/stats";
 
-        route.middleware = [express.json()];
+        route.middleware = [express.json({limit: "1mb"})];
 
         return route;
     }
