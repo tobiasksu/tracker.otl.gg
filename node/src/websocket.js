@@ -2,7 +2,9 @@
  * @typedef {import("ws")} WebSocket
  */
 
-const gameMatch = /\/game\/(?<ip>.*)/;
+const Log = require("@roncli/node-application-insights-logger"),
+
+    gameMatch = /\/game\/(?<ip>.*)/;
 
 /**
  * @type {WebSocket[]}
@@ -64,6 +66,14 @@ class Websocket {
      * @returns {void}
      */
     static register(ws) {
+        ws.on("error", (err) => {
+            Log.error("There was an error with a websocket.", {
+                err,
+                properties: {
+                    url: ws.url
+                }
+            });
+        });
         clients.push(ws);
     }
 
