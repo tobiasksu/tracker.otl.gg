@@ -32,7 +32,7 @@ process.on("unhandledRejection", (reason) => {
 (async function startup() {
     // Setup application insights.
     if (process.env.APPINSIGHTS_INSTRUMENTATIONKEY !== "") {
-        Log.setupApplicationInsights(process.env.APPINSIGHTS_INSTRUMENTATIONKEY, {application: "trackerotlgg", container: "trackerotlgg-node"});
+        Log.setupApplicationInsights(process.env.APPINSIGHTS_INSTRUMENTATIONKEY, {application: "trackerotlgg", container: "tracker-node"});
     }
 
     console.log("Starting up...");
