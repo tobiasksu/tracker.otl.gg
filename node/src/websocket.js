@@ -67,6 +67,11 @@ class Websocket {
      */
     static register(ws) {
         ws.on("error", (err) => {
+            // Ignore this frequent error.
+            if (err.message === "Invalid WebSocket frame: invalid opcode 0") {
+                return;
+            }
+
             Log.error("There was an error with a websocket.", {
                 err,
                 properties: {
