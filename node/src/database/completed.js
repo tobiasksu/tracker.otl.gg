@@ -378,8 +378,8 @@ class CompletedDb {
     static async search(query, page, pageSize) {
         const db = await Db.get();
 
-        const games = await db.collection("completed").find({"$text": {"$search": query}}, {
-            sort: {score: {"$meta": "textScore"}, dateAdded: -1},
+        const games = await db.collection("completed").find({$text: {$search: query}}, {
+            sort: {score: {$meta: "textScore"}, dateAdded: -1},
             skip: (page - 1) * pageSize, limit: pageSize
         }).project({
             _id: 1,
@@ -388,7 +388,7 @@ class CompletedDb {
             dateAdded: 1
         }).toArray();
 
-        const count = await db.collection("completed").countDocuments();
+        const count = await db.collection("completed").countDocuments({$text: {$search: query}});
 
         if (!games) {
             return {games: [], count: 0};
