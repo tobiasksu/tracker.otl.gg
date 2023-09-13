@@ -22,6 +22,12 @@ To connect to your server from an olmod server, edit olmodsettings.json so that 
 
 ## Version History
 
+### v3.0.5 - 9/12/2023
+
+* Fix bug with page count in search results.
+* Don't log opcode 0 errors as they are frequent and unavoidable due to the nature of websockets.
+* Package updates.
+
 ### v3.0.4 - 8/7/2023
 
 * Fix bug with websocket crashes.
