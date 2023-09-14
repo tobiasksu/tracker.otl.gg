@@ -371,16 +371,15 @@ class CompletedDb {
     /**
      * Gets the paginated list of games by user search.
      * @param {string} query The query.
-     * @param {number} page The page number.
      * @param {number} pageSize The size of the page.
-     * @returns {Promise<{games: Game[], count: number}>} A promise that returns the searched completed games.
+     * @returns {Promise<Game[]>} A promise that returns the searched completed games.
      */
-    static async search(query, page, pageSize) {
+    static async search(query, pageSize) {
         const db = await Db.get();
 
         const games = await db.collection("completed").find({$text: {$search: query}}, {
             sort: {score: {$meta: "textScore"}, dateAdded: -1},
-            skip: (page - 1) * pageSize, limit: pageSize
+            limit: pageSize
         }).project({
             _id: 1,
             ipAddress: 1,
@@ -388,13 +387,11 @@ class CompletedDb {
             dateAdded: 1
         }).toArray();
 
-        const count = await db.collection("completed").countDocuments({$text: {$search: query}});
-
         if (!games) {
-            return {games: [], count: 0};
+            return [];
         }
 
-        const completed = games.map((game) => new Game({
+        return games.map((game) => new Game({
             ip: game.ipAddress,
             settings: game.data.settings,
             server: game.data.server,
@@ -419,8 +416,6 @@ class CompletedDb {
             id: Db.fromLong(game._id),
             date: game.dateAdded
         }));
-
-        return {games: completed, count};
     }
 }
 

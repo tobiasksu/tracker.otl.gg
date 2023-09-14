@@ -155,21 +155,19 @@ class Completed {
     /**
      * Gets the paginated list of games by user search.
      * @param {string} query The query.
-     * @param {number} page The page number.
-     * @returns {Promise<{games: Game[], count: number}>} A promise that resolves with the recent games.
+     * @returns {Promise<Game[]>} A promise that resolves with the recent games.
      */
-    static async search(query, page) {
-        const gamesList = await Db.search(query, page, 25);
+    static async search(query) {
+        const games = await Db.search(query, 25);
 
-        const count = gamesList.count,
-            servers = {};
+        const servers = {};
 
-        for (const game of gamesList.games) {
+        for (const game of games) {
             servers[game.ip] ||= await ServersDb.getByIp(game.ip);
             game.server = servers[game.ip];
         }
 
-        return {games: gamesList.games, count};
+        return games;
     }
 }
 

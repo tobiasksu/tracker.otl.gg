@@ -53,11 +53,12 @@ class Search extends RouterBase {
     static async get(req, res) {
         const q = (`${req.query.q}` || "").substring(0, 100);
 
-        let games, count;
+        let count = 1,
+            games;
         if (!q || q.trim().length === 0) {
             ({games, count} = await Completed.getList(1));
         } else {
-            ({games, count} = await Completed.search(q, 1));
+            games = await Completed.search(q);
         }
 
         res.status(200).send(await Common.page(
