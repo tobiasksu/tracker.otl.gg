@@ -2,7 +2,7 @@ const admin = db.getSiblingDB("admin");
 const tracker = db.getSiblingDB("tracker");
 
 // Update this with the latest migration number.
-const currentMigration = 0;
+const currentMigration = 1;
 
 // Check to see if the migration collection exists yet.  If not, create it.
 const found = tracker.getCollectionInfos({name: "migration"}).length;
