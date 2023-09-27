@@ -145,30 +145,6 @@ class Completed {
 
         return games.filter((g) => g.events && g.events.length && g.events.length > 0);
     }
-
-    //                                #
-    //                                #
-    //  ###    ##    ###  ###    ##   ###
-    // ##     # ##  #  #  #  #  #     #  #
-    //   ##   ##    # ##  #     #     #  #
-    // ###     ##    # #  #      ##   #  #
-    /**
-     * Gets the paginated list of games by user search.
-     * @param {string} query The query.
-     * @returns {Promise<Game[]>} A promise that resolves with the recent games.
-     */
-    static async search(query) {
-        const games = await Db.search(query, 25);
-
-        const servers = {};
-
-        for (const game of games) {
-            servers[game.ip] ||= await ServersDb.getByIp(game.ip);
-            game.server = servers[game.ip];
-        }
-
-        return games;
-    }
 }
 
 module.exports = Completed;

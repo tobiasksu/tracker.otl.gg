@@ -33,8 +33,6 @@ import LinksView from "../../public/views/links"
 import MethodNotAllowedView from "../../public/views/405"
 import NotFoundView from "../../public/views/404"
 import Player from "../../public/js/common/player"
-import SearchJs from "../../public/js/search"
-import SearchView from "../../public/views/search"
 import ServerErrorView from "../../public/views/500"
 import ServerView from "../../public/views/server"
 import SummaryCompletedGamesView from "../../public/views/summary/completedGames"
@@ -85,8 +83,6 @@ declare global {
         NotFoundView: typeof NotFoundView
         Player: typeof Player
         q: string
-        SearchJs: typeof SearchJs
-        SearchView: typeof SearchView
         ServerErrorView: typeof ServerErrorView
         ServerView: typeof ServerView
         SummaryCompletedGamesView: typeof SummaryCompletedGamesView

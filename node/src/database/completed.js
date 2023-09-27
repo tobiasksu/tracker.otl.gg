@@ -361,62 +361,6 @@ class CompletedDb {
             date: game.dateAdded
         }));
     }
-
-    //                                #
-    //                                #
-    //  ###    ##    ###  ###    ##   ###
-    // ##     # ##  #  #  #  #  #     #  #
-    //   ##   ##    # ##  #     #     #  #
-    // ###     ##    # #  #      ##   #  #
-    /**
-     * Gets the paginated list of games by user search.
-     * @param {string} query The query.
-     * @param {number} pageSize The size of the page.
-     * @returns {Promise<Game[]>} A promise that returns the searched completed games.
-     */
-    static async search(query, pageSize) {
-        const db = await Db.get();
-
-        const games = await db.collection("completed").find({$text: {$search: query}}, {
-            sort: {score: {$meta: "textScore"}, dateAdded: -1},
-            limit: pageSize
-        }).project({
-            _id: 1,
-            ipAddress: 1,
-            data: {settings: 1, server: 1, players: 1, teamScore: 1},
-            dateAdded: 1
-        }).toArray();
-
-        if (!games) {
-            return [];
-        }
-
-        return games.map((game) => new Game({
-            ip: game.ipAddress,
-            settings: game.data.settings,
-            server: game.data.server,
-            players: game.data.players ? game.data.players.map((player) => ({
-                name: player.name,
-                team: player.team,
-                kills: player.kills,
-                assists: player.assists,
-                deaths: player.deaths,
-                goals: player.goals,
-                goalAssists: player.goalAssists,
-                blunders: player.blunders,
-                returns: player.returns,
-                pickups: player.pickups,
-                captures: player.captures,
-                carrierKills: player.carrierKills,
-                connected: player.connected,
-                disconnected: player.disconnected,
-                timeInGame: Db.fromDouble(player.timeInGame)
-            })) : void 0,
-            teamScore: game.data.teamScore,
-            id: Db.fromLong(game._id),
-            date: game.dateAdded
-        }));
-    }
 }
 
 module.exports = CompletedDb;
