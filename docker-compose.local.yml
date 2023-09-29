@@ -117,6 +117,7 @@ services:
     #     gelf-address: "udp://localhost:12201"
     environment:
       DOMAIN: tracker.otl.gg
+      HTTP_ONLY: 1
       PROXY_PORT: 3030
     restart: always
     volumes:

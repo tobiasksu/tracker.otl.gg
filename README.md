@@ -18,7 +18,7 @@ Finally, you must create the `/secrets` directory with the following files (no e
 
 Simply running `docker compose up --build` in the root directory of the repository should get the site up and running for you.  You can test the website by running `https://localhost`.
 
-To connect to your server from an olmod server, edit olmodsettings.json so that the `isServer` is `true` and the `trackerBaseUrl` is `https://localhost`, or use `https://` with the IP address of the computer if connecting from across a network.
+To connect to your server from an olmod server, edit olmodsettings.json so that the `isServer` is `true` and the `trackerBaseUrl` is `http://localhost`, or use `http://` with the IP address of the computer if connecting from across a network.
 
 ## Version History
 
