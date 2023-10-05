@@ -21,6 +21,16 @@ let servers = [];
  * A class that represents the servers currently online.
  */
 class Servers {
+    /**
+     * Gets the list of all servers by name and IP.
+     * @returns {Promise<{ip: string, server: string}[]>} A promise that resolves with the servers.
+     */
+    static async getAllByNameAndIP() {
+        const allServers = await Db.getAll();
+
+        return allServers.map((server) => ({ip: server.ip, server: server.name || server.ip}));
+    }
+
     //              #    #  #   #            #    #     ##
     //              #    #  #                     #      #
     //  ###   ##   ###   #  #  ##     ###   ##    ###    #     ##

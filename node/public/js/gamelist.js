@@ -20,7 +20,10 @@ class GameListJs {
      * @returns {void}
      */
     static DOMContentLoaded() {
-        document.getElementById("paginator").addEventListener("change", GameListJs.getPage);
+        const paginator = document.getElementById("paginator");
+        if (paginator) {
+            paginator.addEventListener("change", GameListJs.getPage);
+        }
         GameListJs.parseTime();
     }
 

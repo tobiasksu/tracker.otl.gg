@@ -361,6 +361,101 @@ class CompletedDb {
             date: game.dateAdded
         }));
     }
+
+    //                                #
+    //                                #
+    //  ###    ##    ###  ###    ##   ###
+    // ##     # ##  #  #  #  #  #     #  #
+    //   ##   ##    # ##  #     #     #  #
+    // ###     ##    # #  #      ##   #  #
+    /**
+     * Searches completed games and returns a paginated list.
+     * @param {string[]} ips The list of IP addresses to search for.
+     * @param {string[]} gameTypes The list of game types to search for.
+     * @param {string[]} players The list of players to search for.
+     * @param {string[]} maps The list of maps to search for.
+     * @param {number[]} scores The list of scores to search for.
+     * @param {number} page The page number.
+     * @param {number} pageSize The size of the page.
+     * @returns {Promise<{games: Game[], count: number}>} A promise that resolves with the recent games and the total count of games that match the search.
+     */
+    static async search(ips, gameTypes, players, maps, scores, page, pageSize) {
+        const db = await Db.get();
+
+        const query = {};
+
+        if (ips && ips.length > 0) {
+            query["data.ip"] = {$in: ips};
+        }
+
+        if (gameTypes && gameTypes.length > 0) {
+            query["data.settings.matchMode"] = {$in: gameTypes};
+        }
+
+        if (players && players.length > 0) {
+            // Convert players to upper case.
+            query["data.players.name"] = {$in: players.map((p) => p.toUpperCase())};
+        }
+
+        if (maps && maps.length > 0) {
+            query["data.settings.level"] = {$in: maps};
+        }
+
+        if (scores && scores.length > 0) {
+            query["data.teamScore"] = {$in: scores};
+        }
+
+        // Return an empty game list if there is nothing to query.
+        if (Object.keys(query).length === 0) {
+            return {games: [], count: 0};
+        }
+
+        const games = await db.collection("completed").find(query, {
+            sort: {dateAdded: -1},
+            skip: (page - 1) * pageSize,
+            limit: pageSize
+        }).project({
+            _id: 1,
+            ipAddress: 1,
+            data: {settings: 1, server: 1, players: 1, teamScore: 1},
+            dateAdded: 1
+        }).toArray();
+
+        const count = await db.collection("completed").countDocuments(query);
+
+        // Return an empty game list if there are no games.
+        if (!games) {
+            return {games: [], count: 0};
+        }
+
+        const completed = games.map((game) => new Game({
+            ip: game.ipAddress,
+            settings: game.data.settings,
+            server: game.data.server,
+            players: game.data.players ? game.data.players.map((player) => ({
+                name: player.name,
+                team: player.team,
+                kills: player.kills,
+                assists: player.assists,
+                deaths: player.deaths,
+                goals: player.goals,
+                goalAssists: player.goalAssists,
+                blunders: player.blunders,
+                returns: player.returns,
+                pickups: player.pickups,
+                captures: player.captures,
+                carrierKills: player.carrierKills,
+                connected: player.connected,
+                disconnected: player.disconnected,
+                timeInGame: Db.fromDouble(player.timeInGame)
+            })) : void 0,
+            teamScore: game.data.teamScore,
+            id: Db.fromLong(game._id),
+            date: game.dateAdded
+        }));
+
+        return {games: completed, count};
+    }
 }
 
 module.exports = CompletedDb;

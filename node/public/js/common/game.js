@@ -399,7 +399,7 @@ class Game {
      * Retrieves a player from a game.
      * @param {string} name The name of the player.
      * @param {string} [team] The team the player is currently on.
-     * @returns {InstanceType<Game.Player>} The player. // TODO: Fix return type.
+     * @returns {InstanceType<Game.Player>} The player.
      */
     getPlayer(name, team) {
         if (!name) {

@@ -22,7 +22,7 @@ class GameListGamesView {
     //  ###
     /**
      * Gets the rendered archived games template.
-     * @param {{games: Game[]}} games The games to display.
+     * @param {Game[]} games The games to display.
      * @returns {string} An HTML string of the rendered archived games template.
      */
     static get(games) {
@@ -32,7 +32,7 @@ class GameListGamesView {
             <div class="header">Match Mode</div>
             <div class="header">Map</div>
             <div class="header">Score</div>
-            ${games.games.map(GameListGamesView.GameListGameView.get).join("")}
+            ${games.map(GameListGamesView.GameListGameView.get).join("")}
         `;
     }
 }

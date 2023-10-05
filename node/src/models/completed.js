@@ -79,7 +79,7 @@ class Completed {
     /**
      * Gets the paginated list of games.
      * @param {number} page The page number.
-     * @returns {Promise<{games: Game[], count: number}>} A promise that resolves with the recent games.
+     * @returns {Promise<{games: Game[], count: number}>} A promise that resolves with the recent games and the total count of games.
      */
     static async getList(page) {
         const gamesList = await Db.getList(page, 25);
@@ -144,6 +144,36 @@ class Completed {
         }
 
         return games.filter((g) => g.events && g.events.length && g.events.length > 0);
+    }
+
+    //                                #
+    //                                #
+    //  ###    ##    ###  ###    ##   ###
+    // ##     # ##  #  #  #  #  #     #  #
+    //   ##   ##    # ##  #     #     #  #
+    // ###     ##    # #  #      ##   #  #
+    /**
+     * Searches completed games and returns a paginated list.
+     * @param {string[]} ips The list of IP addresses to search for.
+     * @param {string[]} gameTypes The list of game types to search for.
+     * @param {string[]} players The list of players to search for.
+     * @param {string[]} maps The list of maps to search for.
+     * @param {number[]} scores The list of scores to search for.
+     * @param {number} [page] The page number.
+     * @returns {Promise<{games: Game[], count: number}>} A promise that resolves with the recent games and the total count of games that match the search.
+     */
+    static async search(ips, gameTypes, players, maps, scores, page) {
+        const gamesList = await Db.search(ips, gameTypes, players, maps, scores, page, 25);
+
+        const count = gamesList.count,
+            servers = {};
+
+        for (const game of gamesList.games) {
+            servers[game.ip] ||= await ServersDb.getByIp(game.ip);
+            game.server = servers[game.ip];
+        }
+
+        return {games: gamesList.games, count};
     }
 }
 

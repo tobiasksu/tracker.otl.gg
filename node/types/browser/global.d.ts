@@ -1,6 +1,7 @@
 import AboutView from "../../public/views/about"
 import ArchiveJs from "../../public/js/archive"
 import ArchiveView from "../../public/views/archive"
+import BadRequestView from "../../public/views/400"
 import ClipboardHandler from "../../public/js/common/clipboardHandler"
 import ClipboardJS from "clipboard"
 import CommonCompletedDetailsView from "../../public/views/common/completedDetails"
@@ -33,6 +34,9 @@ import LinksView from "../../public/views/links"
 import MethodNotAllowedView from "../../public/views/405"
 import NotFoundView from "../../public/views/404"
 import Player from "../../public/js/common/player"
+import SearchJs from "../../public/js/search"
+import SearchServerView from "../../public/views/search/server"
+import SearchView from "../../public/views/search"
 import ServerErrorView from "../../public/views/500"
 import ServerView from "../../public/views/server"
 import SummaryCompletedGamesView from "../../public/views/summary/completedGames"
@@ -50,6 +54,7 @@ declare global {
         AboutView: typeof AboutView
         ArchiveJs: typeof ArchiveJs
         ArchiveView: typeof ArchiveView
+        BadRequestView: typeof BadRequestView
         ClipboardHandler: typeof ClipboardHandler
         ClipboardJS: typeof ClipboardJS
         CommonCompletedDetailsView: typeof CommonCompletedDetailsView
@@ -83,6 +88,9 @@ declare global {
         NotFoundView: typeof NotFoundView
         Player: typeof Player
         q: string
+        SearchJs: typeof SearchJs
+        SearchServerView: typeof SearchServerView
+        SearchView: typeof SearchView
         ServerErrorView: typeof ServerErrorView
         ServerView: typeof ServerView
         SummaryCompletedGamesView: typeof SummaryCompletedGamesView

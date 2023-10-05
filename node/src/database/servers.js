@@ -15,6 +15,29 @@ const Db = require(".");
  * A class that handles calls to the database for servers.
  */
 class ServersDb {
+    /**
+     * Gets the list of all servers.
+     * @returns {Promise<ServerTypes.LocalServer[]>} A promise that returns the list of servers.
+     */
+    static async getAll() {
+        const db = await Db.get();
+
+        const servers = await db.collection("server").find({}).toArray();
+
+        if (!servers) {
+            return [];
+        }
+
+        return servers.map((server) => ({
+            ip: server.ipAddress,
+            keepListed: server.data.keepListed,
+            name: server.data.name,
+            notes: server.data.notes,
+            version: server.data.version,
+            lastSeen: server.data.lastSeen
+        }));
+    }
+
     //              #    ###         ###
     //              #    #  #         #
     //  ###   ##   ###   ###   #  #   #    ###
@@ -55,7 +78,7 @@ class ServersDb {
     //  ###
     /**
      * Gets the list of visible servers.
-     * @returns {Promise<ServerTypes.LocalServer[]>} A promise that resolves with the list of servers.
+     * @returns {Promise<ServerTypes.LocalServer[]>} A promise that returns the list of servers.
      */
     static async getVisible() {
         const db = await Db.get();
