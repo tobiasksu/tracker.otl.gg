@@ -21,16 +21,6 @@ let servers = [];
  * A class that represents the servers currently online.
  */
 class Servers {
-    /**
-     * Gets the list of all servers by name and IP.
-     * @returns {Promise<{ip: string, server: string}[]>} A promise that resolves with the servers.
-     */
-    static async getAllByNameAndIP() {
-        const allServers = await Db.getAll();
-
-        return allServers.map((server) => ({ip: server.ip, server: server.name || server.ip}));
-    }
-
     //              #    #  #   #            #    #     ##
     //              #    #  #                     #      #
     //  ###   ##   ###   #  #  ##     ###   ##    ###    #     ##
@@ -81,6 +71,23 @@ class Servers {
         });
 
         return serverInfo.filter((s) => s.keepListed && new Date().getTime() - new Date(s.lastSeen).getTime() < 30 * 24 * 60 * 60 * 1000 || new Date().getTime() - new Date(s.lastSeen).getTime() < 5 * 60 * 1000);
+    }
+
+    //              #    #  #   #            #    #     ##          ###         #  #                     ##            #  ###   ###
+    //              #    #  #                     #      #          #  #        ## #                    #  #           #   #    #  #
+    //  ###   ##   ###   #  #  ##     ###   ##    ###    #     ##   ###   #  #  ## #   ###  # #    ##   #  #  ###    ###   #    #  #
+    // #  #  # ##   #    #  #   #    ##      #    #  #   #    # ##  #  #  #  #  # ##  #  #  ####  # ##  ####  #  #  #  #   #    ###
+    //  ##   ##     #     ##    #      ##    #    #  #   #    ##    #  #   # #  # ##  # ##  #  #  ##    #  #  #  #  #  #   #    #
+    // #      ##     ##   ##   ###   ###    ###   ###   ###    ##   ###     #   #  #   # #  #  #   ##   #  #  #  #   ###  ###   #
+    //  ###                                                                #
+    /**
+     * Gets the list of visible servers by name and IP address.
+     * @returns {Promise<{name: string, ip: string}[]>} A promise that resolves with the servers.
+     */
+    static async getVisibleByNameAndIP() {
+        const visibleServers = await Servers.getVisible();
+
+        return visibleServers.sort((a, b) => a.name.localeCompare(b.name)).map((s) => ({name: s.name, ip: s.ip}));
     }
 
     //                #         #

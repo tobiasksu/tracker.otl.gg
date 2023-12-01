@@ -69,7 +69,7 @@ class Search extends RouterBase {
                 return;
             }
 
-            if (req.query.gameTypes && !Array.isArray(req.query.gameTypes)) {
+            if (req.query.maps && !Array.isArray(req.query.maps)) {
                 res.status(400).send(await Common.page(
                     "",
                     {
@@ -93,7 +93,7 @@ class Search extends RouterBase {
                 return;
             }
 
-            if (req.query.maps && !Array.isArray(req.query.maps)) {
+            if (req.query.gameTypes && !Array.isArray(req.query.gameTypes)) {
                 res.status(400).send(await Common.page(
                     "",
                     {
@@ -120,13 +120,13 @@ class Search extends RouterBase {
 
             // Get the data for the page.
             [{games, count}, servers] = await Promise.all([
-                Completed.search(/** @type {string[]}*/(req.query.ips), /** @type {string[]} */(req.query.gameTypes), /** @type {string[]} */(req.query.players), /** @type {string[]} */(req.query.maps), /** @type {string[]} */(req.query.scores).map((s) => +s), req.query.page ? +req.query.page : void 0), // eslint-disable-line no-extra-parens
-                Servers.getAllByNameAndIP()
+                Completed.search(/** @type {string[]}*/(req.query.ips), /** @type {string[]} */(req.query.gameTypes), /** @type {string[]} */(req.query.players), /** @type {string[]} */(req.query.maps), req.query.scores ? /** @type {string[]} */(req.query.scores).map((s) => +s) : [], req.query.page ? +req.query.page : void 0), // eslint-disable-line no-extra-parens
+                Servers.getVisibleByNameAndIP()
             ]);
         } else {
             games = [];
             count = 0;
-            servers = await Servers.getAllByNameAndIP();
+            servers = await Servers.getVisibleByNameAndIP();
         }
 
         res.status(200).send(await Common.page(
@@ -139,11 +139,12 @@ class Search extends RouterBase {
                     "/js/common/time.js",
                     "/views/gamelist/game.js",
                     "/views/gamelist/games.js",
+                    "/views/search/server.js",
                     "/js/search.js"
                 ],
                 css: ["/css/gamelist.css"]
             },
-            SearchView.get({games, count, servers}),
+            SearchView.get({games, count, servers, ips: /** @type {string[]}*/(req.query.ips), maps: /** @type {string[]}*/(req.query.maps), players: /** @type {string[]}*/(req.query.players), gameTypes: /** @type {string[]}*/(req.query.gameTypes), scores: req.query.scores ? /** @type {string[]} */(req.query.scores).map((s) => +s) : []}), // eslint-disable-line no-extra-parens
             req
         ));
     }

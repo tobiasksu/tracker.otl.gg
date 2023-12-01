@@ -380,54 +380,82 @@ class CompletedDb {
      * @returns {Promise<{games: Game[], count: number}>} A promise that resolves with the recent games and the total count of games that match the search.
      */
     static async search(ips, gameTypes, players, maps, scores, page, pageSize) {
+        // Set defaults.
+        page ||= 1;
+        pageSize ||= 25;
+
         const db = await Db.get();
 
-        const query = {};
+        const pipeline = [];
+
+        // Match stage
+        const matchStage = {};
 
         if (ips && ips.length > 0) {
-            query["data.ip"] = {$in: ips};
+            matchStage["data.ip"] = {$in: ips};
         }
 
         if (gameTypes && gameTypes.length > 0) {
-            query["data.settings.matchMode"] = {$in: gameTypes};
+            matchStage["data.settings.matchMode"] = {$in: gameTypes};
         }
 
         if (players && players.length > 0) {
-            // Convert players to upper case.
-            query["data.players.name"] = {$in: players.map((p) => p.toUpperCase())};
+            matchStage["data.players.name"] = {$all: players.map((p) => p.toUpperCase())};
         }
 
         if (maps && maps.length > 0) {
-            query["data.settings.level"] = {$in: maps};
+            matchStage["data.settings.level"] = {$in: maps.map((p) => p.toUpperCase())};
         }
 
+        if (Object.keys(matchStage).length > 0) {
+            pipeline.push({$match: matchStage});
+        }
+
+        // AddField stage for scores
         if (scores && scores.length > 0) {
-            query["data.teamScore"] = {$in: scores};
+            pipeline.push({
+                $addFields: {
+                    teamScoresArray: {$objectToArray: "$data.teamScore"}
+                }
+            });
+            pipeline.push({
+                $match: {
+                    "teamScoresArray.v": {$all: scores}
+                }
+            });
         }
 
-        // Return an empty game list if there is nothing to query.
-        if (Object.keys(query).length === 0) {
-            return {games: [], count: 0};
-        }
+        // Count stage
+        const result = await db.collection("completed").aggregate([
+            ...pipeline,
+            {$count: "count"}
+        ]).next();
+        const count = result ? result.count : 0;
 
-        const games = await db.collection("completed").find(query, {
-            sort: {dateAdded: -1},
-            skip: (page - 1) * pageSize,
-            limit: pageSize
-        }).project({
-            _id: 1,
-            ipAddress: 1,
-            data: {settings: 1, server: 1, players: 1, teamScore: 1},
-            dateAdded: 1
-        }).toArray();
+        // Pagination stage
+        pipeline.push({
+            $sort: {dateAdded: -1}
+        });
+        pipeline.push({
+            $skip: (page - 1) * pageSize
+        });
+        pipeline.push({
+            $limit: pageSize
+        });
 
-        const count = await db.collection("completed").countDocuments(query);
+        // Projection stage
+        pipeline.push({
+            $project: {
+                _id: 1,
+                ipAddress: 1,
+                data: {settings: 1, server: 1, players: 1, teamScore: 1},
+                dateAdded: 1
+            }
+        });
 
-        // Return an empty game list if there are no games.
-        if (!games) {
-            return {games: [], count: 0};
-        }
+        const games = await db.collection("completed").aggregate(pipeline).toArray();
 
+        // Map to Game objects
         const completed = games.map((game) => new Game({
             ip: game.ipAddress,
             settings: game.data.settings,

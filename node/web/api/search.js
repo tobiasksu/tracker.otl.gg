@@ -91,7 +91,38 @@ class SearchApi extends RouterBase {
                 return;
             }
 
-            const games = (await Completed.search(/** @type {string[]}*/(req.query.ips), /** @type {string[]} */(req.query.gameTypes), /** @type {string[]} */(req.query.players), /** @type {string[]} */(req.query.maps), /** @type {string[]} */(req.query.scores).map((s) => +s), req.query.page ? +req.query.page : void 0)).games; // eslint-disable-line no-extra-parens
+            const ips = req.query.ips ? Array.from(new Set(/** @type {string[]} */(req.query.ips))) : []; // eslint-disable-line no-extra-parens
+            const gameTypes = req.query.gameTypes ? Array.from(new Set(/** @type {string[]} */(req.query.gameTypes))) : []; // eslint-disable-line no-extra-parens
+            const players = req.query.players ? Array.from(new Set(/** @type {string[]} */(req.query.players))) : []; // eslint-disable-line no-extra-parens
+            const maps = req.query.maps ? Array.from(new Set(/** @type {string[]} */(req.query.maps))) : []; // eslint-disable-line no-extra-parens
+            const scores = req.query.scores ? Array.from(new Set(/** @type {string[]} */(req.query.scores).map((s) => +s))) : []; // eslint-disable-line no-extra-parens
+
+            if (ips.length > 5) {
+                res.status(400).send("400 - Bad Request - Too many search parameters.");
+                return;
+            }
+
+            if (gameTypes.length > 5) {
+                res.status(400).send("400 - Bad Request - Too many search parameters.");
+                return;
+            }
+
+            if (players.length > 8) {
+                res.status(400).send("400 - Bad Request - Too many search parameters.");
+                return;
+            }
+
+            if (maps.length > 5) {
+                res.status(400).send("400 - Bad Request - Too many search parameters.");
+                return;
+            }
+
+            if (scores.length > 2) {
+                res.status(400).send("400 - Bad Request - Too many search parameters.");
+                return;
+            }
+
+            const games = (await Completed.search(ips, gameTypes, players, maps, scores, req.query.page ? +req.query.page : void 0)).games;
 
             res.status(200).json({games});
         } catch (err) {

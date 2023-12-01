@@ -24,8 +24,33 @@ class SearchJs {
         if (paginator) {
             paginator.addEventListener("change", SearchJs.getPage);
         }
-        document.getElementById("search").addEventListener("click", SearchJs.search);
+        document.getElementById("do-search").addEventListener("click", SearchJs.search);
         document.getElementById("add-server").addEventListener("click", SearchJs.addServer);
+        document.getElementById("add-map").addEventListener("click", SearchJs.addMap);
+        document.getElementById("add-player").addEventListener("click", SearchJs.addPlayer);
+        document.getElementById("add-gametype").addEventListener("click", SearchJs.addGameType);
+        document.getElementById("add-score").addEventListener("click", SearchJs.addScore);
+
+        for (const el of document.getElementsByClassName("remove-server")) {
+            el.addEventListener("click", SearchJs.removeServer);
+        }
+
+        for (const el of document.getElementsByClassName("remove-map")) {
+            el.addEventListener("click", SearchJs.removeMap);
+        }
+
+        for (const el of document.getElementsByClassName("remove-player")) {
+            el.addEventListener("click", SearchJs.removePlayer);
+        }
+
+        for (const el of document.getElementsByClassName("remove-gametype")) {
+            el.addEventListener("click", SearchJs.removeGameType);
+        }
+
+        for (const el of document.getElementsByClassName("remove-score")) {
+            el.addEventListener("click", SearchJs.removeScore);
+        }
+
         SearchJs.parseTime();
     }
 
@@ -41,6 +66,12 @@ class SearchJs {
      * @returns {void}
      */
     static addGameType() {
+        const gameTypes = document.getElementsByClassName("search-gametypes");
+        if (gameTypes.length >= 5) {
+            SearchJs.showModal("You may only search for up to five game types.");
+            return;
+        }
+
         const el = document.getElementById("add-gametype"),
             div = document.createElement("div"),
             select = document.createElement("select"),
@@ -54,6 +85,8 @@ class SearchJs {
         for (const option of /** @type {HTMLSelectElement}*/(el.parentElement.querySelector(".parameter.first select")).options) { // eslint-disable-line no-extra-parens
             if (option.value) {
                 const newOption = document.createElement("option");
+                newOption.value = option.value;
+                newOption.innerText = option.innerText;
                 select.appendChild(newOption);
             }
         }
@@ -77,6 +110,12 @@ class SearchJs {
      * @returns {void}
      */
     static addMap() {
+        const maps = document.getElementsByClassName("search-maps");
+        if (maps.length >= 5) {
+            SearchJs.showModal("You may only search for up to five maps.");
+            return;
+        }
+
         const el = document.getElementById("add-map"),
             div = document.createElement("div"),
             input = document.createElement("input"),
@@ -106,6 +145,12 @@ class SearchJs {
      * @returns {void}
      */
     static addPlayer() {
+        const players = document.getElementsByClassName("search-players");
+        if (players.length >= 8) {
+            SearchJs.showModal("You may only search for up to eight players.");
+            return;
+        }
+
         const el = document.getElementById("add-player"),
             div = document.createElement("div"),
             input = document.createElement("input"),
@@ -134,6 +179,12 @@ class SearchJs {
      * @returns {void}
      */
     static addScore() {
+        const scores = document.getElementsByClassName("search-scores");
+        if (scores.length >= 2) {
+            SearchJs.showModal("You may only search for up to two scores.");
+            return;
+        }
+
         const el = document.getElementById("add-score"),
             div = document.createElement("div"),
             input = document.createElement("input"),
@@ -163,6 +214,12 @@ class SearchJs {
      * @returns {void}
      */
     static addServer() {
+        const servers = document.getElementsByClassName("search-server");
+        if (servers.length >= 5) {
+            SearchJs.showModal("You may only search for up to five servers.");
+            return;
+        }
+
         const el = document.getElementById("add-server"),
             div = document.createElement("div"),
             button = document.createElement("button");
@@ -328,71 +385,89 @@ class SearchJs {
         const ips = /** @type {NodeListOf<HTMLSelectElement>} */(document.querySelectorAll("#search-ips .parameter select")), // eslint-disable-line no-extra-parens
             maps = /** @type {NodeListOf<HTMLInputElement>} */(document.querySelectorAll("#search-maps .parameter input")), // eslint-disable-line no-extra-parens
             players = /** @type {NodeListOf<HTMLInputElement>} */(document.querySelectorAll("#search-players .parameter input")), // eslint-disable-line no-extra-parens
-            gametypes = /** @type {NodeListOf<HTMLSelectElement>} */(document.querySelectorAll("#search-gametypes .parameter select")), // eslint-disable-line no-extra-parens
+            gameTypes = /** @type {NodeListOf<HTMLSelectElement>} */(document.querySelectorAll("#search-gametypes .parameter select")), // eslint-disable-line no-extra-parens
             scores = /** @type {NodeListOf<HTMLInputElement>} */(document.querySelectorAll("#search-scores .parameter input")); // eslint-disable-line no-extra-parens
 
         const ipList = [],
             mapList = [],
             playerList = [],
-            gametypeList = [],
+            gameTypeList = [],
             scoreList = [];
 
         for (const ip of ips) {
-            if (ip.value) {
+            if (ip.value && !ipList.includes(ip.value)) {
                 ipList.push(ip.value);
             }
         }
 
         for (const map of maps) {
-            if (map.value) {
+            if (map.value && !mapList.includes(map.value)) {
                 mapList.push(map.value);
             }
         }
 
         for (const player of players) {
-            if (player.value) {
+            if (player.value && !playerList.includes(player.value)) {
                 playerList.push(player.value);
             }
         }
 
-        for (const gametype of gametypes) {
-            if (gametype.value) {
-                gametypeList.push(gametype.value);
+        for (const gameType of gameTypes) {
+            if (gameType.value && !gameTypeList.includes(gameType.value)) {
+                gameTypeList.push(gameType.value);
             }
         }
 
         for (const score of scores) {
             if (score.value) {
                 if (isNaN(+score.value) || !Number.isInteger(+score.value)) {
-                    const modal = document.getElementById("modal"),
-                        modalText = document.getElementById("modal-text"),
-                        modalClose = document.getElementById("modal-close");
-
-                    modal.classList.remove("hidden");
-                    modalText.innerText = "Score must be an integer.";
-                    modalClose.focus();
-
-                    modalClose.addEventListener("click", () => {
-                        modal.classList.add("hidden");
-                    });
+                    SearchJs.showModal("Score must be an integer.");
 
                     return;
                 }
-                scoreList.push(score.value);
+
+                if (!scoreList.includes(score.value)) {
+                    scoreList.push(score.value);
+                }
             }
         }
 
-        const url = `/search?${ipList.length > 0 ? `ips[]=${ipList.join("&ips[]=")}&` : ""}${mapList.length > 0 ? `maps[]=${mapList.join("&maps[]=")}&` : ""}${playerList.length > 0 ? `players[]=${playerList.join("&players[]=")}&` : ""}${gametypeList.length > 0 ? `gametypes[]=${gametypeList.join("&gametypes[]=")}&` : ""}${scoreList.length > 0 ? `scores[]=${scoreList.join("&scores[]=")}` : ""}`;
+        let url = `/search?${ipList.length > 0 ? `ips[]=${ipList.join("&ips[]=")}&` : ""}${mapList.length > 0 ? `maps[]=${mapList.join("&maps[]=")}&` : ""}${playerList.length > 0 ? `players[]=${playerList.join("&players[]=")}&` : ""}${gameTypeList.length > 0 ? `gameTypes[]=${gameTypeList.join("&gameTypes[]=")}&` : ""}${scoreList.length > 0 ? `scores[]=${scoreList.join("&scores[]=")}` : ""}`;
 
         if (url.endsWith("&")) {
-            window.location.href = url.substr(0, url.length - 1);
+            url = url.slice(0, -1);
         }
 
         window.location.href = url;
     }
+
+    //        #                 #  #           #        ##
+    //        #                 ####           #         #
+    //  ###   ###    ##   #  #  ####   ##    ###   ###   #
+    // ##     #  #  #  #  #  #  #  #  #  #  #  #  #  #   #
+    //   ##   #  #  #  #  ####  #  #  #  #  #  #  # ##   #
+    // ###    #  #   ##   ####  #  #   ##    ###   # #  ###
+    /**
+     * Shows a modal dialog.
+     * @param {string} message The message to display.
+     * @returns {void}
+     */
+    static showModal(message) {
+        const modal = document.getElementById("modal"),
+            modalText = document.getElementById("modal-text"),
+            modalClose = document.getElementById("modal-close");
+
+        modal.classList.remove("hidden");
+        modalText.innerText = message;
+        modalClose.focus();
+
+        modalClose.addEventListener("click", () => {
+            modal.classList.add("hidden");
+        });
+    }
 }
 
-/** @type {{ip: string, server: string}[]} */
+/** @type {{ip: string, name: string}[]} */
 SearchJs.servers = null;
 
 document.addEventListener("DOMContentLoaded", SearchJs.DOMContentLoaded);

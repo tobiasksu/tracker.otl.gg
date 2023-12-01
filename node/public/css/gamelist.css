@@ -15,7 +15,6 @@
 }
 
 #modal {
-    display: none;
     position: fixed;
     z-index: 1;
     left: 0;
@@ -27,15 +26,16 @@
 }
 
 #modal-content {
-    background-color: #fefefe;
+    background-color: #333333;
     margin: 15% auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 1px solid #888888;
     width: 80%;
 }
 
 #modal-close {
-    color: #aaa;
+    position: relative;
+    top: -3px;
     float: right;
     font-size: 28px;
     font-weight: bold;
@@ -43,7 +43,22 @@
 
 #modal-close:hover,
 #modal-close:focus {
-    color: black;
+    color: #ff6600;
     text-decoration: none;
     cursor: pointer;
+}
+
+form#search {
+    text-align: center;
+}
+
+div#search-parameters > div {
+    display: inline-block;
+    padding: 5px;
+    text-align: left;
+}
+
+button#do-search {
+    font-size: 24px;
+    background-color: #ff6600;
 }

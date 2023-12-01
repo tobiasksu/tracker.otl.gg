@@ -40,7 +40,7 @@ class GameListView {
                 </div>
             ` : ""}
             <div id="games">
-                ${GameListView.GameListGamesView.get(games)}
+                ${GameListView.GameListGamesView.get({games})}
             </div>
         `;
     }
