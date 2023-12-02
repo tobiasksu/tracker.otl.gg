@@ -20,7 +20,7 @@ fi
 
 # Create the nginx conf.
 echo "Creating nginx.conf..."
-if [ $HTTP_ONLY -eq 1 ];
+if [ $HTTP_ONLY -eq "1" ];
 then
     /bin/sh -c $'echo "
 events {
