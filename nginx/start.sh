@@ -20,8 +20,51 @@ fi
 
 # Create the nginx conf.
 echo "Creating nginx.conf..."
-if [ $HTTP_ONLY -eq "1" ];
+if [ $HTTP_ONLY -eq 1 ];
 then
+    /bin/sh -c $'echo "
+events {
+    worker_connections 1024;
+}
+
+http {
+    map \$time_iso8601 \$time_iso8601_p1 {
+        ~([^+]+) \$1;
+    }
+    map \$time_iso8601 \$time_iso8601_p2 {
+        ~\\\+([0-9:]+)\$ \$1;
+    }
+    map \$msec \$millisec {
+        ~\\\.([0-9]+)\$ \$1;
+    }
+
+    map \$http_upgrade \$connection_upgrade {
+        default upgrade;
+        \'\' close;
+    }
+
+    log_format fullformat \'\$remote_addr - \$remote_user [\$time_iso8601_p1.\$millisec+\$time_iso8601_p2] \$server_name \$server_port \\\"\$request\\\" \$status \$body_bytes_sent \$request_time \\\"\$http_referer\\\" \\\"\$http_user_agent\\\"\';
+    access_log /var/log/nginx/access.log fullformat;
+
+    server {
+        listen 80;
+        server_name $DOMAIN;
+
+        location / {
+            proxy_http_version 1.1;
+            proxy_pass http://node:$PROXY_PORT/;
+            proxy_set_header Upgrade \$http_upgrade;
+            proxy_set_header Connection \$connection_upgrade;
+            proxy_set_header Host \$http_host;
+            proxy_set_header X-Real-IP \$remote_addr;
+            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+            proxy_cache_bypass \$http_upgrade;
+            proxy_redirect off;
+        }
+    }
+}
+" > /var/nginx/work/nginx.conf'
+else
     /bin/sh -c $'echo "
 events {
     worker_connections 1024;
@@ -69,49 +112,6 @@ http {
 
         include /etc/letsencrypt/options-ssl-nginx.conf;
         ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-        location / {
-            proxy_http_version 1.1;
-            proxy_pass http://node:$PROXY_PORT/;
-            proxy_set_header Upgrade \$http_upgrade;
-            proxy_set_header Connection \$connection_upgrade;
-            proxy_set_header Host \$http_host;
-            proxy_set_header X-Real-IP \$remote_addr;
-            proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-            proxy_cache_bypass \$http_upgrade;
-            proxy_redirect off;
-        }
-    }
-}
-" > /var/nginx/work/nginx.conf'
-else
-    /bin/sh -c $'echo "
-events {
-    worker_connections 1024;
-}
-
-http {
-    map \$time_iso8601 \$time_iso8601_p1 {
-        ~([^+]+) \$1;
-    }
-    map \$time_iso8601 \$time_iso8601_p2 {
-        ~\\\+([0-9:]+)\$ \$1;
-    }
-    map \$msec \$millisec {
-        ~\\\.([0-9]+)\$ \$1;
-    }
-
-    map \$http_upgrade \$connection_upgrade {
-        default upgrade;
-        \'\' close;
-    }
-
-    log_format fullformat \'\$remote_addr - \$remote_user [\$time_iso8601_p1.\$millisec+\$time_iso8601_p2] \$server_name \$server_port \\\"\$request\\\" \$status \$body_bytes_sent \$request_time \\\"\$http_referer\\\" \\\"\$http_user_agent\\\"\';
-    access_log /var/log/nginx/access.log fullformat;
-
-    server {
-        listen 80;
-        server_name $DOMAIN;
 
         location / {
             proxy_http_version 1.1;
