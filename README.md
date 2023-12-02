@@ -22,6 +22,10 @@ To connect to your server from an olmod server, edit olmodsettings.json so that 
 
 ## Version History
 
+### v3.1.0 - 12/2/2023
+* New advanced search capabilities.
+* Package updates.
+
 ### v3.0.6 - 9/14/2023
 * Reduce search to one page for now until a more advanced search is created.
 * Package updates.
