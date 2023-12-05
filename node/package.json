@@ -21,7 +21,7 @@
         "@roncli/node-application-insights-logger": "roncli/node-application-insights-logger#v1.0.17",
         "@roncli/node-minify": "roncli/node-minify#v1.2.1",
         "@roncli/node-redis": "roncli/node-redis#v0.1.18",
-        "chart.js": "4.4.0",
+        "chart.js": "4.4.1",
         "clipboard": "2.0.11",
         "compression": "1.7.4",
         "express": "4.18.2",
