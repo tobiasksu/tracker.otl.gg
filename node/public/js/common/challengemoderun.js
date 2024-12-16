@@ -1,4 +1,8 @@
 /**
+ * @typedef {import("../../types/node/challengeModeTypes").ChallengeModeTypes} ChallengeModeTypes.Run
+ */
+
+/**
  * A class that represents a challenge mode run.
  */
 class ChallengeModeRun {
@@ -10,7 +14,7 @@ class ChallengeModeRun {
     //  ##    ##   #  #  ###      ##  #      ###   ##     ##   ##   #
     /**
      * Creates a new game from the data provided.
-     * @param {ChallengeModeTypes.ChallengeModeRunData} data The data to create the challenge mode run with.
+     * @param {ChallengeModeTypes.Run} data The data to create the challenge mode run with.
      */
     constructor(data) {
         this.ip = data.ip;

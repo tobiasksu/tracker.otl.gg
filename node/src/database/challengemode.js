@@ -1,9 +1,11 @@
 /**
  * @typedef {import("../../types/node/challengeModeTypes").Leaderboard} ChallengeModeTypes.Leaderboard
+ * @typedef {import("../../types/node/challengeModeTypes").Run} ChallengeModeTypes.Run
  */
 
 const Db = require("."),
-      MongoDb = require("mongodb");
+      MongoDb = require("mongodb"),
+      ChallengeModeRun = require("../../public/js/common/challengemoderun");
 
 /**
  * A class that handles calls to the database for challenge mode.
@@ -56,7 +58,7 @@ class ChallengeModeDb {
     /**
      * Adds a challenge mode run.
      * @param {string} ipAddress The IP address of the remote client.
-     * @param {ChallengeModeTypes.ChallengeModeRun} data The challenge mode run to add.
+     * @param {ChallengeModeRun} saveData The challenge mode run to add.
      * @returns {Promise} A promise that resolves when the server has been updated.
      */
     static async add(ipAddress, saveData) {
