@@ -38,6 +38,7 @@ tracker.createCollection("counters", {
 
 tracker.counters.insert([
     {_id: "completed", value: NumberLong(0)},
+    {_id: "challengemode", value: NumberLong(0)}
 ]);
 
 // Create completed collection.
